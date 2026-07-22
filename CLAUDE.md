@@ -209,3 +209,23 @@ This repo includes a tgcalls testbench (CLI tool, Go/Pion SFU, Docker build) lay
 Build the test binary from this directory with:
 
 `./build-input/bazel-8.4.2 build //submodules/TgVoipWebrtc/tgcalls/tools/cli:tgcalls_cli`
+
+## Code Search (Semble)
+
+Use `semble search` to find code by describing what it does or naming a symbol/identifier, instead of grep. The index is built on first run and cached; it auto-rebuilds when files change.
+
+```bash
+semble search "chat list unread badge" .
+semble search "ListViewImpl" .
+semble search "Postbox message history anchor" . --top-k 10
+```
+
+For cross-file discovery (where Serena's LSP can't resolve references due to missing Bazel build index), semble is the preferred tool. Use `semble find-related` to discover similar code from a known location:
+
+```bash
+semble find-related submodules/Display/Source/ListView.swift 156 .
+```
+
+**Workflow:** Start with `semble search` → inspect the returned chunk → use Serena's symbolic tools (`get_symbols_overview`, `find_symbol`) on the identified file for precise analysis → use Serena for edits.
+
+If `semble` is not on `$PATH`, use `uvx --from "semble[mcp]" semble` in its place.
