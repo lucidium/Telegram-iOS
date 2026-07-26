@@ -847,6 +847,7 @@ struct ctr_state {
     NSString *_mtpIp;
     int32_t _mtpPort;
     MTProxySecret *_mtpSecret;
+    MTSocksProxySettings *_webSocketSettings;
     NSData *_helloRandom;
     NSData *_currentHelloResponse;
     
@@ -862,6 +863,7 @@ struct ctr_state {
 @property (nonatomic, strong) id packetProgressToken;
 
 @property (nonatomic, copy) id<MTTcpConnectionInterface> _Nonnull (^ _Nullable makeTcpConnectionInterface)(id<MTTcpConnectionInterfaceDelegate> _Nonnull delegate, dispatch_queue_t _Nonnull delegateQueue);
+@property (nonatomic, copy) id<MTTcpConnectionInterface> _Nullable (^ _Nullable makeWebSocketTcpConnectionInterface)(MTSocksProxySettings * _Nonnull settings, id<MTTcpConnectionInterfaceDelegate> _Nonnull delegate, dispatch_queue_t _Nonnull delegateQueue);
 
 @end
 
@@ -899,6 +901,7 @@ struct ctr_state {
         _usageCalculationInfo = usageCalculationInfo;
         
         _makeTcpConnectionInterface = context.makeTcpConnectionInterface;
+        _makeWebSocketTcpConnectionInterface = context.makeWebSocketTcpConnectionInterface;
         
         if (context.apiEnvironment.datacenterAddressOverrides[@(datacenterId)] != nil) {
             _firstPacketControlByte = [context.apiEnvironment tcpPayloadPrefix];
@@ -911,19 +914,26 @@ struct ctr_state {
         }
         
         if (context.apiEnvironment.socksProxySettings != nil) {
-            if (context.apiEnvironment.socksProxySettings.secret != nil) {
-                _mtpIp = context.apiEnvironment.socksProxySettings.ip;
-                _mtpPort = context.apiEnvironment.socksProxySettings.port;
-                _mtpSecret = [MTProxySecret parseData:context.apiEnvironment.socksProxySettings.secret];
+            MTSocksProxySettings *proxySettings = context.apiEnvironment.socksProxySettings;
+            if (proxySettings.webSocketPath != nil || proxySettings.webSocketToken != nil) {
+                _webSocketSettings = proxySettings;
+                _mtpIp = nil;
+                _mtpPort = 0;
+                _mtpSecret = nil;
+                _useIntermediateFormat = true;
+            } else if (proxySettings.secret != nil) {
+                _mtpIp = proxySettings.ip;
+                _mtpPort = proxySettings.port;
+                _mtpSecret = [MTProxySecret parseData:proxySettings.secret];
             } else {
-                _socksIp = context.apiEnvironment.socksProxySettings.ip;
-                _socksPort = context.apiEnvironment.socksProxySettings.port;
-                _socksUsername = context.apiEnvironment.socksProxySettings.username;
-                _socksPassword = context.apiEnvironment.socksProxySettings.password;
+                _socksIp = proxySettings.ip;
+                _socksPort = proxySettings.port;
+                _socksUsername = proxySettings.username;
+                _socksPassword = proxySettings.password;
             }
         }
         
-        if (_mtpSecret != nil) {
+        if (_webSocketSettings == nil && _mtpSecret != nil) {
             if ([_mtpSecret isKindOfClass:[MTProxySecretType1 class]] || [_mtpSecret isKindOfClass:[MTProxySecretType2 class]]) {
                 _useIntermediateFormat = true;
             }
@@ -953,8 +963,8 @@ struct ctr_state {
 
 - (void)dealloc
 {
-    GCDAsyncSocket *socket = _socket;
-    socket.delegate = nil;
+    id<MTTcpConnectionInterface> socket = _socket;
+    [socket resetDelegate];
     _socket = nil;
     
     MTTimer *responseTimeoutTimer = _responseTimeoutTimer;
@@ -992,11 +1002,21 @@ struct ctr_state {
     {
         if (_socket == nil)
         {
-            if (_makeTcpConnectionInterface) {
-                _socket = _makeTcpConnectionInterface(self, [[MTTcpConnection tcpQueue] nativeQueue]);
-            }
-            if (_socket == nil) {
-                _socket = [[MTGcdAsyncSocketTcpConnectionInterface alloc] initWithDelegate:self delegateQueue:[[MTTcpConnection tcpQueue] nativeQueue]];
+            if (_webSocketSettings != nil) {
+                if (_makeWebSocketTcpConnectionInterface) {
+                    _socket = _makeWebSocketTcpConnectionInterface(_webSocketSettings, self, [[MTTcpConnection tcpQueue] nativeQueue]);
+                }
+                if (_socket == nil) {
+                    [self closeAndNotifyWithError:true];
+                    return;
+                }
+            } else {
+                if (_makeTcpConnectionInterface) {
+                    _socket = _makeTcpConnectionInterface(self, [[MTTcpConnection tcpQueue] nativeQueue]);
+                }
+                if (_socket == nil) {
+                    _socket = [[MTGcdAsyncSocketTcpConnectionInterface alloc] initWithDelegate:self delegateQueue:[[MTTcpConnection tcpQueue] nativeQueue]];
+                }
             }
             
             [_socket setGetLogPrefix:_getLogPrefix];
@@ -1005,7 +1025,9 @@ struct ctr_state {
             NSString *addressIp = _scheme.address.ip;
             MTSignal *resolveSignal = [MTSignal single:[[MTTcpConnectionData alloc] initWithIp:addressIp port:_scheme.address.port isSocks:false]];
             
-            if (_socksIp != nil) {
+            if (_webSocketSettings != nil) {
+                resolveSignal = [MTSignal single:[[MTTcpConnectionData alloc] initWithIp:_webSocketSettings.ip port:_webSocketSettings.port isSocks:false]];
+            } else if (_socksIp != nil) {
                 bool isHostname = true;
                 struct in_addr ip4;
                 struct in6_addr ip6;
@@ -1066,6 +1088,8 @@ struct ctr_state {
                             } else {
                                 MTLog(@"[MTTcpConnection#%" PRIxPTR " connecting to %@:%d via %@:%d using %@:%@]", (intptr_t)strongSelf, strongSelf->_scheme.address.ip, (int)strongSelf->_scheme.address.port, strongSelf->_socksIp, (int)strongSelf->_socksPort, strongSelf->_socksUsername, strongSelf->_socksPassword);
                             }
+                        } else if (strongSelf->_webSocketSettings != nil) {
+                            MTLog(@"[MTTcpConnection#%" PRIxPTR " connecting to %@:%d via WebSocket relay %@:%d%@]", (intptr_t)strongSelf, strongSelf->_scheme.address.ip, (int)strongSelf->_scheme.address.port, strongSelf->_webSocketSettings.ip, (int)strongSelf->_webSocketSettings.port, strongSelf->_webSocketSettings.webSocketPath);
                         } else if (strongSelf->_mtpIp != nil) {
                             MTLog(@"[MTTcpConnection#%" PRIxPTR " connecting to %@:%d via mtp://%@:%d:%@]", (intptr_t)strongSelf, strongSelf->_scheme.address.ip, (int)strongSelf->_scheme.address.port, strongSelf->_mtpIp, (int)strongSelf->_mtpPort, strongSelf->_mtpSecret);
                         } else {
@@ -1076,7 +1100,7 @@ struct ctr_state {
                     __autoreleasing NSError *error = nil;
                     if (![strongSelf->_socket connectToHost:connectionData.ip onPort:connectionData.port viaInterface:strongSelf->_interface withTimeout:12 error:&error] || error != nil) {
                         [strongSelf closeAndNotifyWithError:true];
-                    } else if (strongSelf->_socksIp == nil) {
+                    } else if (strongSelf->_webSocketSettings == nil && strongSelf->_socksIp == nil) {
                         if (strongSelf->_mtpIp != nil && [strongSelf->_mtpSecret isKindOfClass:[MTProxySecretType2 class]]) {
                             MTProxySecretType2 *secret = (MTProxySecretType2 *)(strongSelf->_mtpSecret);
                             NSMutableData *helloData = MTCreateSafariClientHello(secret.domain, strongSelf->_encryptionProvider);
@@ -2023,7 +2047,17 @@ struct ctr_state {
              
 - (void)connectionInterfaceDidConnect
 {
-    if (_socksIp != nil) {
+    if (_webSocketSettings != nil) {
+        _readyToSendData = true;
+        [self sendDataIfNeeded];
+        [self requestReadDataWithLength:4 tag:MTTcpReadTagPacketFullLength];
+
+        if (_connectionOpened)
+            _connectionOpened();
+        id<MTTcpConnectionDelegate> delegate = _delegate;
+        if ([delegate respondsToSelector:@selector(tcpConnectionOpened:)])
+            [delegate tcpConnectionOpened:self];
+    } else if (_socksIp != nil) {
         
     } else {
         if (_connectionOpened)

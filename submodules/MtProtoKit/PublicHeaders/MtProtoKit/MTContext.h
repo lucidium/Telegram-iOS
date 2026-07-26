@@ -13,6 +13,7 @@
 @protocol MTKeychain;
 @class MTSessionInfo;
 @class MTApiEnvironment;
+@class MTSocksProxySettings;
 @class MTSignal;
 @class MTQueue;
 
@@ -81,6 +82,7 @@
 @property (nonatomic) int32_t tempKeyExpiration;
 
 @property (nonatomic, copy) id<MTTcpConnectionInterface> _Nonnull (^ _Nullable makeTcpConnectionInterface)(id<MTTcpConnectionInterfaceDelegate> _Nonnull delegate, dispatch_queue_t _Nonnull delegateQueue);
+@property (nonatomic, copy) id<MTTcpConnectionInterface> _Nullable (^ _Nullable makeWebSocketTcpConnectionInterface)(MTSocksProxySettings * _Nonnull settings, id<MTTcpConnectionInterfaceDelegate> _Nonnull delegate, dispatch_queue_t _Nonnull delegateQueue);
 
 + (int32_t)fixedTimeDifference;
 + (void)setFixedTimeDifference:(int32_t)fixedTimeDifference;

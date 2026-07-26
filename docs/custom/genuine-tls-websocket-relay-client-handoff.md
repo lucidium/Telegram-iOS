@@ -1,6 +1,6 @@
 # Genuine TLS/WebSocket Relay — Telegram-iOS Implementation Handoff
 
-- **Status:** Commit A implemented and focused tests passing; Commit B not started
+- **Status:** Commits A and B implemented and focused tests passing; Commit C not started
 - **Last updated:** 2026-07-26
 - **Repository:** `/Users/aulyanov/git/Telegram-iOS`
 - **Implementation plan:** [`genuine-tls-websocket-relay-client-plan.md`](genuine-tls-websocket-relay-client-plan.md)
@@ -20,8 +20,8 @@ The client and server documents were reconciled before implementation. Preserve 
 - WSS-only framing: padded-intermediate, canonical connection type `0xdddddddd`.
 - WSS mode keeps `_mtpSecret = nil`; the HTTP bearer token is not an MTProxy secret.
 - No redirects, permissive trust handling, transport fallback, WebSocket compression, multiplexing, stream resumption, or VoIP proxying in version 1.
-- Server maximum client binary message: 16 MiB. Client-side unread buffering must be bounded compatibly.
-- Server close semantics: normal/going-away are clean; protocol/auth/policy/size/internal codes are failures. The client adapter must still notify the MTProto delegate of disconnection at most once.
+- Server maximum client binary message: 16 MiB. Client-side unread buffering is bounded to 16 MiB.
+- Server close semantics: normal/going-away are clean; protocol/auth/policy/size/internal codes are failures. The client adapter notifies the MTProto delegate of disconnection at most once.
 
 ## 2. Coding Session 1 — Commit A: Model and Narrow Bridge
 
@@ -78,19 +78,94 @@ Files:
 - `submodules/TelegramCore/BUILD`
 - `submodules/TelegramCore/Tests/ProxyServerSettingsTests.swift`
 
-Added the focused Bazel target `//submodules/TelegramCore:TelegramCoreTests` and 10 tests covering:
+Added the focused Bazel target `//submodules/TelegramCore:TelegramCoreTests` and 10 tests covering legacy fixtures, WSS persistence/validation/bridge behavior, and token redaction.
 
-- unchanged legacy SOCKS5 fixture decoding;
-- unchanged legacy MTProxy fixture decoding;
-- unknown discriminator fallback;
-- WSS Codable round-trip and exact persisted keys;
-- dedicated bridge fields with nil legacy credentials/secret;
-- bridge equality changes for path/token;
-- description token redaction;
-- canonical credential-free WSS URL creation;
-- invalid host/port/path/token and length rejection.
+## 3. Coding Session 2 — Commit B: WSS Transport
 
-### 2.2 Verification
+### 3.1 Implemented
+
+#### Byte-stream adapter and helpers
+
+File: `submodules/TelegramCore/Sources/Network/WebSocketTcpConnectionInterface.swift`
+
+Added a `URLSessionWebSocketTask` implementation of `MTTcpConnectionInterface` with:
+
+- ephemeral URLSession configuration with URL cache, cookies, and credential storage disabled;
+- the credential-free validated `wss://host:port/path` URL;
+- `Authorization: Bearer <token>` only on the `URLRequest` upgrade headers;
+- required `telegram-mtproto-relay.v1` subprotocol and exact echo validation before connected notification;
+- normal system trust and hostname validation, with no authentication-challenge override;
+- all redirects rejected;
+- bounded 1–30 second upgrade timeout;
+- `maximumMessageSize = 16 MiB`;
+- binary messages only; text and unknown message types fail closed;
+- continuously re-armed receive calls;
+- serial internal state queue and generation guards for late completions;
+- idempotent shutdown, one disconnect notification, and no callbacks after `resetDelegate`;
+- payload-byte network usage accounting, classified via a narrowly scoped `NWPathMonitor` only as cellular versus other;
+- 64 KiB outbound binary messages, a 32 MiB queued-send bound, and exactly one WebSocket send in flight.
+
+The internal `WebSocketByteStreamBuffer` provides queued exact-length reads independent of WebSocket message boundaries. The internal `WebSocketSendQueue` preserves FIFO write order, queues before upgrade completion, chunks large writes, and starts each send only after the previous completion.
+
+#### Separate factory and temporary contexts
+
+Files:
+
+- `submodules/MtProtoKit/PublicHeaders/MtProtoKit/MTContext.h`
+- `submodules/TelegramCore/Sources/Network/Network.swift`
+- `submodules/MtProtoKit/Sources/MTProxyConnectivity.m`
+- `submodules/MtProtoKit/Sources/MTBackupAddressSignals.m`
+
+Changes:
+
+- Added nullable `makeWebSocketTcpConnectionInterface(settings, delegate, delegateQueue)` without altering the existing raw-TCP factory signature or fallback.
+- Installed the WSS factory on supported Apple OS versions independently of the Network.framework debug setting.
+- Copied the WSS factory into the saved-proxy connectivity-check and backup-address temporary contexts.
+- Existing raw TCP continues to select GCDAsyncSocket or Network.framework exactly through its prior path.
+
+#### Explicit MTTcpConnection branch
+
+File: `submodules/MtProtoKit/Sources/MTTcpConnection.m`
+
+- Dedicated relay fields select a separate `_webSocketSettings` mode; partial relay bridge data also selects WSS and fails closed in the adapter rather than being reinterpreted as SOCKS.
+- WSS preserves the configured hostname and bypasses `MTDNS`, leaving URLSession responsible for DNS, SNI, and certificate hostname validation.
+- WSS asks only the new factory for an interface and fails closed if unavailable; it never falls back to raw TCP, MTProxy, or fake TLS.
+- `_mtpSecret` is explicitly nil and `_useIntermediateFormat` is set before generating the first Obfuscated2 control header.
+- Existing Obfuscated2 code therefore writes canonical plaintext `0xdddddddd` at offsets 56–59 and derives keys without a proxy secret.
+- The WSS branch begins the existing four-byte padded-intermediate read state only after a valid WebSocket upgrade callback.
+- WSS bypasses SOCKS negotiation, synthetic ClientHello generation, fake ServerHello parsing, fake CCS, and TLS-looking record wrapping/unwrapping.
+- Legacy direct, SOCKS5, 16-byte MTProxy, `dd`, and `ee` predicates/factories remain separate.
+- Interface deinitialization now uses the protocol's `resetDelegate` method instead of reaching into a concrete socket delegate.
+
+#### Connection identity
+
+File: `submodules/TelegramCore/Sources/Network/Network.swift`
+
+`NetworkContextProxyId` now has private mode-specific equality values:
+
+- MTProxy: IP, port, secret;
+- WSS: host, port, path, token.
+
+Changing any relay endpoint or token field therefore uses the existing network-context reset path. The identity has no custom description or logging surface.
+
+#### Focused tests
+
+File: `submodules/TelegramCore/Tests/WebSocketTcpConnectionInterfaceTests.swift`
+
+Added 10 transport tests, bringing the focused target to 20 tests total. They cover:
+
+- one message satisfying multiple reads;
+- one read spanning multiple messages;
+- empty and partial input;
+- buffered data consumed by later reads without loss/reordering;
+- read and unread-buffer bounds plus reset;
+- pre-upgrade writes, FIFO order, chunking, and one send in flight;
+- queued-send bounds and reset;
+- the frozen secretless padded-intermediate `0xdddddddd`/four-byte-read contract;
+- fixed subprotocol/message-size constants and credential-free generated errors;
+- WSS identity equality and separate raw/WSS factory selectors.
+
+### 3.2 Verification
 
 Passing command on this machine:
 
@@ -106,74 +181,64 @@ python3 build-system/Make/Make.py \
 
 Result on 2026-07-26:
 
-- `TelegramCore`, `MtProtoKit`, and the test bundle compiled successfully.
-- 10 tests executed and passed on an iPhone 17 / iOS 26.3 simulator.
-- `git diff --check` passed after preserving unrelated legacy whitespace.
+- `MtProtoKit`, `TelegramCore`, and the focused test bundle compiled successfully.
+- 20 tests executed and passed on an iPhone 17 / iOS 26.3 simulator.
+- A source-invariant audit confirmed bearer-header placement, token-free URL construction, subprotocol enforcement, redirect/text rejection, absence of custom trust handling, 16 MiB limits, secretless intermediate mode, hostname preservation, fail-closed factory selection, unchanged raw factory fallback, and complete WSS identity fields.
+- `git diff --check` passed.
 
-Environment notes:
+Environment notes retained from Commit A:
 
-- The documented private signing-repository command could not run because `TELEGRAM_CODESIGNING_GIT_PASSWORD` was absent. Simulator tests succeeded with `--xcodeManagedCodesigning`; no secret was requested or stored.
-- The existing nearby `TextFormatTestRunner` uses iOS 26.5, but this machine currently provides iOS 26.3. The new focused runner therefore uses 26.3.
-- Standalone Serena/SourceKit diagnostics cannot resolve Bazel Objective-C include paths or XCTest SDK context; the authoritative Bazel compile/test passed.
-- A full Telegram app build was not run in Commit A; reserve it for the planned integration stage or run it when session budget allows.
+- Simulator tests use `--xcodeManagedCodesigning` because the private signing-repository password is unavailable; no secret was requested or stored.
+- The focused runner uses the installed iOS 26.3 runtime.
+- A full Telegram app build was not run in Commit B; the focused target compiled all changed production modules. Reserve the full app build for Commit C/integration validation.
 
-## 3. Review Notes and Intentional Boundaries
+### 3.3 Intentional boundaries and remaining runtime validation
 
-- Commit A does not instantiate `URLSessionWebSocketTask` and cannot connect to the server.
-- Commit A does not alter `MTTcpConnection`, fake TLS, SOCKS5, 16-byte MTProxy, `dd`, or `ee` transport behavior.
-- Commit A does not add UI, custom links, QR support, clipboard import, or localization.
-- The new enum case will require exhaustive-switch updates in later modules. Keep broad UI/link fallout in Commit C unless a production compile requires a minimal non-UI handling branch earlier.
-- The bearer token necessarily exists in persisted settings and bridge memory, but new descriptions/tests avoid logging it.
-- No real endpoint, bearer token, capture, or private deployment detail was committed.
+- No UI, custom links, QR/clipboard handling, VoIP behavior changes, or localization were added.
+- No live relay endpoint or server fixture was available in this session, so genuine upgrade, certificate failure, close-code propagation, and end-to-end Telegram traffic remain physical/integration tests.
+- The adapter counts WebSocket payload bytes for usage accounting; it intentionally does not estimate HTTP/WebSocket/TLS overhead.
+- Outbound payloads are chunked to 64 KiB even though the accepted inbound/client-message safety limit is 16 MiB, reducing server buffering while preserving stream semantics.
+- URLSession ordinary trust handling is deliberately untouched.
+- No endpoint, token, traffic capture, or private deployment detail was committed.
 
-## 4. Next Coding Session — Commit B Resume Point
+## 4. Next Coding Session — Commit C Resume Point
 
-Start a new session and make exactly one implementation commit for the WSS transport. Before editing, read this handoff, the client plan, and the server contract, then re-run Semble/Serena discovery because upstream files may move.
+Start a new session and make exactly one implementation commit for the explicit HTTPS Relay UI and custom links. Re-read this handoff, the client plan, and server contract, then re-run Semble/Serena discovery because exhaustive switches and URL flows may move.
 
-### 4.1 First inspection targets
+### 4.1 Planned Commit C work
 
-1. `submodules/MtProtoKit/PublicHeaders/MtProtoKit/MTTcpConnectionInterface.h`
-2. `submodules/MtProtoKit/PublicHeaders/MtProtoKit/MTContext.h`
-3. `submodules/MtProtoKit/Sources/MTTcpConnection.m`
-4. `submodules/MtProtoKit/Sources/MTProxyConnectivity.m`
-5. `submodules/MtProtoKit/Sources/MTBackupAddressSignals.m`
-6. `submodules/TelegramCore/Sources/Network/Network.swift`
-7. Existing raw interfaces:
-   - `submodules/TelegramCore/Sources/Network/MTGcdAsyncSocketTcpConnectionInterface.swift`
-   - `submodules/TelegramCore/Sources/Network/NetworkFrameworkTcpConnectionInterface.swift`
+1. Add **HTTPS Relay** as the third proxy editor mode in `ProxyServerSettingsController.swift`.
+2. Reuse host/port fields, add masked path/access-token fields, and gate save/share through `ProxyServerWebSocketRelayValidation`.
+3. Update proxy list/data settings/preview/peer-info type switches and keep “Use for Calls” limited to SOCKS5.
+4. Ensure TelegramVoip does not route calls through WSS in version 1.
+5. Add the fork-specific sensitive link codec:
+   `tg://wssproxy?server=...&port=...&path=...&token=...`.
+6. Extend the narrow existing `ResolvedUrl.proxy` payload rather than creating a broad new resolved-URL case where practical.
+7. Keep stock `tg://proxy`, `tg://socks`, and `https://t.me/...` behavior unchanged; WSS sharing emits only `tg://wssproxy`.
+8. Wire clipboard import, QR parsing/generation, previews, and minimal localization.
+9. Add focused URL-codec/model/UI-adjacent tests, run the full focused suite, then run a full Telegram app build if signing/environment permits.
+10. Review the diff, update this handoff, and create exactly one Commit C commit.
 
-### 4.2 Commit B implementation order
+### 4.2 First inspection targets
 
-1. Add small internal, testable FIFO helpers for exact-length receive buffering and one-at-a-time send serialization.
-2. Add `WebSocketTcpConnectionInterface.swift`, conforming to `MTTcpConnectionInterface`.
-3. Use ephemeral URLSession settings, disabled cookies/cache/credential storage where configurable, the validated token-free URL, bearer request header, required subprotocol, bounded upgrade timeout, and 16 MiB `maximumMessageSize`.
-4. Reject all redirects and fail an open callback unless `task.protocol == "telegram-mtproto-relay.v1"`.
-5. Accept binary messages only; continuously re-arm receive; bound unread bytes; preserve exact stream ordering across message boundaries.
-6. Make cancellation idempotent, ignore late completions, suppress callbacks after delegate reset, and notify disconnection once.
-7. Add the separate optional WSS factory to `MTContext`; do not alter the raw TCP factory signature or selection behavior.
-8. Install the factory in `Network.swift` and copy it into every temporary `MTContext` used by connectivity checks/backup-address flows.
-9. Add an explicit WSS branch in `MTTcpConnection`:
-   - preserve hostname for URLSession DNS/SNI/certificate validation;
-   - keep `_mtpSecret = nil`;
-   - set `_useIntermediateFormat = true` only for WSS before generating the Obfuscated2 header;
-   - bypass SOCKS negotiation and every fake-TLS generation/parsing/wrapping path;
-   - fail closed when the WSS factory is unavailable.
-10. Extend `NetworkContextProxyId` with host, port, path, and token without adding credential descriptions/logging.
-11. Add adapter tests to the focused TelegramCore test target, run them, inspect the full diff, update this handoff, and create exactly one Commit B commit.
+- `submodules/SettingsUI/Sources/Data and Storage/ProxyServerSettingsController.swift`
+- `submodules/SettingsUI/Sources/Data and Storage/ProxyListSettingsController.swift`
+- `submodules/SettingsUI/Sources/Data and Storage/DataAndStorageSettingsController.swift`
+- `submodules/TelegramUI/Components/ProxyServerPreviewScreen/Sources/ProxyServerPreviewScreen.swift`
+- `submodules/TelegramUI/Components/PeerInfo/PeerInfoScreen/Sources/PeerInfoSettingsItems.swift`
+- `submodules/TelegramVoip/Sources/OngoingCallContext.swift`
+- `submodules/AccountContext/Sources/AccountContext.swift`
+- `submodules/UrlHandling/Sources/UrlHandling.swift`
+- `submodules/TelegramUI/Sources/OpenResolvedUrl.swift`
+- `submodules/TelegramUI/Sources/OpenUrl.swift`
+- `submodules/TelegramUI/Sources/ChatControllerOpenAttachmentMenu.swift`
+- `submodules/QrCodeUI/Sources/QrCodeScreen.swift`
 
-### 4.3 Transport tests required before Commit B closes
+### 4.3 Commit C success criteria
 
-- One WebSocket message satisfies multiple exact-length reads.
-- One exact-length read spans multiple WebSocket messages.
-- Empty/partial input does not loop or lose bytes.
-- Writes stay FIFO with only one send in flight.
-- Text messages and oversized input fail closed.
-- Cancel/disconnect is idempotent and reports at most once.
-- No callback occurs after delegate reset.
-- Generated errors/descriptions do not contain the bearer token.
-- WSS mode generates secretless padded-intermediate Obfuscated2 (`0xdddddddd`) and never enters fake TLS.
-- Existing raw TCP factory behavior remains unchanged.
-
-## 5. Later Session — Commit C
-
-After Commit B is independently reviewed and committed, use a separate session/commit for the explicit HTTPS Relay editor, type labels/previews, VoIP exclusion, custom `tg://wssproxy` codec, QR/clipboard flow, localization, and URL tests described in the client plan.
+- Existing SOCKS5/MTProxy UI and stock proxy links remain behaviorally unchanged.
+- WSS relay editing, validation, display, sharing, QR, clipboard, and parsing are explicit and fail closed.
+- Tokens are masked/redacted in ordinary UI/logs but included in configuration links/QR only where required.
+- Actual `wss://` network URLs never contain tokens.
+- WSS remains excluded from call proxying.
+- Focused tests and full build (when environment permits) pass before the single Commit C commit.
