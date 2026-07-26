@@ -301,6 +301,17 @@ static NSData *base64_decode(NSString *str) {
     return self;
 }
 
+- (instancetype)initWithIp:(NSString *)ip port:(uint16_t)port webSocketPath:(NSString *)webSocketPath webSocketToken:(NSString *)webSocketToken {
+    self = [super init];
+    if (self != nil) {
+        _ip = ip;
+        _port = port;
+        _webSocketPath = webSocketPath;
+        _webSocketToken = webSocketToken;
+    }
+    return self;
+}
+
 - (BOOL)isEqual:(id)object {
     if (![object isKindOfClass:[MTSocksProxySettings class]]) {
         return false;
@@ -321,10 +332,19 @@ static NSData *base64_decode(NSString *str) {
     if ((other->_secret != nil) != (_secret != nil) || (_secret != nil && ![_secret isEqual:other->_secret])) {
         return false;
     }
+    if ((other->_webSocketPath != nil) != (_webSocketPath != nil) || (_webSocketPath != nil && ![_webSocketPath isEqual:other->_webSocketPath])) {
+        return false;
+    }
+    if ((other->_webSocketToken != nil) != (_webSocketToken != nil) || (_webSocketToken != nil && ![_webSocketToken isEqual:other->_webSocketToken])) {
+        return false;
+    }
     return true;
 }
 
 - (NSString *)description {
+    if (_webSocketPath != nil || _webSocketToken != nil) {
+        return [NSString stringWithFormat:@"%@:%d+websocket(%@)+<redacted>", _ip, (int)_port, _webSocketPath];
+    }
     return [NSString stringWithFormat:@"%@:%d+%@+%@+%@", _ip, (int)_port, _username, _password, [_secret description]];
 }
 
