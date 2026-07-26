@@ -47,6 +47,39 @@ final class ProxyServerSettingsTests: XCTestCase {
         XCTAssertEqual(connection["webSocketToken"] as? String, self.token())
     }
     
+    func testWebSocketRelayConfigurationLinkRoundTrip() throws {
+        let settings = ProxyServerSettings(
+            host: "relay.example.com",
+            port: 443,
+            connection: .webSocketRelay(path: "/relay/v1/0123456789abcdef", token: self.token())
+        )
+        let link = try XCTUnwrap(ProxyServerWebSocketRelayConfigurationLink.string(for: settings))
+        XCTAssertTrue(link.hasPrefix("tg://wssproxy?"))
+        XCTAssertEqual(ProxyServerWebSocketRelayConfigurationLink.parse(link), settings)
+        XCTAssertNil(ProxyServerWebSocketRelayValidation.validatedURL(host: settings.host, port: settings.port, path: "/relay/v1/0123456789abcdef", token: self.token())?.query)
+    }
+
+    func testWebSocketRelayConfigurationLinkRejectsMalformedOrMixedParameters() throws {
+        let token = self.token()
+        let valid = "tg://wssproxy?server=relay.example.com&port=443&path=%2Frelay%2Fv1%2Fa&token=\(token)"
+        XCTAssertNotNil(ProxyServerWebSocketRelayConfigurationLink.parse(valid))
+        XCTAssertNil(ProxyServerWebSocketRelayConfigurationLink.parse("https://wssproxy?server=relay.example.com&port=443&path=%2Frelay%2Fv1%2Fa&token=\(token)"))
+        XCTAssertNil(ProxyServerWebSocketRelayConfigurationLink.parse("tg://proxy?server=relay.example.com&port=443&path=%2Frelay%2Fv1%2Fa&token=\(token)"))
+        XCTAssertNil(ProxyServerWebSocketRelayConfigurationLink.parse("tg://wssproxy?server=relay.example.com&port=443&path=%2Frelay%2Fv1%2Fa"))
+        XCTAssertNil(ProxyServerWebSocketRelayConfigurationLink.parse(valid + "&server=other.example.com"))
+        XCTAssertNil(ProxyServerWebSocketRelayConfigurationLink.parse(valid + "&secret=001122"))
+        XCTAssertNil(ProxyServerWebSocketRelayConfigurationLink.parse(valid + "&username=user"))
+        XCTAssertNil(ProxyServerWebSocketRelayConfigurationLink.parse(valid.replacingOccurrences(of: "port=443", with: "port=0443")))
+        XCTAssertNil(ProxyServerWebSocketRelayConfigurationLink.parse(valid.replacingOccurrences(of: "%2Frelay%2Fv1%2Fa", with: "%2Frelay%2F..%2Fa")))
+    }
+
+    func testWebSocketRelayConfigurationLinkSerializerRejectsOtherProxyModes() {
+        let socks = ProxyServerSettings(host: "relay.example.com", port: 443, connection: .socks5(username: nil, password: nil))
+        let mtp = ProxyServerSettings(host: "relay.example.com", port: 443, connection: .mtp(secret: Data(repeating: 1, count: 16)))
+        XCTAssertNil(ProxyServerWebSocketRelayConfigurationLink.string(for: socks))
+        XCTAssertNil(ProxyServerWebSocketRelayConfigurationLink.string(for: mtp))
+    }
+
     func testWebSocketRelayBridgeUsesDedicatedFieldsAndRedactsToken() {
         let token = self.token()
         let settings = ProxyServerSettings(

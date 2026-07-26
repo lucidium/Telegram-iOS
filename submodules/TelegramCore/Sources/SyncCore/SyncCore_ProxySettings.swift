@@ -135,6 +135,45 @@ public enum ProxyServerWebSocketRelayValidation {
     }
 }
 
+public enum ProxyServerWebSocketRelayConfigurationLink {
+    public static let scheme = "tg"
+    public static let host = "wssproxy"
+
+    public static func string(for settings: ProxyServerSettings) -> String? {
+        guard case let .webSocketRelay(path, token) = settings.connection, ProxyServerWebSocketRelayValidation.isValid(host: settings.host, port: settings.port, path: path, token: token) else {
+            return nil
+        }
+        var components = URLComponents()
+        components.scheme = self.scheme
+        components.host = self.host
+        components.queryItems = [
+            URLQueryItem(name: "server", value: settings.host),
+            URLQueryItem(name: "port", value: "\(settings.port)"),
+            URLQueryItem(name: "path", value: path),
+            URLQueryItem(name: "token", value: token)
+        ]
+        return components.string
+    }
+
+    public static func parse(_ value: String) -> ProxyServerSettings? {
+        guard let components = URLComponents(string: value), components.scheme?.lowercased() == self.scheme, components.host?.lowercased() == self.host, components.user == nil, components.password == nil, components.path.isEmpty, components.fragment == nil, let queryItems = components.queryItems, queryItems.count == 4 else {
+            return nil
+        }
+        var values: [String: String] = [:]
+        let expectedNames: Set<String> = ["server", "port", "path", "token"]
+        for item in queryItems {
+            guard expectedNames.contains(item.name), values[item.name] == nil, let value = item.value else {
+                return nil
+            }
+            values[item.name] = value
+        }
+        guard values.count == expectedNames.count, let server = values["server"], let portString = values["port"], let port = Int32(portString), String(port) == portString, let path = values["path"], let token = values["token"], ProxyServerWebSocketRelayValidation.isValid(host: server, port: port, path: path, token: token) else {
+            return nil
+        }
+        return ProxyServerSettings(host: server, port: port, connection: .webSocketRelay(path: path, token: token))
+    }
+}
+
 public struct ProxyServerSettings: Codable, Equatable, Hashable {
     public let host: String
     public let port: Int32

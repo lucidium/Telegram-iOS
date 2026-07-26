@@ -287,6 +287,8 @@ private func proxySettingsControllerEntries(theme: PresentationTheme, strings: P
                     text = strings.ChatSettings_ConnectionType_UseSocks5
                 case .mtp:
                     text = strings.SocksProxySetup_ProxyTelegram
+                case .webSocketRelay:
+                    text = strings.SocksProxySetup_ProxyHttpsRelay
             }
             switch status {
                 case .notAvailable:
@@ -551,6 +553,8 @@ public func proxySettingsController(accountManager: AccountManager<TelegramAccou
                         if let username = username, let password = password {
                             string += "&user=\((username as NSString).addingPercentEncoding(withAllowedCharacters: CharacterSet.urlQueryValueAllowed) ?? "")&pass=\((password as NSString).addingPercentEncoding(withAllowedCharacters: CharacterSet.urlQueryValueAllowed) ?? "")"
                         }
+                    case .webSocketRelay:
+                        string = ProxyServerWebSocketRelayConfigurationLink.string(for: server) ?? ""
                     }
                     
                     result += string

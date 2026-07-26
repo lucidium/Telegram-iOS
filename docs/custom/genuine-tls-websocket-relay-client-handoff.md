@@ -1,6 +1,6 @@
 # Genuine TLS/WebSocket Relay — Telegram-iOS Implementation Handoff
 
-- **Status:** Commits A and B implemented and focused tests passing; Commit C not started
+- **Status:** Commits A, B, and C implemented; focused tests and the iOS simulator app build pass
 - **Last updated:** 2026-07-26
 - **Repository:** `/Users/aulyanov/git/Telegram-iOS`
 - **Implementation plan:** [`genuine-tls-websocket-relay-client-plan.md`](genuine-tls-websocket-relay-client-plan.md)
@@ -201,25 +201,13 @@ Environment notes retained from Commit A:
 - URLSession ordinary trust handling is deliberately untouched.
 - No endpoint, token, traffic capture, or private deployment detail was committed.
 
-## 4. Next Coding Session — Commit C Resume Point
+## 4. Coding Session 3 — Commit C: Explicit UI and Custom Links
 
-Start a new session and make exactly one implementation commit for the explicit HTTPS Relay UI and custom links. Re-read this handoff, the client plan, and server contract, then re-run Semble/Serena discovery because exhaustive switches and URL flows may move.
+### 4.1 Implemented
 
-### 4.1 Planned Commit C work
+#### Explicit HTTPS Relay editor and display
 
-1. Add **HTTPS Relay** as the third proxy editor mode in `ProxyServerSettingsController.swift`.
-2. Reuse host/port fields, add masked path/access-token fields, and gate save/share through `ProxyServerWebSocketRelayValidation`.
-3. Update proxy list/data settings/preview/peer-info type switches and keep “Use for Calls” limited to SOCKS5.
-4. Ensure TelegramVoip does not route calls through WSS in version 1.
-5. Add the fork-specific sensitive link codec:
-   `tg://wssproxy?server=...&port=...&path=...&token=...`.
-6. Extend the narrow existing `ResolvedUrl.proxy` payload rather than creating a broad new resolved-URL case where practical.
-7. Keep stock `tg://proxy`, `tg://socks`, and `https://t.me/...` behavior unchanged; WSS sharing emits only `tg://wssproxy`.
-8. Wire clipboard import, QR parsing/generation, previews, and minimal localization.
-9. Add focused URL-codec/model/UI-adjacent tests, run the full focused suite, then run a full Telegram app build if signing/environment permits.
-10. Review the diff, update this handoff, and create exactly one Commit C commit.
-
-### 4.2 First inspection targets
+Files:
 
 - `submodules/SettingsUI/Sources/Data and Storage/ProxyServerSettingsController.swift`
 - `submodules/SettingsUI/Sources/Data and Storage/ProxyListSettingsController.swift`
@@ -227,6 +215,22 @@ Start a new session and make exactly one implementation commit for the explicit 
 - `submodules/TelegramUI/Components/ProxyServerPreviewScreen/Sources/ProxyServerPreviewScreen.swift`
 - `submodules/TelegramUI/Components/PeerInfo/PeerInfoScreen/Sources/PeerInfoSettingsItems.swift`
 - `submodules/TelegramVoip/Sources/OngoingCallContext.swift`
+
+Changes:
+
+- Added **HTTPS Relay** as a third explicit editor mode next to SOCKS5 and MTProto.
+- Reused the server and port fields and added path plus masked access-token inputs.
+- Save/share remains disabled until `ProxyServerWebSocketRelayValidation` accepts all four relay fields.
+- Existing relay values populate the editor, and valid relay links on the clipboard populate all fields.
+- Proxy list, data settings, peer-info settings, and preview screens label the type as HTTPS Relay.
+- The preview shows host, port, path, and a fixed bullet placeholder for the token; the credential is never displayed.
+- “Use for Calls” remains SOCKS5-only. `OngoingCallContext` handles WSS like MTProxy and creates no VoIP proxy.
+
+#### Sensitive custom configuration links
+
+Files:
+
+- `submodules/TelegramCore/Sources/SyncCore/SyncCore_ProxySettings.swift`
 - `submodules/AccountContext/Sources/AccountContext.swift`
 - `submodules/UrlHandling/Sources/UrlHandling.swift`
 - `submodules/TelegramUI/Sources/OpenResolvedUrl.swift`
@@ -234,11 +238,104 @@ Start a new session and make exactly one implementation commit for the explicit 
 - `submodules/TelegramUI/Sources/ChatControllerOpenAttachmentMenu.swift`
 - `submodules/QrCodeUI/Sources/QrCodeScreen.swift`
 
-### 4.3 Commit C success criteria
+Added the frozen fork-specific codec:
 
-- Existing SOCKS5/MTProxy UI and stock proxy links remain behaviorally unchanged.
-- WSS relay editing, validation, display, sharing, QR, clipboard, and parsing are explicit and fail closed.
-- Tokens are masked/redacted in ordinary UI/logs but included in configuration links/QR only where required.
-- Actual `wss://` network URLs never contain tokens.
-- WSS remains excluded from call proxying.
-- Focused tests and full build (when environment permits) pass before the single Commit C commit.
+```text
+tg://wssproxy?server=relay.example.com&port=443&path=%2Frelay%2Fv1%2F...&token=<base64url>
+```
+
+Behavior:
+
+- Serialization is available only for a valid `.webSocketRelay` setting.
+- Parsing requires the exact `tg` scheme, `wssproxy` host, and exactly one each of `server`, `port`, `path`, and `token`.
+- Missing, duplicate, unknown, mixed-mode, noncanonical-port, or centrally invalid values fail closed.
+- Stock `tg://proxy`, `tg://socks`, and `https://t.me/...` parsing remains routed through the existing internal parser.
+- `ResolvedUrl.proxy` now carries a `ProxyServerSettings`, allowing the same narrow preview flow to represent all three proxy modes without a new top-level resolved URL case.
+- Direct custom-link opening, app/auth URL handling, clipboard import, both in-app QR recognition paths, and QR generation use the same centralized codec.
+- WSS sharing emits only `tg://wssproxy`; the QR selector is intentionally hidden because there is no compatible `t.me` representation.
+- Configuration links and QR codes contain the token by necessity. The actual `wss://` transport URL remains token-free and unchanged from Commit B.
+
+#### Minimal localization and tests
+
+Files:
+
+- `Telegram/Telegram-iOS/en.lproj/Localizable.strings`
+- `submodules/TelegramCore/Tests/ProxyServerSettingsTests.swift`
+
+Added only:
+
+- HTTPS Relay;
+- Path;
+- Access Token.
+
+The focused test target now contains 23 tests. The three new tests cover valid encoded-path round-trip, strict rejection of malformed/mixed links, mode-specific serialization, and preservation of a token-free network URL.
+
+### 4.2 Verification
+
+Passing focused command on 2026-07-26:
+
+```sh
+python3 build-system/Make/Make.py \
+  --overrideXcodeVersion \
+  --cacheDir ~/telegram-bazel-cache \
+  test \
+  --configurationPath build-system/appstore-configuration.json \
+  --xcodeManagedCodesigning \
+  --target //submodules/TelegramCore:TelegramCoreTests
+```
+
+Result:
+
+- 23 focused tests executed and passed on the iOS simulator runner.
+- The target compiled `MtProtoKit`, `TelegramCore`, the transport adapter, and all model/link tests.
+
+The normal full app build could not analyze with locally unavailable extension provisioning profiles. The same iOS app graph was therefore built with only extension/provisioning packaging disabled:
+
+```sh
+build-input/bazel-8.4.2-darwin-arm64 build //Telegram:Telegram \
+  --keep_going --announce_rc \
+  --features=swift.use_global_module_cache --verbose_failures --remote_cache_async \
+  --define=buildNumber=1 --disk_cache="$HOME/telegram-bazel-cache" \
+  -c dbg --ios_multi_cpus=sim_arm64 --watchos_cpus=arm64_32 \
+  --//Telegram:disableExtensions --//Telegram:disableProvisioningProfiles \
+  '--@build_bazel_rules_swift//swift:copt="-j"' \
+  '--@build_bazel_rules_swift//swift:copt="6"'
+```
+
+Result:
+
+- The complete iOS simulator app dependency graph compiled successfully.
+- `bazel-bin/Telegram/Telegram.ipa` was produced.
+- Generated PresentationStrings compiled from the updated source localization.
+- The final cached build completed in 51.729 seconds after one typo in a localization accessor was corrected.
+- `git diff --check` passed.
+
+### 4.3 Security and regression audit
+
+Confirmed:
+
+- The token input is masked.
+- Ordinary list/data/peer-info UI never shows the token.
+- Preview displays only bullets and path.
+- No token was added to logs, descriptions, or transport errors.
+- The custom configuration link is the only new URL containing the token.
+- The actual WSS network URL construction is still centralized in `ProxyServerWebSocketRelayValidation.validatedURL` and remains query/credential-free.
+- Existing SOCKS5 and MTProxy URL parsing still use the prior `ParsedInternalUrl` logic and preserve their existing mode mapping.
+- WSS remains excluded from call routing.
+- No transport internals, trust behavior, fake-TLS behavior, or fallback policy changed in Commit C.
+
+## 5. Remaining Work — Integration and Physical Validation
+
+All three planned client implementation commits are complete. Continue in a new session only for server-backed integration and physical-device validation; do not fold that work into Commit C.
+
+Remaining checks:
+
+1. Deploy or start the companion server fixture using the frozen contract.
+2. Validate a genuine WebSocket upgrade with the required subprotocol and bearer header.
+3. Confirm the first upstream stream bytes are the secretless `0xdddddddd` Obfuscated2 header.
+4. Exercise invalid token, path, certificate, hostname, subprotocol, redirect, text-frame, oversize, and close-code behavior.
+5. Validate clipboard and QR flows interactively on simulator/device with non-production credentials.
+6. Test unrestricted and restricted Wi-Fi/cellular paths, background/foreground transitions, reconnects, and large transfers on a physical iPhone.
+7. Capture only redacted evidence; never commit deployment endpoints, tokens, or traffic captures.
+
+When resuming, re-read this handoff and the server handoff, verify the three implementation commits are present, and keep integration evidence separate from source commits.

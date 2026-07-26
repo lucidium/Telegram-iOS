@@ -322,6 +322,28 @@ private final class ProxyServerPreviewSheetContent: CombinedComponent {
                         MultilineTextComponent(text: .plain(NSAttributedString(string: "•••••", font: tableFont, textColor: tableTextColor)))
                     )
                 ))
+            case let .webSocketRelay(path, _):
+                tableItems.append(.init(
+                    id: "type",
+                    title: strings.SocksProxySetup_ProxyType,
+                    component: AnyComponent(
+                        MultilineTextComponent(text: .plain(NSAttributedString(string: strings.SocksProxySetup_ProxyHttpsRelay, font: tableFont, textColor: tableTextColor)))
+                    )
+                ))
+                tableItems.append(.init(
+                    id: "path",
+                    title: strings.SocksProxySetup_Path,
+                    component: AnyComponent(
+                        MultilineTextComponent(text: .plain(NSAttributedString(string: path, font: tableFont, textColor: tableTextColor)))
+                    )
+                ))
+                tableItems.append(.init(
+                    id: "token",
+                    title: strings.SocksProxySetup_AccessToken,
+                    component: AnyComponent(
+                        MultilineTextComponent(text: .plain(NSAttributedString(string: "••••••••", font: tableFont, textColor: tableTextColor)))
+                    )
+                ))
             }
             
             var statusText = strings.SocksProxySetup_CheckStatus
