@@ -716,6 +716,86 @@ NSData *MTAesCtrDecrypt(NSData *data, NSData *key, NSData *iv) {
     return outData;
 }
 
+@interface MTObfuscated2ConnectionState ()
+
+@property (nonatomic, strong, readwrite) NSData *wireHeader;
+@property (nonatomic, strong, readwrite) MTAesCtr *outgoingAesCtr;
+@property (nonatomic, strong, readwrite) MTAesCtr *incomingAesCtr;
+@property (nonatomic, readwrite) bool requiresSecretRetry;
+
+@end
+
+@implementation MTObfuscated2ConnectionState
+@end
+
+MTObfuscated2ConnectionState *MTMakeObfuscated2ConnectionState(NSData *randomBytes, bool useIntermediateFormat, int16_t datacenterTag, NSData *secret) {
+    if (randomBytes.length != 64) {
+        return nil;
+    }
+    if (secret.length != 0 && secret.length != 16 && secret.length != 17) {
+        return nil;
+    }
+
+    uint8_t controlBytes[64];
+    memcpy(controlBytes, randomBytes.bytes, sizeof(controlBytes));
+
+    int32_t controlVersion = useIntermediateFormat ? 0xdddddddd : 0xefefefef;
+    memcpy(controlBytes + 56, &controlVersion, 4);
+    memcpy(controlBytes + 60, &datacenterTag, 2);
+
+    uint8_t controlBytesReversed[64];
+    for (int i = 0; i < 64; i++) {
+        controlBytesReversed[i] = controlBytes[63 - i];
+    }
+
+    NSData *aesKey = [[NSData alloc] initWithBytes:controlBytes + 8 length:32];
+    NSData *aesIv = [[NSData alloc] initWithBytes:controlBytes + 40 length:16];
+    NSData *incomingAesKey = [[NSData alloc] initWithBytes:controlBytesReversed + 8 length:32];
+    NSData *incomingAesIv = [[NSData alloc] initWithBytes:controlBytesReversed + 40 length:16];
+
+    if (secret.length == 16 || secret.length == 17) {
+        NSData *effectiveSecret = secret.length == 16 ? secret : [secret subdataWithRange:NSMakeRange(1, 16)];
+
+        NSMutableData *aesKeyData = [[NSMutableData alloc] initWithData:aesKey];
+        [aesKeyData appendData:effectiveSecret];
+        aesKey = MTSha256(aesKeyData);
+
+        NSMutableData *incomingAesKeyData = [[NSMutableData alloc] initWithData:incomingAesKey];
+        [incomingAesKeyData appendData:effectiveSecret];
+        incomingAesKey = MTSha256(incomingAesKeyData);
+    }
+
+    MTAesCtr *outgoingAesCtr = [[MTAesCtr alloc] initWithKey:aesKey.bytes keyLength:32 iv:aesIv.bytes decrypt:false];
+    MTAesCtr *incomingAesCtr = [[MTAesCtr alloc] initWithKey:incomingAesKey.bytes keyLength:32 iv:incomingAesIv.bytes decrypt:false];
+
+    uint8_t encryptedControlBytes[64];
+    [outgoingAesCtr encryptIn:controlBytes out:encryptedControlBytes len:sizeof(encryptedControlBytes)];
+
+    bool requiresSecretRetry = false;
+    if (secret.length != 0) {
+        uint32_t intHeader = 0;
+        memcpy(&intHeader, encryptedControlBytes, 4);
+        requiresSecretRetry = intHeader == 0x44414548 ||
+            intHeader == 0x54534f50 ||
+            intHeader == 0x20544547 ||
+            intHeader == 0x4954504f ||
+            intHeader == 0xdddddddd ||
+            intHeader == 0xeeeeeeee ||
+            intHeader == 0x02010316;
+    }
+
+    NSMutableData *wireHeader = [[NSMutableData alloc] initWithLength:64];
+    memcpy(wireHeader.mutableBytes, controlBytes, 56);
+    memcpy(wireHeader.mutableBytes + 56, encryptedControlBytes + 56, 8);
+
+    MTObfuscated2ConnectionState *result = [[MTObfuscated2ConnectionState alloc] init];
+    result.wireHeader = wireHeader;
+    result.outgoingAesCtr = outgoingAesCtr;
+    result.incomingAesCtr = incomingAesCtr;
+    result.requiresSecretRetry = requiresSecretRetry;
+    return result;
+}
+
 uint64_t MTRsaFingerprint(id<EncryptionProvider> provider, NSString *key) {
     id<MTBignumContext> context = [provider createBignumContext];
     id<MTRsaPublicKey> rsaKey = [provider parseRSAPublicKey:key];

@@ -5,6 +5,7 @@
 
 void NetworkRegisterLoggingFunction();
 void NetworkSetLoggingEnabled(bool);
+void NetworkLog(NSString * _Nonnull domain, NSString * _Nonnull message);
 
 void setBridgingTraceFunction(void (*)(NSString *, NSString *));
 void setBridgingShortTraceFunction(void (*)(NSString *, NSString *));

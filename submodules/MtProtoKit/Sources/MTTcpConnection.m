@@ -848,6 +848,7 @@ struct ctr_state {
     int32_t _mtpPort;
     MTProxySecret *_mtpSecret;
     MTSocksProxySettings *_webSocketSettings;
+    bool _loggedWebSocketFirstWriteDiagnostic;
     NSData *_helloRandom;
     NSData *_currentHelloResponse;
     
@@ -1250,29 +1251,7 @@ struct ctr_state {
                         for (int retryCount = 0; retryCount < 10; retryCount++) {
                             uint8_t controlBytes[64];
                             arc4random_buf(controlBytes, 64);
-                            
-                            int32_t controlVersion;
-                            if (_useIntermediateFormat) {
-                                controlVersion = 0xdddddddd;
-                            } else {
-                                controlVersion = 0xefefefef;
-                            }
-                            
-                            memcpy(controlBytes + 56, &controlVersion, 4);
-                            int16_t datacenterTag = (int16_t)_datacenterTag;
-                            memcpy(controlBytes + 60, &datacenterTag, 2);
-                            
-                            uint8_t controlBytesReversed[64];
-                            for (int i = 0; i < 64; i++) {
-                                controlBytesReversed[i] = controlBytes[64 - 1 - i];
-                            }
-                            
-                            NSData *aesKey = [[NSData alloc] initWithBytes:controlBytes + 8 length:32];
-                            NSData *aesIv = [[NSData alloc] initWithBytes:controlBytes + 8 + 32 length:16];
-                            
-                            NSData *incomingAesKey = [[NSData alloc] initWithBytes:controlBytesReversed + 8 length:32];
-                            NSData *incomingAesIv = [[NSData alloc] initWithBytes:controlBytesReversed + 8 + 32 length:16];
-                            
+
                             NSData *effectiveSecret = nil;
                             if (_mtpSecret != nil) {
                                 effectiveSecret = _mtpSecret.secret;
@@ -1280,64 +1259,43 @@ struct ctr_state {
                             if (effectiveSecret.length != 16 && effectiveSecret.length != 17) {
                                 effectiveSecret = nil;
                             }
-                            
-                            if (effectiveSecret) {
-                                NSMutableData *aesKeyData = [[NSMutableData alloc] init];
-                                [aesKeyData appendData:aesKey];
-                                if (effectiveSecret.length == 16) {
-                                    [aesKeyData appendData:effectiveSecret];
-                                } else if (effectiveSecret.length == 17) {
-                                    [aesKeyData appendData:[effectiveSecret subdataWithRange:NSMakeRange(1, effectiveSecret.length - 1)]];
-                                }
-                                NSData *aesKeyHash = MTSha256(aesKeyData);
-                                aesKey = [aesKeyHash subdataWithRange:NSMakeRange(0, 32)];
-                                
-                                NSMutableData *incomingAesKeyData = [[NSMutableData alloc] init];
-                                [incomingAesKeyData appendData:incomingAesKey];
-                                if (effectiveSecret.length == 16) {
-                                    [incomingAesKeyData appendData:effectiveSecret];
-                                } else if (effectiveSecret.length == 17) {
-                                    [incomingAesKeyData appendData:[effectiveSecret subdataWithRange:NSMakeRange(1, effectiveSecret.length - 1)]];
-                                }
-                                NSData *incomingAesKeyHash = MTSha256(incomingAesKeyData);
-                                incomingAesKey = [incomingAesKeyHash subdataWithRange:NSMakeRange(0, 32)];
+
+                            MTObfuscated2ConnectionState *connectionState = MTMakeObfuscated2ConnectionState(
+                                [[NSData alloc] initWithBytes:controlBytes length:sizeof(controlBytes)],
+                                _useIntermediateFormat,
+                                (int16_t)_datacenterTag,
+                                effectiveSecret
+                            );
+                            if (connectionState == nil) {
+                                assert(false);
+                                continue;
                             }
-                            
-                            MTAesCtr *outgoingAesCtr = [[MTAesCtr alloc] initWithKey:aesKey.bytes keyLength:32 iv:aesIv.bytes decrypt:false];
-                            MTAesCtr *incomingAesCtr = [[MTAesCtr alloc] initWithKey:incomingAesKey.bytes keyLength:32 iv:incomingAesIv.bytes decrypt:false];
-                            
-                            uint8_t encryptedControlBytes[64];
-                            [outgoingAesCtr encryptIn:controlBytes out:encryptedControlBytes len:64];
-                            
-                            uint32_t intHeader = 0;
-                            memcpy(&intHeader, encryptedControlBytes, 4);
-                            
-                            if (effectiveSecret) {
+                            if (connectionState.requiresSecretRetry) {
                                 if (retryCount == 9) {
                                     assert(false);
                                 } else {
-                                    if (intHeader == 0x44414548 ||
-                                        intHeader == 0x54534f50 ||
-                                        intHeader == 0x20544547 ||
-                                        intHeader == 0x4954504f ||
-                                        intHeader == 0xdddddddd ||
-                                        intHeader == 0xeeeeeeee ||
-                                        intHeader == 0x02010316) {
-                                        continue;
-                                    }
+                                    continue;
                                 }
                             }
-                            
-                            NSMutableData *outData = [[NSMutableData alloc] initWithLength:64 + packetData.length];
-                            memcpy(outData.mutableBytes, controlBytes, 56);
-                            memcpy(outData.mutableBytes + 56, encryptedControlBytes + 56, 8);
-                            
-                            [outgoingAesCtr encryptIn:packetData.bytes out:outData.mutableBytes + 64 len:packetData.length];
-                            
-                            _incomingAesCtr = incomingAesCtr;
-                            _outgoingAesCtr = outgoingAesCtr;
+
+                            NSMutableData *outData = [[NSMutableData alloc] initWithData:connectionState.wireHeader];
+                            [outData increaseLengthBy:packetData.length];
+                            [connectionState.outgoingAesCtr encryptIn:packetData.bytes out:outData.mutableBytes + 64 len:packetData.length];
+
+                            _incomingAesCtr = connectionState.incomingAesCtr;
+                            _outgoingAesCtr = connectionState.outgoingAesCtr;
                             [completeData appendData:outData];
-                            
+
+                            if (_webSocketSettings != nil && !_loggedWebSocketFirstWriteDiagnostic && MTLogEnabled()) {
+                                _loggedWebSocketFirstWriteDiagnostic = true;
+                                uint32_t marker = 0;
+                                int16_t datacenterTag = 0;
+                                memcpy(&marker, controlBytes + 56, sizeof(marker));
+                                memcpy(&datacenterTag, controlBytes + 60, sizeof(datacenterTag));
+                                bool headerMatchesMode = marker == (_useIntermediateFormat ? 0xdddddddd : 0xefefefef) && datacenterTag == (int16_t)_datacenterTag;
+                                MTLogWithPrefix(_getLogPrefix, @"[WSS relay boundary first-write headerBytes=64 writeBytes=%lu intermediate=%d secretPresent=%d marker=%08" PRIx32 " dc=%d match=%d]", (unsigned long)outData.length, _useIntermediateFormat ? 1 : 0, effectiveSecret != nil ? 1 : 0, marker, (int)datacenterTag, headerMatchesMode ? 1 : 0);
+                            }
+
                             break;
                         }
                     } else {

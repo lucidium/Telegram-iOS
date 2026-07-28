@@ -2,6 +2,7 @@ import Foundation
 import Network
 
 import MtProtoKit
+import NetworkLogging
 
 enum WebSocketByteStreamBufferError: Error {
     case invalidReadLength
@@ -89,6 +90,33 @@ enum WebSocketRelayTransportContract {
     static let usesMtProxySecret = false
     static let connectionType: UInt32 = 0xdddddddd
     static let initialReadLength = 4
+}
+
+enum WebSocketRelayDiagnostic {
+    static let domain = "WSSRelay"
+
+    static func errorFields(_ error: Error?) -> String {
+        guard let error else {
+            return "errorDomain=none errorCode=0"
+        }
+        let nsError = error as NSError
+        return "errorDomain=\(self.safeDomain(nsError.domain)) errorCode=\(nsError.code)"
+    }
+
+    private static func safeDomain(_ domain: String) -> String {
+        switch domain {
+        case NSURLErrorDomain,
+             NSPOSIXErrorDomain,
+             NSCocoaErrorDomain,
+             NSOSStatusErrorDomain,
+             "NSMachErrorDomain",
+             "kCFErrorDomainCFNetwork",
+             "TelegramCore.WebSocketTcpConnectionInterface":
+            return domain
+        default:
+            return "other"
+        }
+    }
 }
 
 final class WebSocketSendQueue {
@@ -230,6 +258,15 @@ final class WebSocketTcpConnectionInterface: NSObject, MTTcpConnectionInterface,
     private var generation: Int = 0
     private var didReportDisconnection = false
     private var receiveInFlight = false
+    private var getLogPrefix: (() -> String)?
+    private var didLogFirstWrite = false
+    private var didLogFirstSendCompletion = false
+    private var didLogFirstReceive = false
+    private var writtenByteCount = 0
+    private var sentMessageCount = 0
+    private var sentByteCount = 0
+    private var receivedMessageCount = 0
+    private var receivedByteCount = 0
 
     private var session: URLSession?
     private var task: URLSessionWebSocketTask?
@@ -256,6 +293,9 @@ final class WebSocketTcpConnectionInterface: NSObject, MTTcpConnectionInterface,
     }
 
     func setGetLogPrefix(_ getLogPrefix: (() -> String)?) {
+        self.stateQueue.async { [weak self] in
+            self?.getLogPrefix = getLogPrefix
+        }
     }
 
     func setUsageCalculationInfo(_ usageCalculationInfo: MTNetworkUsageCalculationInfo?) {
@@ -288,6 +328,7 @@ final class WebSocketTcpConnectionInterface: NSObject, MTTcpConnectionInterface,
             self.state = .connecting
             self.generation += 1
             let generation = self.generation
+            self.log("connect-start generation=\(generation) timeoutMs=\(Int(min(max(timeout, 1.0), 30.0) * 1000.0))")
 
             let configuration = URLSessionConfiguration.ephemeral
             configuration.requestCachePolicy = .reloadIgnoringLocalCacheData
@@ -349,6 +390,11 @@ final class WebSocketTcpConnectionInterface: NSObject, MTTcpConnectionInterface,
             guard let self, self.state == .connecting || self.state == .open else {
                 return
             }
+            self.writtenByteCount += data.count
+            if !self.didLogFirstWrite {
+                self.didLogFirstWrite = true
+                self.log("first-write state=\(self.stateName) bytes=\(data.count) queuedBefore=\(self.sendQueue.queuedByteCount)")
+            }
             do {
                 if let message = try self.sendQueue.enqueue(data) {
                     self.send(message: message, generation: self.generation)
@@ -396,11 +442,13 @@ final class WebSocketTcpConnectionInterface: NSObject, MTTcpConnectionInterface,
                 return
             }
             guard `protocol` == Self.webSocketProtocol else {
+                self.log("open-rejected selectedProtocolMatches=0")
                 self.terminate(error: Self.error(.unexpectedSubprotocol), closeCode: .protocolError)
                 return
             }
 
             self.state = .open
+            self.log("open selectedProtocolMatches=1 queuedBytes=\(self.sendQueue.queuedByteCount)")
             self.connectTimeoutWorkItem?.cancel()
             self.connectTimeoutWorkItem = nil
 
@@ -420,6 +468,7 @@ final class WebSocketTcpConnectionInterface: NSObject, MTTcpConnectionInterface,
             guard let self, self.task === webSocketTask, self.state != .closed else {
                 return
             }
+            self.log("peer-close closeCode=\(closeCode.rawValue)")
             let error: NSError?
             if closeCode == .normalClosure || closeCode == .goingAway {
                 error = nil
@@ -435,6 +484,7 @@ final class WebSocketTcpConnectionInterface: NSObject, MTTcpConnectionInterface,
             guard let self, self.task === task, self.state != .closed else {
                 return
             }
+            self.log("task-complete \(WebSocketRelayDiagnostic.errorFields(error))")
             self.terminate(error: error == nil ? nil : Self.error(.transportFailure), closeCode: .goingAway)
         }
     }
@@ -445,6 +495,7 @@ final class WebSocketTcpConnectionInterface: NSObject, MTTcpConnectionInterface,
             guard let self, self.task === task, self.state != .closed else {
                 return
             }
+            self.log("redirect-rejected statusCode=\(response.statusCode)")
             self.terminate(error: Self.error(.redirectRejected), closeCode: .policyViolation)
         }
     }
@@ -453,14 +504,25 @@ final class WebSocketTcpConnectionInterface: NSObject, MTTcpConnectionInterface,
         guard let task = self.task, self.state == .open else {
             return
         }
+        let isFirstMessage = self.sentMessageCount == 0
+        self.sentMessageCount += 1
+        self.sentByteCount += message.count
+        if isFirstMessage {
+            self.log("first-send-start bytes=\(message.count) queuedBytes=\(self.sendQueue.queuedByteCount)")
+        }
         task.send(.data(message)) { [weak self] error in
             self?.stateQueue.async {
                 guard let self, self.generation == generation, self.state == .open else {
                     return
                 }
-                if error != nil {
+                if let error {
+                    self.log("send-failed \(WebSocketRelayDiagnostic.errorFields(error))")
                     self.terminate(error: Self.error(.transportFailure), closeCode: .goingAway)
                     return
+                }
+                if !self.didLogFirstSendCompletion {
+                    self.didLogFirstSendCompletion = true
+                    self.log("first-send-complete bytes=\(message.count)")
                 }
 
                 self.networkUsageManager?.addOutgoingBytes(UInt(message.count), interface: self.currentPathIsCellular ? MTNetworkUsageManagerInterfaceWWAN : MTNetworkUsageManagerInterfaceOther)
@@ -487,6 +549,12 @@ final class WebSocketTcpConnectionInterface: NSObject, MTTcpConnectionInterface,
                 case let .success(message):
                     switch message {
                     case let .data(data):
+                        self.receivedMessageCount += 1
+                        self.receivedByteCount += data.count
+                        if !self.didLogFirstReceive {
+                            self.didLogFirstReceive = true
+                            self.log("first-receive bytes=\(data.count)")
+                        }
                         self.networkUsageManager?.addIncomingBytes(UInt(data.count), interface: self.currentPathIsCellular ? MTNetworkUsageManagerInterfaceWWAN : MTNetworkUsageManagerInterfaceOther)
                         do {
                             let events = try self.receiveBuffer.append(data)
@@ -496,11 +564,13 @@ final class WebSocketTcpConnectionInterface: NSObject, MTTcpConnectionInterface,
                             self.terminate(error: Self.error(.inputLimitExceeded), closeCode: .messageTooBig)
                         }
                     case .string:
+                        self.log("receive-rejected type=text")
                         self.terminate(error: Self.error(.textMessageRejected), closeCode: .unsupportedData)
                     @unknown default:
                         self.terminate(error: Self.error(.transportFailure), closeCode: .protocolError)
                     }
-                case .failure:
+                case let .failure(error):
+                    self.log("receive-failed \(WebSocketRelayDiagnostic.errorFields(error))")
                     self.terminate(error: Self.error(.transportFailure), closeCode: .goingAway)
                 }
             }
@@ -527,6 +597,8 @@ final class WebSocketTcpConnectionInterface: NSObject, MTTcpConnectionInterface,
         guard self.state != .closed else {
             return
         }
+        let terminalState = self.stateName
+        self.log("terminate state=\(terminalState) closeCode=\(closeCode.rawValue) \(WebSocketRelayDiagnostic.errorFields(error)) writtenBytes=\(self.writtenByteCount) sentMessages=\(self.sentMessageCount) sentBytes=\(self.sentByteCount) receivedMessages=\(self.receivedMessageCount) receivedBytes=\(self.receivedByteCount) firstSendComplete=\(self.didLogFirstSendCompletion ? 1 : 0) firstReceive=\(self.didLogFirstReceive ? 1 : 0)")
         self.state = .closed
         self.connectTimeoutWorkItem?.cancel()
         self.connectTimeoutWorkItem = nil
@@ -551,6 +623,24 @@ final class WebSocketTcpConnectionInterface: NSObject, MTTcpConnectionInterface,
                 delegate.connectionInterfaceDidDisconnectWithError(error)
             }
         }
+    }
+
+    private var stateName: String {
+        switch self.state {
+        case .idle:
+            return "idle"
+        case .connecting:
+            return "connecting"
+        case .open:
+            return "open"
+        case .closed:
+            return "closed"
+        }
+    }
+
+    private func log(_ message: String) {
+        let prefix = self.getLogPrefix?() ?? ""
+        NetworkLog(WebSocketRelayDiagnostic.domain, "\(prefix)[WSS relay \(message)]")
     }
 
     private static func error(_ code: ErrorCode) -> NSError {
