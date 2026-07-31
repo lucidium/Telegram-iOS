@@ -1,0 +1,575 @@
+mtg-1    | {"level":"info","client-ip":"83.167.19.234","stream-id":"6j2bAwDoDCDnNtZSlDo6_Q","logger":"proxy","timestamp":1785495064587,"message":"Stream has been started"}
+mtg-1    | {"level":"info","client-ip":"83.167.19.234","stream-id":"PfBH-VCkwRoOcdlRkM-B0Q","logger":"proxy","timestamp":1785495064596,"message":"Stream has been started"}
+mtg-1    | {"level":"debug","dc":1,"client-ip":"83.167.19.234","stream-id":"PfBH-VCkwRoOcdlRkM-B0Q","logger":"proxy.relay","timestamp":1785495065139,"message":"client -> telegram has been finished"}
+mtg-1    | {"level":"debug","dc":1,"client-ip":"83.167.19.234","stream-id":"PfBH-VCkwRoOcdlRkM-B0Q","logger":"proxy.relay","timestamp":1785495065139,"message":"telegram -> client has been finished"}
+nginx-1  | 83.167.19.234 - [31/Jul/2026:10:51:05 +0000] "GET /relay/v1/c1771c319bba20d9583b6629aae3d834671e5c8498a396a6 HTTP/1.1" 101 117
+nginx-1  | 83.167.19.234 - [31/Jul/2026:10:51:05 +0000] "GET /relay/v1/c1771c319bba20d9583b6629aae3d834671e5c8498a396a6 HTTP/1.1" 101 167
+mtg-1    | {"level":"debug","dc":1,"client-ip":"83.167.19.234","stream-id":"6j2bAwDoDCDnNtZSlDo6_Q","logger":"proxy.relay","timestamp":1785495065150,"message":"client -> telegram has been finished"}
+mtg-1    | {"level":"debug","dc":1,"client-ip":"83.167.19.234","stream-id":"6j2bAwDoDCDnNtZSlDo6_Q","logger":"proxy.relay","timestamp":1785495065150,"message":"telegram -> client has been finished"}
+mtg-1    | {"level":"info","dc":1,"client-ip":"83.167.19.234","stream-id":"PfBH-VCkwRoOcdlRkM-B0Q","logger":"proxy","timestamp":1785495065283,"message":"Stream has been finished"}
+mtg-1    | {"level":"info","dc":1,"client-ip":"83.167.19.234","stream-id":"6j2bAwDoDCDnNtZSlDo6_Q","logger":"proxy","timestamp":1785495065300,"message":"Stream has been finished"}
+mtg-1    | {"level":"info","client-ip":"83.167.19.234","stream-id":"y6WQafAREZuoRyerH7rm4Q","logger":"proxy","timestamp":1785495189741,"message":"Stream has been started"}
+mtg-1    | {"level":"info","client-ip":"83.167.19.234","stream-id":"vgqfNzr65KtlmK1dxIRPcw","logger":"proxy","timestamp":1785495189741,"message":"Stream has been started"}
+mtg-1    | {"level":"info","client-ip":"83.167.19.234","stream-id":"tQCRBPsZVy1muFeucirR3w","logger":"proxy","timestamp":1785495189753,"message":"Stream has been started"}
+mtg-1    | {"level":"info","client-ip":"83.167.19.234","stream-id":"7OJlOXCc9sAuEmXIzlClKQ","logger":"proxy","timestamp":1785495189761,"message":"Stream has been started"}
+mtg-1    | {"level":"info","client-ip":"83.167.19.234","stream-id":"zVoXH_XpSxWRsjrLKYnFgA","logger":"proxy","timestamp":1785495189765,"message":"Stream has been started"}
+mtg-1    | {"level":"debug","dc":2,"client-ip":"83.167.19.234","stream-id":"tQCRBPsZVy1muFeucirR3w","logger":"proxy.relay","timestamp":1785495190126,"message":"client -> telegram has been finished"}
+mtg-1    | {"level":"debug","dc":2,"client-ip":"83.167.19.234","stream-id":"tQCRBPsZVy1muFeucirR3w","logger":"proxy.relay","timestamp":1785495190126,"message":"telegram -> client has been finished"}
+nginx-1  | 83.167.19.234 - [31/Jul/2026:10:53:10 +0000] "GET /relay/v1/c1771c319bba20d9583b6629aae3d834671e5c8498a396a6 HTTP/1.1" 101 159
+nginx-1  | 83.167.19.234 - [31/Jul/2026:10:53:10 +0000] "GET /relay/v1/c1771c319bba20d9583b6629aae3d834671e5c8498a396a6 HTTP/1.1" 101 109
+nginx-1  | 83.167.19.234 - [31/Jul/2026:10:53:10 +0000] "GET /relay/v1/c1771c319bba20d9583b6629aae3d834671e5c8498a396a6 HTTP/1.1" 101 106
+nginx-1  | 83.167.19.234 - [31/Jul/2026:10:53:10 +0000] "GET /relay/v1/c1771c319bba20d9583b6629aae3d834671e5c8498a396a6 HTTP/1.1" 101 221
+nginx-1  | 83.167.19.234 - [31/Jul/2026:10:53:10 +0000] "GET /relay/v1/c1771c319bba20d9583b6629aae3d834671e5c8498a396a6 HTTP/1.1" 101 157
+mtg-1    | {"level":"debug","dc":2,"client-ip":"83.167.19.234","stream-id":"y6WQafAREZuoRyerH7rm4Q","logger":"proxy.relay","timestamp":1785495190137,"message":"client -> telegram has been finished"}
+mtg-1    | {"level":"debug","dc":2,"client-ip":"83.167.19.234","stream-id":"7OJlOXCc9sAuEmXIzlClKQ","logger":"proxy.relay","timestamp":1785495190137,"message":"client -> telegram has been finished"}
+mtg-1    | {"level":"debug","dc":2,"client-ip":"83.167.19.234","stream-id":"7OJlOXCc9sAuEmXIzlClKQ","logger":"proxy.relay","timestamp":1785495190137,"message":"telegram -> client has been finished"}
+mtg-1    | {"level":"debug","dc":2,"client-ip":"83.167.19.234","stream-id":"vgqfNzr65KtlmK1dxIRPcw","logger":"proxy.relay","timestamp":1785495190137,"message":"client -> telegram has been finished"}
+mtg-1    | {"level":"debug","dc":2,"client-ip":"83.167.19.234","stream-id":"y6WQafAREZuoRyerH7rm4Q","logger":"proxy.relay","timestamp":1785495190137,"message":"telegram -> client has been finished"}
+mtg-1    | {"level":"debug","dc":2,"client-ip":"83.167.19.234","stream-id":"vgqfNzr65KtlmK1dxIRPcw","logger":"proxy.relay","timestamp":1785495190138,"message":"telegram -> client has been finished"}
+mtg-1    | {"level":"debug","dc":2,"client-ip":"83.167.19.234","stream-id":"zVoXH_XpSxWRsjrLKYnFgA","logger":"proxy.relay","timestamp":1785495190138,"message":"client -> telegram has been finished"}
+mtg-1    | {"level":"debug","dc":2,"client-ip":"83.167.19.234","stream-id":"zVoXH_XpSxWRsjrLKYnFgA","logger":"proxy.relay","timestamp":1785495190139,"message":"telegram -> client has been finished"}
+mtg-1    | {"level":"info","dc":2,"client-ip":"83.167.19.234","stream-id":"tQCRBPsZVy1muFeucirR3w","logger":"proxy","timestamp":1785495190194,"message":"Stream has been finished"}
+mtg-1    | {"level":"info","dc":2,"client-ip":"83.167.19.234","stream-id":"vgqfNzr65KtlmK1dxIRPcw","logger":"proxy","timestamp":1785495190197,"message":"Stream has been finished"}
+mtg-1    | {"level":"info","dc":2,"client-ip":"83.167.19.234","stream-id":"zVoXH_XpSxWRsjrLKYnFgA","logger":"proxy","timestamp":1785495190199,"message":"Stream has been finished"}
+mtg-1    | {"level":"info","dc":2,"client-ip":"83.167.19.234","stream-id":"y6WQafAREZuoRyerH7rm4Q","logger":"proxy","timestamp":1785495190200,"message":"Stream has been finished"}
+mtg-1    | {"level":"info","dc":2,"client-ip":"83.167.19.234","stream-id":"7OJlOXCc9sAuEmXIzlClKQ","logger":"proxy","timestamp":1785495190216,"message":"Stream has been finished"}
+mtg-1    | {"level":"info","client-ip":"83.167.19.234","stream-id":"IXvk13EOmM67sT609ZTZfg","logger":"proxy","timestamp":1785495193267,"message":"Stream has been started"}
+mtg-1    | {"level":"info","client-ip":"83.167.19.234","stream-id":"D-r6jKo4XiinCoKgnx0mTQ","logger":"proxy","timestamp":1785495193268,"message":"Stream has been started"}
+mtg-1    | {"level":"info","client-ip":"83.167.19.234","stream-id":"QmVvNHeumYPHUffFJm7_4w","logger":"proxy","timestamp":1785495193268,"message":"Stream has been started"}
+mtg-1    | {"level":"info","client-ip":"83.167.19.234","stream-id":"9IHDYSyZ8q6jHsIcNJ7vqg","logger":"proxy","timestamp":1785495193268,"message":"Stream has been started"}
+mtg-1    | {"level":"info","client-ip":"83.167.19.234","stream-id":"lJoTBWuqTKMYnthOiSTclw","logger":"proxy","timestamp":1785495193270,"message":"Stream has been started"}
+mtg-1    | {"level":"info","client-ip":"83.167.19.234","stream-id":"qy5Wp46oT-tmEXCry9ec5Q","logger":"proxy","timestamp":1785495193270,"message":"Stream has been started"}
+mtg-1    | {"level":"info","client-ip":"83.167.19.234","stream-id":"Ul3cjRJULiQ3lADv_opRVA","logger":"proxy","timestamp":1785495193271,"message":"Stream has been started"}
+mtg-1    | {"level":"info","client-ip":"83.167.19.234","stream-id":"iBLQhG9oE-PUyFrFDd8Gtw","logger":"proxy","timestamp":1785495193272,"message":"Stream has been started"}
+mtg-1    | {"level":"info","client-ip":"83.167.19.234","stream-id":"Ju-Kc5WvR0IXYjiHIFeVvw","logger":"proxy","timestamp":1785495193272,"message":"Stream has been started"}
+mtg-1    | {"level":"info","client-ip":"83.167.19.234","stream-id":"9BJ1NGAEUnTWYg4rnWgZlA","logger":"proxy","timestamp":1785495193273,"message":"Stream has been started"}
+mtg-1    | {"level":"debug","dc":2,"client-ip":"83.167.19.234","stream-id":"9IHDYSyZ8q6jHsIcNJ7vqg","logger":"proxy.relay","timestamp":1785495193688,"message":"client -> telegram has been finished"}
+mtg-1    | {"level":"debug","dc":2,"client-ip":"83.167.19.234","stream-id":"9IHDYSyZ8q6jHsIcNJ7vqg","logger":"proxy.relay","timestamp":1785495193688,"message":"telegram -> client has been finished"}
+nginx-1  | 83.167.19.234 - [31/Jul/2026:10:53:13 +0000] "GET /relay/v1/c1771c319bba20d9583b6629aae3d834671e5c8498a396a6 HTTP/1.1" 101 18
+mtg-1    | {"level":"info","dc":2,"client-ip":"83.167.19.234","stream-id":"9IHDYSyZ8q6jHsIcNJ7vqg","logger":"proxy","timestamp":1785495193760,"message":"Stream has been finished"}
+nginx-1  | 83.167.19.234 - [31/Jul/2026:10:53:13 +0000] "GET /relay/v1/c1771c319bba20d9583b6629aae3d834671e5c8498a396a6 HTTP/1.1" 101 14
+nginx-1  | 83.167.19.234 - [31/Jul/2026:10:53:13 +0000] "GET /relay/v1/c1771c319bba20d9583b6629aae3d834671e5c8498a396a6 HTTP/1.1" 101 14
+mtg-1    | {"level":"debug","dc":2,"client-ip":"83.167.19.234","stream-id":"lJoTBWuqTKMYnthOiSTclw","logger":"proxy.relay","timestamp":1785495193783,"message":"client -> telegram has been finished"}
+mtg-1    | {"level":"debug","dc":2,"client-ip":"83.167.19.234","stream-id":"lJoTBWuqTKMYnthOiSTclw","logger":"proxy.relay","timestamp":1785495193783,"message":"telegram -> client has been finished"}
+mtg-1    | {"level":"debug","dc":2,"client-ip":"83.167.19.234","stream-id":"Ul3cjRJULiQ3lADv_opRVA","logger":"proxy.relay","timestamp":1785495193784,"message":"client -> telegram has been finished"}
+mtg-1    | {"level":"debug","dc":2,"client-ip":"83.167.19.234","stream-id":"Ul3cjRJULiQ3lADv_opRVA","logger":"proxy.relay","timestamp":1785495193784,"message":"telegram -> client has been finished"}
+nginx-1  | 83.167.19.234 - [31/Jul/2026:10:53:13 +0000] "GET /relay/v1/c1771c319bba20d9583b6629aae3d834671e5c8498a396a6 HTTP/1.1" 101 10
+mtg-1    | {"level":"debug","dc":2,"client-ip":"83.167.19.234","stream-id":"iBLQhG9oE-PUyFrFDd8Gtw","logger":"proxy.relay","timestamp":1785495193795,"message":"client -> telegram has been finished"}
+mtg-1    | {"level":"debug","dc":2,"client-ip":"83.167.19.234","stream-id":"iBLQhG9oE-PUyFrFDd8Gtw","logger":"proxy.relay","timestamp":1785495193795,"message":"telegram -> client has been finished"}
+mtg-1    | {"level":"info","dc":2,"client-ip":"83.167.19.234","stream-id":"Ul3cjRJULiQ3lADv_opRVA","logger":"proxy","timestamp":1785495193845,"message":"Stream has been finished"}
+mtg-1    | {"level":"info","dc":2,"client-ip":"83.167.19.234","stream-id":"lJoTBWuqTKMYnthOiSTclw","logger":"proxy","timestamp":1785495193851,"message":"Stream has been finished"}
+mtg-1    | {"level":"info","dc":2,"client-ip":"83.167.19.234","stream-id":"iBLQhG9oE-PUyFrFDd8Gtw","logger":"proxy","timestamp":1785495193857,"message":"Stream has been finished"}
+nginx-1  | 83.167.19.234 - [31/Jul/2026:10:53:13 +0000] "GET /relay/v1/c1771c319bba20d9583b6629aae3d834671e5c8498a396a6 HTTP/1.1" 101 14
+mtg-1    | {"level":"debug","dc":1,"client-ip":"83.167.19.234","stream-id":"Ju-Kc5WvR0IXYjiHIFeVvw","logger":"proxy.relay","timestamp":1785495193864,"message":"client -> telegram has been finished"}
+mtg-1    | {"level":"debug","dc":1,"client-ip":"83.167.19.234","stream-id":"Ju-Kc5WvR0IXYjiHIFeVvw","logger":"proxy.relay","timestamp":1785495193864,"message":"telegram -> client has been finished"}
+nginx-1  | 83.167.19.234 - [31/Jul/2026:10:53:13 +0000] "GET /relay/v1/c1771c319bba20d9583b6629aae3d834671e5c8498a396a6 HTTP/1.1" 101 10
+nginx-1  | 83.167.19.234 - [31/Jul/2026:10:53:13 +0000] "GET /relay/v1/c1771c319bba20d9583b6629aae3d834671e5c8498a396a6 HTTP/1.1" 101 14
+nginx-1  | 83.167.19.234 - [31/Jul/2026:10:53:13 +0000] "GET /relay/v1/c1771c319bba20d9583b6629aae3d834671e5c8498a396a6 HTTP/1.1" 101 18
+mtg-1    | {"level":"debug","dc":1,"client-ip":"83.167.19.234","stream-id":"9BJ1NGAEUnTWYg4rnWgZlA","logger":"proxy.relay","timestamp":1785495193874,"message":"client -> telegram has been finished"}
+mtg-1    | {"level":"debug","dc":1,"client-ip":"83.167.19.234","stream-id":"D-r6jKo4XiinCoKgnx0mTQ","logger":"proxy.relay","timestamp":1785495193875,"message":"client -> telegram has been finished"}
+mtg-1    | {"level":"debug","dc":1,"client-ip":"83.167.19.234","stream-id":"9BJ1NGAEUnTWYg4rnWgZlA","logger":"proxy.relay","timestamp":1785495193875,"message":"telegram -> client has been finished"}
+mtg-1    | {"level":"debug","dc":1,"client-ip":"83.167.19.234","stream-id":"qy5Wp46oT-tmEXCry9ec5Q","logger":"proxy.relay","timestamp":1785495193876,"message":"client -> telegram has been finished"}
+mtg-1    | {"level":"debug","dc":1,"client-ip":"83.167.19.234","stream-id":"D-r6jKo4XiinCoKgnx0mTQ","logger":"proxy.relay","timestamp":1785495193876,"message":"telegram -> client has been finished"}
+mtg-1    | {"level":"debug","dc":1,"client-ip":"83.167.19.234","stream-id":"qy5Wp46oT-tmEXCry9ec5Q","logger":"proxy.relay","timestamp":1785495193876,"message":"telegram -> client has been finished"}
+mtg-1    | {"level":"info","dc":1,"client-ip":"83.167.19.234","stream-id":"Ju-Kc5WvR0IXYjiHIFeVvw","logger":"proxy","timestamp":1785495194012,"message":"Stream has been finished"}
+mtg-1    | {"level":"info","dc":1,"client-ip":"83.167.19.234","stream-id":"qy5Wp46oT-tmEXCry9ec5Q","logger":"proxy","timestamp":1785495194022,"message":"Stream has been finished"}
+mtg-1    | {"level":"info","dc":1,"client-ip":"83.167.19.234","stream-id":"9BJ1NGAEUnTWYg4rnWgZlA","logger":"proxy","timestamp":1785495194039,"message":"Stream has been finished"}
+mtg-1    | {"level":"info","dc":1,"client-ip":"83.167.19.234","stream-id":"D-r6jKo4XiinCoKgnx0mTQ","logger":"proxy","timestamp":1785495194041,"message":"Stream has been finished"}
+mtg-1    | {"level":"info","client-ip":"83.167.19.234","stream-id":"_PUjcWpTU9-L1LkiN1JD0w","logger":"proxy","timestamp":1785495194109,"message":"Stream has been started"}
+mtg-1    | {"level":"info","client-ip":"83.167.19.234","stream-id":"EiDImWxBoiL04Mt32bCQ4A","logger":"proxy","timestamp":1785495194165,"message":"Stream has been started"}
+mtg-1    | {"level":"info","client-ip":"83.167.19.234","stream-id":"LjayMMl13GdaVIz0O-YEuw","logger":"proxy","timestamp":1785495194176,"message":"Stream has been started"}
+mtg-1    | {"level":"info","client-ip":"83.167.19.234","stream-id":"Flp3x7YbkL5yvUGEkMPecQ","logger":"proxy","timestamp":1785495194177,"message":"Stream has been started"}
+mtg-1    | {"level":"info","client-ip":"83.167.19.234","stream-id":"ESeaPmZAz-BZq1CJHD1pcg","logger":"proxy","timestamp":1785495194188,"message":"Stream has been started"}
+mtg-1    | {"level":"info","client-ip":"83.167.19.234","stream-id":"jMoZjPEZ7vi-5Cz8na4hfQ","logger":"proxy","timestamp":1785495194189,"message":"Stream has been started"}
+mtg-1    | {"level":"info","client-ip":"83.167.19.234","stream-id":"Q7eGKgshbfxXV-myjRmO_g","logger":"proxy","timestamp":1785495194189,"message":"Stream has been started"}
+mtg-1    | {"level":"info","client-ip":"83.167.19.234","stream-id":"GP7IG4CrysT57-D0ssiVow","logger":"proxy","timestamp":1785495194190,"message":"Stream has been started"}
+mtg-1    | {"level":"info","client-ip":"83.167.19.234","stream-id":"aw7hi1Ja5fFjmmSS5FSdYw","logger":"proxy","timestamp":1785495194190,"message":"Stream has been started"}
+mtg-1    | {"level":"info","client-ip":"83.167.19.234","stream-id":"qBiu1am9h211bACBl8d91A","logger":"proxy","timestamp":1785495194198,"message":"Stream has been started"}
+mtg-1    | {"level":"info","client-ip":"83.167.19.234","stream-id":"XZ7Q3a714letLqqZX5BP6A","logger":"proxy","timestamp":1785495194198,"message":"Stream has been started"}
+mtg-1    | {"level":"info","client-ip":"83.167.19.234","stream-id":"lhu0krCq5TwXWBcJwaioyA","logger":"proxy","timestamp":1785495194204,"message":"Stream has been started"}
+mtg-1    | {"level":"info","client-ip":"83.167.19.234","stream-id":"PV499LRektMMQT1vfMjA1w","logger":"proxy","timestamp":1785495194204,"message":"Stream has been started"}
+mtg-1    | {"level":"info","client-ip":"83.167.19.234","stream-id":"Tfxc9edKyMf-70zirHADew","logger":"proxy","timestamp":1785495194206,"message":"Stream has been started"}
+mtg-1    | {"level":"info","client-ip":"83.167.19.234","stream-id":"NadLBjdgbbLsuo9roE3xmg","logger":"proxy","timestamp":1785495194207,"message":"Stream has been started"}
+mtg-1    | {"level":"info","client-ip":"83.167.19.234","stream-id":"tllDRkcF6Jqr6wYsCtb0IQ","logger":"proxy","timestamp":1785495194211,"message":"Stream has been started"}
+mtg-1    | {"level":"info","client-ip":"83.167.19.234","stream-id":"barWU8rTvx_E8rLnPvTcTg","logger":"proxy","timestamp":1785495194212,"message":"Stream has been started"}
+mtg-1    | {"level":"info","client-ip":"83.167.19.234","stream-id":"feIL4fSUvPp_5gGi6OxxDQ","logger":"proxy","timestamp":1785495194213,"message":"Stream has been started"}
+mtg-1    | {"level":"info","client-ip":"83.167.19.234","stream-id":"9uJcZJHBPz1wGTFIF_cxrQ","logger":"proxy","timestamp":1785495194213,"message":"Stream has been started"}
+mtg-1    | {"level":"info","client-ip":"83.167.19.234","stream-id":"enHNB9oPJug8Nm1RN7dXeg","logger":"proxy","timestamp":1785495194312,"message":"Stream has been started"}
+mtg-1    | {"level":"info","client-ip":"83.167.19.234","stream-id":"iylvU8kMzxceAL3AWVtTuA","logger":"proxy","timestamp":1785495194313,"message":"Stream has been started"}
+mtg-1    | {"level":"info","client-ip":"83.167.19.234","stream-id":"-yUUOCythwM8FLfXVhJFpg","logger":"proxy","timestamp":1785495194313,"message":"Stream has been started"}
+mtg-1    | {"level":"info","client-ip":"83.167.19.234","stream-id":"5FPgQarpSOv69_8ZGZePXA","logger":"proxy","timestamp":1785495194316,"message":"Stream has been started"}
+mtg-1    | {"level":"info","client-ip":"83.167.19.234","stream-id":"ql7fBc1WQTBSmgFwLDEIEg","logger":"proxy","timestamp":1785495194317,"message":"Stream has been started"}
+mtg-1    | {"level":"info","client-ip":"83.167.19.234","stream-id":"DjTNI2DRD4DWr3kO6gIjxw","logger":"proxy","timestamp":1785495194317,"message":"Stream has been started"}
+mtg-1    | {"level":"info","client-ip":"83.167.19.234","stream-id":"qNgPOFvB73JljmmQrW-bYw","logger":"proxy","timestamp":1785495194317,"message":"Stream has been started"}
+mtg-1    | {"level":"info","client-ip":"83.167.19.234","stream-id":"4le5hgerzldA2IE0hs4Fqg","logger":"proxy","timestamp":1785495194318,"message":"Stream has been started"}
+mtg-1    | {"level":"info","client-ip":"83.167.19.234","stream-id":"ZotkDUoHHNm0Fhrbymr-JQ","logger":"proxy","timestamp":1785495194320,"message":"Stream has been started"}
+mtg-1    | {"level":"info","client-ip":"83.167.19.234","stream-id":"vfXXUWvgbibD7xf506oYhw","logger":"proxy","timestamp":1785495194320,"message":"Stream has been started"}
+mtg-1    | {"level":"info","client-ip":"83.167.19.234","stream-id":"rWWNh74h5ER0WufrYxmNYA","logger":"proxy","timestamp":1785495194320,"message":"Stream has been started"}
+mtg-1    | {"level":"info","client-ip":"83.167.19.234","stream-id":"QlPB7XJ1Z2jlEv__eu6ZRw","logger":"proxy","timestamp":1785495194320,"message":"Stream has been started"}
+mtg-1    | {"level":"info","client-ip":"83.167.19.234","stream-id":"GpStvEArEWzX588LiiaXmg","logger":"proxy","timestamp":1785495194320,"message":"Stream has been started"}
+mtg-1    | {"level":"info","client-ip":"83.167.19.234","stream-id":"cw1fDoD9N9kU8VY-Ey_xXQ","logger":"proxy","timestamp":1785495194321,"message":"Stream has been started"}
+mtg-1    | {"level":"info","client-ip":"83.167.19.234","stream-id":"3ba3TW7__dlQqf79-W3cjw","logger":"proxy","timestamp":1785495194321,"message":"Stream has been started"}
+mtg-1    | {"level":"info","client-ip":"83.167.19.234","stream-id":"s9EIfQ-ObpI1qJyfWC-YRQ","logger":"proxy","timestamp":1785495194322,"message":"Stream has been started"}
+mtg-1    | {"level":"info","client-ip":"83.167.19.234","stream-id":"hpVq1zrsUaprT4kwSOQZpg","logger":"proxy","timestamp":1785495194323,"message":"Stream has been started"}
+nginx-1  | 83.167.19.234 - [31/Jul/2026:10:53:14 +0000] "GET /relay/v1/c1771c319bba20d9583b6629aae3d834671e5c8498a396a6 HTTP/1.1" 101 112
+nginx-1  | 83.167.19.234 - [31/Jul/2026:10:53:14 +0000] "GET /relay/v1/c1771c319bba20d9583b6629aae3d834671e5c8498a396a6 HTTP/1.1" 101 112
+mtg-1    | {"level":"debug","dc":2,"client-ip":"83.167.19.234","stream-id":"ESeaPmZAz-BZq1CJHD1pcg","logger":"proxy.relay","timestamp":1785495194574,"message":"client -> telegram has been finished"}
+mtg-1    | {"level":"debug","dc":2,"client-ip":"83.167.19.234","stream-id":"ESeaPmZAz-BZq1CJHD1pcg","logger":"proxy.relay","timestamp":1785495194574,"message":"telegram -> client has been finished"}
+mtg-1    | {"level":"debug","dc":2,"client-ip":"83.167.19.234","stream-id":"Flp3x7YbkL5yvUGEkMPecQ","logger":"proxy.relay","timestamp":1785495194575,"message":"client -> telegram has been finished"}
+mtg-1    | {"level":"debug","dc":2,"client-ip":"83.167.19.234","stream-id":"Flp3x7YbkL5yvUGEkMPecQ","logger":"proxy.relay","timestamp":1785495194575,"message":"telegram -> client has been finished"}
+mtg-1    | {"level":"debug","dc":2,"client-ip":"83.167.19.234","stream-id":"lhu0krCq5TwXWBcJwaioyA","logger":"proxy.relay","timestamp":1785495194576,"message":"client -> telegram has been finished"}
+mtg-1    | {"level":"debug","dc":2,"client-ip":"83.167.19.234","stream-id":"lhu0krCq5TwXWBcJwaioyA","logger":"proxy.relay","timestamp":1785495194576,"message":"telegram -> client has been finished"}
+nginx-1  | 83.167.19.234 - [31/Jul/2026:10:53:14 +0000] "GET /relay/v1/c1771c319bba20d9583b6629aae3d834671e5c8498a396a6 HTTP/1.1" 101 136
+mtg-1    | {"level":"debug","dc":2,"client-ip":"83.167.19.234","stream-id":"XZ7Q3a714letLqqZX5BP6A","logger":"proxy.relay","timestamp":1785495194577,"message":"client -> telegram has been finished"}
+nginx-1  | 83.167.19.234 - [31/Jul/2026:10:53:14 +0000] "GET /relay/v1/c1771c319bba20d9583b6629aae3d834671e5c8498a396a6 HTTP/1.1" 101 131
+nginx-1  | 83.167.19.234 - [31/Jul/2026:10:53:14 +0000] "GET /relay/v1/c1771c319bba20d9583b6629aae3d834671e5c8498a396a6 HTTP/1.1" 101 221
+mtg-1    | {"level":"debug","dc":2,"client-ip":"83.167.19.234","stream-id":"XZ7Q3a714letLqqZX5BP6A","logger":"proxy.relay","timestamp":1785495194577,"message":"telegram -> client has been finished"}
+mtg-1    | {"level":"debug","dc":2,"client-ip":"83.167.19.234","stream-id":"PV499LRektMMQT1vfMjA1w","logger":"proxy.relay","timestamp":1785495194578,"message":"client -> telegram has been finished"}
+nginx-1  | 83.167.19.234 - [31/Jul/2026:10:53:14 +0000] "GET /relay/v1/c1771c319bba20d9583b6629aae3d834671e5c8498a396a6 HTTP/1.1" 101 111
+nginx-1  | 83.167.19.234 - [31/Jul/2026:10:53:14 +0000] "GET /relay/v1/c1771c319bba20d9583b6629aae3d834671e5c8498a396a6 HTTP/1.1" 101 210
+mtg-1    | {"level":"debug","dc":2,"client-ip":"83.167.19.234","stream-id":"PV499LRektMMQT1vfMjA1w","logger":"proxy.relay","timestamp":1785495194578,"message":"telegram -> client has been finished"}
+mtg-1    | {"level":"debug","dc":2,"client-ip":"83.167.19.234","stream-id":"GP7IG4CrysT57-D0ssiVow","logger":"proxy.relay","timestamp":1785495194579,"message":"client -> telegram has been finished"}
+mtg-1    | {"level":"debug","dc":2,"client-ip":"83.167.19.234","stream-id":"GP7IG4CrysT57-D0ssiVow","logger":"proxy.relay","timestamp":1785495194579,"message":"telegram -> client has been finished"}
+mtg-1    | {"level":"debug","dc":2,"client-ip":"83.167.19.234","stream-id":"_PUjcWpTU9-L1LkiN1JD0w","logger":"proxy.relay","timestamp":1785495194579,"message":"client -> telegram has been finished"}
+mtg-1    | {"level":"debug","dc":2,"client-ip":"83.167.19.234","stream-id":"_PUjcWpTU9-L1LkiN1JD0w","logger":"proxy.relay","timestamp":1785495194580,"message":"telegram -> client has been finished"}
+nginx-1  | 83.167.19.234 - [31/Jul/2026:10:53:14 +0000] "GET /relay/v1/c1771c319bba20d9583b6629aae3d834671e5c8498a396a6 HTTP/1.1" 101 211
+nginx-1  | 83.167.19.234 - [31/Jul/2026:10:53:14 +0000] "GET /relay/v1/c1771c319bba20d9583b6629aae3d834671e5c8498a396a6 HTTP/1.1" 101 186
+nginx-1  | 83.167.19.234 - [31/Jul/2026:10:53:14 +0000] "GET /relay/v1/c1771c319bba20d9583b6629aae3d834671e5c8498a396a6 HTTP/1.1" 101 200
+nginx-1  | 83.167.19.234 - [31/Jul/2026:10:53:14 +0000] "GET /relay/v1/c1771c319bba20d9583b6629aae3d834671e5c8498a396a6 HTTP/1.1" 101 114
+nginx-1  | 83.167.19.234 - [31/Jul/2026:10:53:14 +0000] "GET /relay/v1/c1771c319bba20d9583b6629aae3d834671e5c8498a396a6 HTTP/1.1" 101 107
+mtg-1    | {"level":"debug","dc":2,"client-ip":"83.167.19.234","stream-id":"jMoZjPEZ7vi-5Cz8na4hfQ","logger":"proxy.relay","timestamp":1785495194590,"message":"client -> telegram has been finished"}
+mtg-1    | {"level":"debug","dc":2,"client-ip":"83.167.19.234","stream-id":"9uJcZJHBPz1wGTFIF_cxrQ","logger":"proxy.relay","timestamp":1785495194591,"message":"client -> telegram has been finished"}
+mtg-1    | {"level":"debug","dc":2,"client-ip":"83.167.19.234","stream-id":"aw7hi1Ja5fFjmmSS5FSdYw","logger":"proxy.relay","timestamp":1785495194591,"message":"client -> telegram has been finished"}
+mtg-1    | {"level":"debug","dc":2,"client-ip":"83.167.19.234","stream-id":"Q7eGKgshbfxXV-myjRmO_g","logger":"proxy.relay","timestamp":1785495194591,"message":"client -> telegram has been finished"}
+mtg-1    | {"level":"debug","dc":2,"client-ip":"83.167.19.234","stream-id":"NadLBjdgbbLsuo9roE3xmg","logger":"proxy.relay","timestamp":1785495194591,"message":"client -> telegram has been finished"}
+mtg-1    | {"level":"debug","dc":2,"client-ip":"83.167.19.234","stream-id":"Tfxc9edKyMf-70zirHADew","logger":"proxy.relay","timestamp":1785495194591,"message":"client -> telegram has been finished"}
+mtg-1    | {"level":"debug","dc":2,"client-ip":"83.167.19.234","stream-id":"tllDRkcF6Jqr6wYsCtb0IQ","logger":"proxy.relay","timestamp":1785495194591,"message":"client -> telegram has been finished"}
+mtg-1    | {"level":"debug","dc":2,"client-ip":"83.167.19.234","stream-id":"tllDRkcF6Jqr6wYsCtb0IQ","logger":"proxy.relay","timestamp":1785495194591,"message":"telegram -> client has been finished"}
+mtg-1    | {"level":"debug","dc":2,"client-ip":"83.167.19.234","stream-id":"feIL4fSUvPp_5gGi6OxxDQ","logger":"proxy.relay","timestamp":1785495194591,"message":"client -> telegram has been finished"}
+mtg-1    | {"level":"debug","dc":2,"client-ip":"83.167.19.234","stream-id":"feIL4fSUvPp_5gGi6OxxDQ","logger":"proxy.relay","timestamp":1785495194591,"message":"telegram -> client has been finished"}
+nginx-1  | 83.167.19.234 - [31/Jul/2026:10:53:14 +0000] "GET /relay/v1/c1771c319bba20d9583b6629aae3d834671e5c8498a396a6 HTTP/1.1" 101 205
+nginx-1  | 83.167.19.234 - [31/Jul/2026:10:53:14 +0000] "GET /relay/v1/c1771c319bba20d9583b6629aae3d834671e5c8498a396a6 HTTP/1.1" 101 109
+nginx-1  | 83.167.19.234 - [31/Jul/2026:10:53:14 +0000] "GET /relay/v1/c1771c319bba20d9583b6629aae3d834671e5c8498a396a6 HTTP/1.1" 101 234
+mtg-1    | {"level":"debug","dc":2,"client-ip":"83.167.19.234","stream-id":"Q7eGKgshbfxXV-myjRmO_g","logger":"proxy.relay","timestamp":1785495194593,"message":"telegram -> client has been finished"}
+mtg-1    | {"level":"debug","dc":2,"client-ip":"83.167.19.234","stream-id":"aw7hi1Ja5fFjmmSS5FSdYw","logger":"proxy.relay","timestamp":1785495194593,"message":"telegram -> client has been finished"}
+mtg-1    | {"level":"debug","dc":2,"client-ip":"83.167.19.234","stream-id":"Tfxc9edKyMf-70zirHADew","logger":"proxy.relay","timestamp":1785495194594,"message":"telegram -> client has been finished"}
+mtg-1    | {"level":"debug","dc":2,"client-ip":"83.167.19.234","stream-id":"9uJcZJHBPz1wGTFIF_cxrQ","logger":"proxy.relay","timestamp":1785495194594,"message":"telegram -> client has been finished"}
+mtg-1    | {"level":"debug","dc":2,"client-ip":"83.167.19.234","stream-id":"NadLBjdgbbLsuo9roE3xmg","logger":"proxy.relay","timestamp":1785495194595,"message":"telegram -> client has been finished"}
+mtg-1    | {"level":"debug","dc":2,"client-ip":"83.167.19.234","stream-id":"jMoZjPEZ7vi-5Cz8na4hfQ","logger":"proxy.relay","timestamp":1785495194595,"message":"telegram -> client has been finished"}
+mtg-1    | {"level":"info","dc":2,"client-ip":"83.167.19.234","stream-id":"Flp3x7YbkL5yvUGEkMPecQ","logger":"proxy","timestamp":1785495194637,"message":"Stream has been finished"}
+mtg-1    | {"level":"info","dc":2,"client-ip":"83.167.19.234","stream-id":"ESeaPmZAz-BZq1CJHD1pcg","logger":"proxy","timestamp":1785495194637,"message":"Stream has been finished"}
+mtg-1    | {"level":"info","dc":2,"client-ip":"83.167.19.234","stream-id":"XZ7Q3a714letLqqZX5BP6A","logger":"proxy","timestamp":1785495194637,"message":"Stream has been finished"}
+mtg-1    | {"level":"info","dc":2,"client-ip":"83.167.19.234","stream-id":"_PUjcWpTU9-L1LkiN1JD0w","logger":"proxy","timestamp":1785495194638,"message":"Stream has been finished"}
+mtg-1    | {"level":"info","dc":2,"client-ip":"83.167.19.234","stream-id":"PV499LRektMMQT1vfMjA1w","logger":"proxy","timestamp":1785495194644,"message":"Stream has been finished"}
+mtg-1    | {"level":"info","dc":2,"client-ip":"83.167.19.234","stream-id":"lhu0krCq5TwXWBcJwaioyA","logger":"proxy","timestamp":1785495194644,"message":"Stream has been finished"}
+mtg-1    | {"level":"info","dc":2,"client-ip":"83.167.19.234","stream-id":"GP7IG4CrysT57-D0ssiVow","logger":"proxy","timestamp":1785495194647,"message":"Stream has been finished"}
+mtg-1    | {"level":"info","dc":2,"client-ip":"83.167.19.234","stream-id":"tllDRkcF6Jqr6wYsCtb0IQ","logger":"proxy","timestamp":1785495194650,"message":"Stream has been finished"}
+mtg-1    | {"level":"info","dc":2,"client-ip":"83.167.19.234","stream-id":"NadLBjdgbbLsuo9roE3xmg","logger":"proxy","timestamp":1785495194654,"message":"Stream has been finished"}
+mtg-1    | {"level":"info","dc":2,"client-ip":"83.167.19.234","stream-id":"Tfxc9edKyMf-70zirHADew","logger":"proxy","timestamp":1785495194656,"message":"Stream has been finished"}
+mtg-1    | {"level":"info","dc":2,"client-ip":"83.167.19.234","stream-id":"aw7hi1Ja5fFjmmSS5FSdYw","logger":"proxy","timestamp":1785495194658,"message":"Stream has been finished"}
+mtg-1    | {"level":"info","dc":2,"client-ip":"83.167.19.234","stream-id":"feIL4fSUvPp_5gGi6OxxDQ","logger":"proxy","timestamp":1785495194658,"message":"Stream has been finished"}
+mtg-1    | {"level":"info","dc":2,"client-ip":"83.167.19.234","stream-id":"jMoZjPEZ7vi-5Cz8na4hfQ","logger":"proxy","timestamp":1785495194658,"message":"Stream has been finished"}
+mtg-1    | {"level":"info","dc":2,"client-ip":"83.167.19.234","stream-id":"Q7eGKgshbfxXV-myjRmO_g","logger":"proxy","timestamp":1785495194661,"message":"Stream has been finished"}
+mtg-1    | {"level":"info","dc":2,"client-ip":"83.167.19.234","stream-id":"9uJcZJHBPz1wGTFIF_cxrQ","logger":"proxy","timestamp":1785495194662,"message":"Stream has been finished"}
+mtg-1    | {"level":"debug","dc":2,"client-ip":"83.167.19.234","stream-id":"hpVq1zrsUaprT4kwSOQZpg","logger":"proxy.relay","timestamp":1785495194836,"message":"client -> telegram has been finished"}
+mtg-1    | {"level":"debug","dc":2,"client-ip":"83.167.19.234","stream-id":"hpVq1zrsUaprT4kwSOQZpg","logger":"proxy.relay","timestamp":1785495194836,"message":"telegram -> client has been finished"}
+nginx-1  | 83.167.19.234 - [31/Jul/2026:10:53:14 +0000] "GET /relay/v1/c1771c319bba20d9583b6629aae3d834671e5c8498a396a6 HTTP/1.1" 101 510
+nginx-1  | 83.167.19.234 - [31/Jul/2026:10:53:14 +0000] "GET /relay/v1/c1771c319bba20d9583b6629aae3d834671e5c8498a396a6 HTTP/1.1" 101 198
+nginx-1  | 83.167.19.234 - [31/Jul/2026:10:53:14 +0000] "GET /relay/v1/c1771c319bba20d9583b6629aae3d834671e5c8498a396a6 HTTP/1.1" 101 189
+mtg-1    | {"level":"debug","dc":1,"client-ip":"83.167.19.234","stream-id":"iylvU8kMzxceAL3AWVtTuA","logger":"proxy.relay","timestamp":1785495194865,"message":"client -> telegram has been finished"}
+mtg-1    | {"level":"debug","dc":1,"client-ip":"83.167.19.234","stream-id":"iylvU8kMzxceAL3AWVtTuA","logger":"proxy.relay","timestamp":1785495194865,"message":"telegram -> client has been finished"}
+mtg-1    | {"level":"debug","dc":1,"client-ip":"83.167.19.234","stream-id":"QlPB7XJ1Z2jlEv__eu6ZRw","logger":"proxy.relay","timestamp":1785495194865,"message":"client -> telegram has been finished"}
+mtg-1    | {"level":"debug","dc":1,"client-ip":"83.167.19.234","stream-id":"QlPB7XJ1Z2jlEv__eu6ZRw","logger":"proxy.relay","timestamp":1785495194865,"message":"telegram -> client has been finished"}
+nginx-1  | 83.167.19.234 - [31/Jul/2026:10:53:14 +0000] "GET /relay/v1/c1771c319bba20d9583b6629aae3d834671e5c8498a396a6 HTTP/1.1" 101 179
+mtg-1    | {"level":"debug","dc":1,"client-ip":"83.167.19.234","stream-id":"DjTNI2DRD4DWr3kO6gIjxw","logger":"proxy.relay","timestamp":1785495194866,"message":"client -> telegram has been finished"}
+mtg-1    | {"level":"debug","dc":1,"client-ip":"83.167.19.234","stream-id":"DjTNI2DRD4DWr3kO6gIjxw","logger":"proxy.relay","timestamp":1785495194866,"message":"telegram -> client has been finished"}
+mtg-1    | {"level":"debug","dc":1,"client-ip":"83.167.19.234","stream-id":"enHNB9oPJug8Nm1RN7dXeg","logger":"proxy.relay","timestamp":1785495194867,"message":"client -> telegram has been finished"}
+mtg-1    | {"level":"debug","dc":1,"client-ip":"83.167.19.234","stream-id":"enHNB9oPJug8Nm1RN7dXeg","logger":"proxy.relay","timestamp":1785495194867,"message":"telegram -> client has been finished"}
+nginx-1  | 83.167.19.234 - [31/Jul/2026:10:53:14 +0000] "GET /relay/v1/c1771c319bba20d9583b6629aae3d834671e5c8498a396a6 HTTP/1.1" 101 174
+mtg-1    | {"level":"debug","dc":1,"client-ip":"83.167.19.234","stream-id":"5FPgQarpSOv69_8ZGZePXA","logger":"proxy.relay","timestamp":1785495194869,"message":"client -> telegram has been finished"}
+nginx-1  | 83.167.19.234 - [31/Jul/2026:10:53:14 +0000] "GET /relay/v1/c1771c319bba20d9583b6629aae3d834671e5c8498a396a6 HTTP/1.1" 101 143
+mtg-1    | {"level":"debug","dc":1,"client-ip":"83.167.19.234","stream-id":"4le5hgerzldA2IE0hs4Fqg","logger":"proxy.relay","timestamp":1785495194870,"message":"client -> telegram has been finished"}
+nginx-1  | 83.167.19.234 - [31/Jul/2026:10:53:14 +0000] "GET /relay/v1/c1771c319bba20d9583b6629aae3d834671e5c8498a396a6 HTTP/1.1" 101 134
+nginx-1  | 83.167.19.234 - [31/Jul/2026:10:53:14 +0000] "GET /relay/v1/c1771c319bba20d9583b6629aae3d834671e5c8498a396a6 HTTP/1.1" 101 120
+mtg-1    | {"level":"debug","dc":1,"client-ip":"83.167.19.234","stream-id":"rWWNh74h5ER0WufrYxmNYA","logger":"proxy.relay","timestamp":1785495194870,"message":"client -> telegram has been finished"}
+nginx-1  | 83.167.19.234 - [31/Jul/2026:10:53:14 +0000] "GET /relay/v1/c1771c319bba20d9583b6629aae3d834671e5c8498a396a6 HTTP/1.1" 101 112
+mtg-1    | {"level":"debug","dc":1,"client-ip":"83.167.19.234","stream-id":"3ba3TW7__dlQqf79-W3cjw","logger":"proxy.relay","timestamp":1785495194872,"message":"client -> telegram has been finished"}
+mtg-1    | {"level":"debug","dc":1,"client-ip":"83.167.19.234","stream-id":"GpStvEArEWzX588LiiaXmg","logger":"proxy.relay","timestamp":1785495194872,"message":"client -> telegram has been finished"}
+mtg-1    | {"level":"debug","dc":1,"client-ip":"83.167.19.234","stream-id":"rWWNh74h5ER0WufrYxmNYA","logger":"proxy.relay","timestamp":1785495194872,"message":"telegram -> client has been finished"}
+mtg-1    | {"level":"debug","dc":1,"client-ip":"83.167.19.234","stream-id":"qNgPOFvB73JljmmQrW-bYw","logger":"proxy.relay","timestamp":1785495194873,"message":"client -> telegram has been finished"}
+nginx-1  | 83.167.19.234 - [31/Jul/2026:10:53:14 +0000] "GET /relay/v1/c1771c319bba20d9583b6629aae3d834671e5c8498a396a6 HTTP/1.1" 101 111
+nginx-1  | 83.167.19.234 - [31/Jul/2026:10:53:14 +0000] "GET /relay/v1/c1771c319bba20d9583b6629aae3d834671e5c8498a396a6 HTTP/1.1" 101 107
+mtg-1    | {"level":"debug","dc":1,"client-ip":"83.167.19.234","stream-id":"4le5hgerzldA2IE0hs4Fqg","logger":"proxy.relay","timestamp":1785495194874,"message":"telegram -> client has been finished"}
+mtg-1    | {"level":"debug","dc":1,"client-ip":"83.167.19.234","stream-id":"qNgPOFvB73JljmmQrW-bYw","logger":"proxy.relay","timestamp":1785495194875,"message":"telegram -> client has been finished"}
+nginx-1  | 83.167.19.234 - [31/Jul/2026:10:53:14 +0000] "GET /relay/v1/c1771c319bba20d9583b6629aae3d834671e5c8498a396a6 HTTP/1.1" 101 168
+mtg-1    | {"level":"debug","dc":1,"client-ip":"83.167.19.234","stream-id":"5FPgQarpSOv69_8ZGZePXA","logger":"proxy.relay","timestamp":1785495194874,"message":"telegram -> client has been finished"}
+mtg-1    | {"level":"debug","dc":1,"client-ip":"83.167.19.234","stream-id":"-yUUOCythwM8FLfXVhJFpg","logger":"proxy.relay","timestamp":1785495194874,"message":"client -> telegram has been finished"}
+mtg-1    | {"level":"debug","dc":1,"client-ip":"83.167.19.234","stream-id":"ql7fBc1WQTBSmgFwLDEIEg","logger":"proxy.relay","timestamp":1785495194874,"message":"client -> telegram has been finished"}
+mtg-1    | {"level":"debug","dc":1,"client-ip":"83.167.19.234","stream-id":"3ba3TW7__dlQqf79-W3cjw","logger":"proxy.relay","timestamp":1785495194874,"message":"telegram -> client has been finished"}
+mtg-1    | {"level":"debug","dc":1,"client-ip":"83.167.19.234","stream-id":"GpStvEArEWzX588LiiaXmg","logger":"proxy.relay","timestamp":1785495194874,"message":"telegram -> client has been finished"}
+mtg-1    | {"level":"debug","dc":1,"client-ip":"83.167.19.234","stream-id":"vfXXUWvgbibD7xf506oYhw","logger":"proxy.relay","timestamp":1785495194874,"message":"client -> telegram has been finished"}
+mtg-1    | {"level":"debug","dc":1,"client-ip":"83.167.19.234","stream-id":"ZotkDUoHHNm0Fhrbymr-JQ","logger":"proxy.relay","timestamp":1785495194874,"message":"client -> telegram has been finished"}
+mtg-1    | {"level":"debug","dc":1,"client-ip":"83.167.19.234","stream-id":"ZotkDUoHHNm0Fhrbymr-JQ","logger":"proxy.relay","timestamp":1785495194877,"message":"telegram -> client has been finished"}
+nginx-1  | 83.167.19.234 - [31/Jul/2026:10:53:14 +0000] "GET /relay/v1/c1771c319bba20d9583b6629aae3d834671e5c8498a396a6 HTTP/1.1" 101 237
+nginx-1  | 83.167.19.234 - [31/Jul/2026:10:53:14 +0000] "GET /relay/v1/c1771c319bba20d9583b6629aae3d834671e5c8498a396a6 HTTP/1.1" 101 139
+nginx-1  | 83.167.19.234 - [31/Jul/2026:10:53:14 +0000] "GET /relay/v1/c1771c319bba20d9583b6629aae3d834671e5c8498a396a6 HTTP/1.1" 101 110
+mtg-1    | {"level":"debug","dc":1,"client-ip":"83.167.19.234","stream-id":"vfXXUWvgbibD7xf506oYhw","logger":"proxy.relay","timestamp":1785495194879,"message":"telegram -> client has been finished"}
+mtg-1    | {"level":"debug","dc":1,"client-ip":"83.167.19.234","stream-id":"-yUUOCythwM8FLfXVhJFpg","logger":"proxy.relay","timestamp":1785495194879,"message":"telegram -> client has been finished"}
+mtg-1    | {"level":"debug","dc":1,"client-ip":"83.167.19.234","stream-id":"s9EIfQ-ObpI1qJyfWC-YRQ","logger":"proxy.relay","timestamp":1785495194879,"message":"client -> telegram has been finished"}
+mtg-1    | {"level":"debug","dc":1,"client-ip":"83.167.19.234","stream-id":"ql7fBc1WQTBSmgFwLDEIEg","logger":"proxy.relay","timestamp":1785495194879,"message":"telegram -> client has been finished"}
+mtg-1    | {"level":"debug","dc":1,"client-ip":"83.167.19.234","stream-id":"s9EIfQ-ObpI1qJyfWC-YRQ","logger":"proxy.relay","timestamp":1785495194879,"message":"telegram -> client has been finished"}
+nginx-1  | 83.167.19.234 - [31/Jul/2026:10:53:14 +0000] "GET /relay/v1/c1771c319bba20d9583b6629aae3d834671e5c8498a396a6 HTTP/1.1" 101 206
+mtg-1    | {"level":"info","dc":2,"client-ip":"83.167.19.234","stream-id":"hpVq1zrsUaprT4kwSOQZpg","logger":"proxy","timestamp":1785495194895,"message":"Stream has been finished"}
+mtg-1    | {"level":"info","dc":1,"client-ip":"83.167.19.234","stream-id":"DjTNI2DRD4DWr3kO6gIjxw","logger":"proxy","timestamp":1785495195015,"message":"Stream has been finished"}
+mtg-1    | {"level":"info","dc":1,"client-ip":"83.167.19.234","stream-id":"rWWNh74h5ER0WufrYxmNYA","logger":"proxy","timestamp":1785495195020,"message":"Stream has been finished"}
+mtg-1    | {"level":"info","dc":1,"client-ip":"83.167.19.234","stream-id":"GpStvEArEWzX588LiiaXmg","logger":"proxy","timestamp":1785495195021,"message":"Stream has been finished"}
+mtg-1    | {"level":"info","dc":1,"client-ip":"83.167.19.234","stream-id":"iylvU8kMzxceAL3AWVtTuA","logger":"proxy","timestamp":1785495195022,"message":"Stream has been finished"}
+mtg-1    | {"level":"info","dc":1,"client-ip":"83.167.19.234","stream-id":"3ba3TW7__dlQqf79-W3cjw","logger":"proxy","timestamp":1785495195024,"message":"Stream has been finished"}
+mtg-1    | {"level":"info","dc":1,"client-ip":"83.167.19.234","stream-id":"-yUUOCythwM8FLfXVhJFpg","logger":"proxy","timestamp":1785495195026,"message":"Stream has been finished"}
+mtg-1    | {"level":"info","dc":1,"client-ip":"83.167.19.234","stream-id":"ZotkDUoHHNm0Fhrbymr-JQ","logger":"proxy","timestamp":1785495195027,"message":"Stream has been finished"}
+mtg-1    | {"level":"info","dc":1,"client-ip":"83.167.19.234","stream-id":"ql7fBc1WQTBSmgFwLDEIEg","logger":"proxy","timestamp":1785495195029,"message":"Stream has been finished"}
+mtg-1    | {"level":"info","dc":1,"client-ip":"83.167.19.234","stream-id":"QlPB7XJ1Z2jlEv__eu6ZRw","logger":"proxy","timestamp":1785495195032,"message":"Stream has been finished"}
+mtg-1    | {"level":"info","dc":1,"client-ip":"83.167.19.234","stream-id":"enHNB9oPJug8Nm1RN7dXeg","logger":"proxy","timestamp":1785495195033,"message":"Stream has been finished"}
+mtg-1    | {"level":"info","dc":1,"client-ip":"83.167.19.234","stream-id":"qNgPOFvB73JljmmQrW-bYw","logger":"proxy","timestamp":1785495195040,"message":"Stream has been finished"}
+mtg-1    | {"level":"info","dc":1,"client-ip":"83.167.19.234","stream-id":"4le5hgerzldA2IE0hs4Fqg","logger":"proxy","timestamp":1785495195040,"message":"Stream has been finished"}
+mtg-1    | {"level":"info","dc":1,"client-ip":"83.167.19.234","stream-id":"5FPgQarpSOv69_8ZGZePXA","logger":"proxy","timestamp":1785495195041,"message":"Stream has been finished"}
+mtg-1    | {"level":"info","dc":1,"client-ip":"83.167.19.234","stream-id":"vfXXUWvgbibD7xf506oYhw","logger":"proxy","timestamp":1785495195044,"message":"Stream has been finished"}
+mtg-1    | {"level":"info","dc":1,"client-ip":"83.167.19.234","stream-id":"s9EIfQ-ObpI1qJyfWC-YRQ","logger":"proxy","timestamp":1785495195048,"message":"Stream has been finished"}
+mtg-1    | {"level":"info","client-ip":"83.167.19.234","stream-id":"RTUEp6v8rtyCtOWOuefIkA","logger":"proxy","timestamp":1785495195247,"message":"Stream has been started"}
+mtg-1    | {"level":"info","client-ip":"83.167.19.234","stream-id":"qm2GpD31bPXQLDrIWuEjzg","logger":"proxy","timestamp":1785495195394,"message":"Stream has been started"}
+mtg-1    | {"level":"info","client-ip":"83.167.19.234","stream-id":"Ib4tgORiAYdEsZwoc5urZw","logger":"proxy","timestamp":1785495195400,"message":"Stream has been started"}
+mtg-1    | {"level":"info","client-ip":"83.167.19.234","stream-id":"RlroBjNBtQStVq0J0O0yfg","logger":"proxy","timestamp":1785495195495,"message":"Stream has been started"}
+mtg-1    | {"level":"info","client-ip":"83.167.19.234","stream-id":"jZffbx1qUxTBrfCstI8a5w","logger":"proxy","timestamp":1785495195496,"message":"Stream has been started"}
+mtg-1    | {"level":"info","client-ip":"83.167.19.234","stream-id":"TLQJMaSj2_OPE-2LfgEgTg","logger":"proxy","timestamp":1785495195496,"message":"Stream has been started"}
+mtg-1    | {"level":"info","client-ip":"83.167.19.234","stream-id":"msvmfxg2l06udSeS0uCB1Q","logger":"proxy","timestamp":1785495195496,"message":"Stream has been started"}
+mtg-1    | {"level":"info","client-ip":"83.167.19.234","stream-id":"wqe90lK8qCDFeEPtIBrTLQ","logger":"proxy","timestamp":1785495195496,"message":"Stream has been started"}
+mtg-1    | {"level":"info","client-ip":"83.167.19.234","stream-id":"4RUw3hbyV46QZpsLRXEh3Q","logger":"proxy","timestamp":1785495195498,"message":"Stream has been started"}
+mtg-1    | {"level":"info","client-ip":"83.167.19.234","stream-id":"dowJJbXZCWQmveps9OtHVA","logger":"proxy","timestamp":1785495195498,"message":"Stream has been started"}
+mtg-1    | {"level":"info","client-ip":"83.167.19.234","stream-id":"95cosJnQq_e5qvCJ6a9BzQ","logger":"proxy","timestamp":1785495195498,"message":"Stream has been started"}
+mtg-1    | {"level":"info","client-ip":"83.167.19.234","stream-id":"PvKj-PZTrKzqPFIGJfOwlg","logger":"proxy","timestamp":1785495195499,"message":"Stream has been started"}
+mtg-1    | {"level":"info","client-ip":"83.167.19.234","stream-id":"0ou3EULj0Biz082-HDi3nw","logger":"proxy","timestamp":1785495195500,"message":"Stream has been started"}
+mtg-1    | {"level":"info","client-ip":"83.167.19.234","stream-id":"qqR_kgcYw8Ge9FCIyrAe9g","logger":"proxy","timestamp":1785495195500,"message":"Stream has been started"}
+mtg-1    | {"level":"info","client-ip":"83.167.19.234","stream-id":"DSVPWvg0ilAobD7IilSQhg","logger":"proxy","timestamp":1785495195509,"message":"Stream has been started"}
+mtg-1    | {"level":"info","client-ip":"83.167.19.234","stream-id":"Jx9n4MNQuOQRgNEbqM_xOQ","logger":"proxy","timestamp":1785495195513,"message":"Stream has been started"}
+nginx-1  | 83.167.19.234 - [31/Jul/2026:10:53:15 +0000] "GET /relay/v1/c1771c319bba20d9583b6629aae3d834671e5c8498a396a6 HTTP/1.1" 101 499
+mtg-1    | {"level":"debug","dc":1,"client-ip":"83.167.19.234","stream-id":"RTUEp6v8rtyCtOWOuefIkA","logger":"proxy.relay","timestamp":1785495195889,"message":"client -> telegram has been finished"}
+mtg-1    | {"level":"debug","dc":1,"client-ip":"83.167.19.234","stream-id":"RTUEp6v8rtyCtOWOuefIkA","logger":"proxy.relay","timestamp":1785495195889,"message":"telegram -> client has been finished"}
+nginx-1  | 83.167.19.234 - [31/Jul/2026:10:53:15 +0000] "GET /relay/v1/c1771c319bba20d9583b6629aae3d834671e5c8498a396a6 HTTP/1.1" 101 1446
+mtg-1    | {"level":"debug","dc":2,"client-ip":"83.167.19.234","stream-id":"EiDImWxBoiL04Mt32bCQ4A","logger":"proxy.relay","timestamp":1785495195937,"message":"client -> telegram has been finished because of EOF. Written 1115 bytes"}
+mtg-1    | {"level":"debug","dc":2,"client-ip":"83.167.19.234","stream-id":"EiDImWxBoiL04Mt32bCQ4A","logger":"proxy.relay","timestamp":1785495195937,"message":"telegram -> client has been finished"}
+nginx-1  | 83.167.19.234 - [31/Jul/2026:10:53:15 +0000] "GET /relay/v1/c1771c319bba20d9583b6629aae3d834671e5c8498a396a6 HTTP/1.1" 101 896
+nginx-1  | 83.167.19.234 - [31/Jul/2026:10:53:15 +0000] "GET /relay/v1/c1771c319bba20d9583b6629aae3d834671e5c8498a396a6 HTTP/1.1" 101 0
+nginx-1  | 83.167.19.234 - [31/Jul/2026:10:53:15 +0000] "GET /relay/v1/c1771c319bba20d9583b6629aae3d834671e5c8498a396a6 HTTP/1.1" 101 0
+nginx-1  | 83.167.19.234 - [31/Jul/2026:10:53:15 +0000] "GET /relay/v1/c1771c319bba20d9583b6629aae3d834671e5c8498a396a6 HTTP/1.1" 101 134
+nginx-1  | 83.167.19.234 - [31/Jul/2026:10:53:15 +0000] "GET /relay/v1/c1771c319bba20d9583b6629aae3d834671e5c8498a396a6 HTTP/1.1" 101 0
+nginx-1  | 83.167.19.234 - [31/Jul/2026:10:53:15 +0000] "GET /relay/v1/c1771c319bba20d9583b6629aae3d834671e5c8498a396a6 HTTP/1.1" 101 39590
+nginx-1  | 83.167.19.234 - [31/Jul/2026:10:53:15 +0000] "GET /relay/v1/c1771c319bba20d9583b6629aae3d834671e5c8498a396a6 HTTP/1.1" 101 0
+nginx-1  | 83.167.19.234 - [31/Jul/2026:10:53:15 +0000] "GET /relay/v1/c1771c319bba20d9583b6629aae3d834671e5c8498a396a6 HTTP/1.1" 101 0
+nginx-1  | 83.167.19.234 - [31/Jul/2026:10:53:15 +0000] "GET /relay/v1/c1771c319bba20d9583b6629aae3d834671e5c8498a396a6 HTTP/1.1" 101 0
+nginx-1  | 83.167.19.234 - [31/Jul/2026:10:53:15 +0000] "GET /relay/v1/c1771c319bba20d9583b6629aae3d834671e5c8498a396a6 HTTP/1.1" 101 0
+nginx-1  | 83.167.19.234 - [31/Jul/2026:10:53:15 +0000] "GET /relay/v1/c1771c319bba20d9583b6629aae3d834671e5c8498a396a6 HTTP/1.1" 101 180
+nginx-1  | 83.167.19.234 - [31/Jul/2026:10:53:15 +0000] "GET /relay/v1/c1771c319bba20d9583b6629aae3d834671e5c8498a396a6 HTTP/1.1" 101 0
+nginx-1  | 83.167.19.234 - [31/Jul/2026:10:53:15 +0000] "GET /relay/v1/c1771c319bba20d9583b6629aae3d834671e5c8498a396a6 HTTP/1.1" 101 4070
+nginx-1  | 83.167.19.234 - [31/Jul/2026:10:53:15 +0000] "GET /relay/v1/c1771c319bba20d9583b6629aae3d834671e5c8498a396a6 HTTP/1.1" 101 0
+nginx-1  | 83.167.19.234 - [31/Jul/2026:10:53:15 +0000] "GET /relay/v1/c1771c319bba20d9583b6629aae3d834671e5c8498a396a6 HTTP/1.1" 101 106
+nginx-1  | 83.167.19.234 - [31/Jul/2026:10:53:15 +0000] "GET /relay/v1/c1771c319bba20d9583b6629aae3d834671e5c8498a396a6 HTTP/1.1" 101 0
+nginx-1  | 83.167.19.234 - [31/Jul/2026:10:53:15 +0000] "GET /relay/v1/c1771c319bba20d9583b6629aae3d834671e5c8498a396a6 HTTP/1.1" 101 0
+nginx-1  | 83.167.19.234 - [31/Jul/2026:10:53:15 +0000] "GET /relay/v1/c1771c319bba20d9583b6629aae3d834671e5c8498a396a6 HTTP/1.1" 101 0
+nginx-1  | 83.167.19.234 - [31/Jul/2026:10:53:15 +0000] "GET /relay/v1/c1771c319bba20d9583b6629aae3d834671e5c8498a396a6 HTTP/1.1" 101 0
+nginx-1  | 83.167.19.234 - [31/Jul/2026:10:53:15 +0000] "GET /relay/v1/c1771c319bba20d9583b6629aae3d834671e5c8498a396a6 HTTP/1.1" 101 0
+nginx-1  | 83.167.19.234 - [31/Jul/2026:10:53:15 +0000] "GET /relay/v1/c1771c319bba20d9583b6629aae3d834671e5c8498a396a6 HTTP/1.1" 101 0
+mtg-1    | {"level":"debug","failure-category":"peer-closed","bytes-read":0,"client-ip":"83.167.19.234","stream-id":"qBiu1am9h211bACBl8d91A","logger":"proxy","timestamp":1785495195947,"message":"WebSocket obfuscated handshake diagnostic"}
+mtg-1    | {"level":"info","client-ip":"83.167.19.234","stream-id":"qBiu1am9h211bACBl8d91A","logger":"proxy","error":"cannot process client handshake: cannot read frame: failed to get reader: failed to read frame header: EOF","timestamp":1785495195947,"message":"obfuscated handshake is failed"}
+mtg-1    | {"level":"info","client-ip":"83.167.19.234","stream-id":"qBiu1am9h211bACBl8d91A","logger":"proxy","timestamp":1785495195947,"message":"Stream has been finished"}
+mtg-1    | {"level":"debug","dc":1,"client-ip":"83.167.19.234","stream-id":"0ou3EULj0Biz082-HDi3nw","logger":"proxy.relay","timestamp":1785495195947,"message":"client -> telegram has been finished because of EOF. Written 53 bytes"}
+mtg-1    | {"level":"debug","dc":1,"client-ip":"83.167.19.234","stream-id":"dowJJbXZCWQmveps9OtHVA","logger":"proxy.relay","timestamp":1785495195948,"message":"client -> telegram has been finished because of EOF. Written 46 bytes"}
+mtg-1    | {"level":"debug","dc":1,"client-ip":"83.167.19.234","stream-id":"DSVPWvg0ilAobD7IilSQhg","logger":"proxy.relay","timestamp":1785495195948,"message":"client -> telegram has been finished because of EOF. Written 54 bytes"}
+mtg-1    | {"level":"debug","dc":1,"client-ip":"83.167.19.234","stream-id":"wqe90lK8qCDFeEPtIBrTLQ","logger":"proxy.relay","timestamp":1785495195948,"message":"client -> telegram has been finished because of EOF. Written 44 bytes"}
+mtg-1    | {"level":"debug","dc":1,"client-ip":"83.167.19.234","stream-id":"Jx9n4MNQuOQRgNEbqM_xOQ","logger":"proxy.relay","timestamp":1785495195948,"message":"client -> telegram has been finished because of EOF. Written 51 bytes"}
+mtg-1    | {"level":"debug","dc":1,"client-ip":"83.167.19.234","stream-id":"qqR_kgcYw8Ge9FCIyrAe9g","logger":"proxy.relay","timestamp":1785495195948,"message":"client -> telegram has been finished because of EOF. Written 54 bytes"}
+mtg-1    | {"level":"debug","failure-category":"peer-closed","bytes-read":0,"client-ip":"83.167.19.234","stream-id":"barWU8rTvx_E8rLnPvTcTg","logger":"proxy","timestamp":1785495195948,"message":"WebSocket obfuscated handshake diagnostic"}
+mtg-1    | {"level":"info","client-ip":"83.167.19.234","stream-id":"barWU8rTvx_E8rLnPvTcTg","logger":"proxy","error":"cannot process client handshake: cannot read frame: failed to get reader: failed to read frame header: EOF","timestamp":1785495195948,"message":"obfuscated handshake is failed"}
+mtg-1    | {"level":"info","client-ip":"83.167.19.234","stream-id":"barWU8rTvx_E8rLnPvTcTg","logger":"proxy","timestamp":1785495195948,"message":"Stream has been finished"}
+mtg-1    | {"level":"debug","dc":2,"client-ip":"83.167.19.234","stream-id":"QmVvNHeumYPHUffFJm7_4w","logger":"proxy.relay","timestamp":1785495195949,"message":"client -> telegram has been finished because of EOF. Written 3373 bytes"}
+mtg-1    | {"level":"debug","dc":1,"client-ip":"83.167.19.234","stream-id":"msvmfxg2l06udSeS0uCB1Q","logger":"proxy.relay","timestamp":1785495195949,"message":"client -> telegram has been finished because of EOF. Written 53 bytes"}
+mtg-1    | {"level":"debug","dc":1,"client-ip":"83.167.19.234","stream-id":"Ib4tgORiAYdEsZwoc5urZw","logger":"proxy.relay","timestamp":1785495195949,"message":"client -> telegram has been finished because of EOF. Written 52 bytes"}
+mtg-1    | {"level":"debug","dc":1,"client-ip":"83.167.19.234","stream-id":"jZffbx1qUxTBrfCstI8a5w","logger":"proxy.relay","timestamp":1785495195949,"message":"client -> telegram has been finished because of EOF. Written 56 bytes"}
+mtg-1    | {"level":"debug","dc":1,"client-ip":"83.167.19.234","stream-id":"TLQJMaSj2_OPE-2LfgEgTg","logger":"proxy.relay","timestamp":1785495195949,"message":"client -> telegram has been finished because of EOF. Written 48 bytes"}
+mtg-1    | {"level":"debug","dc":1,"client-ip":"83.167.19.234","stream-id":"qm2GpD31bPXQLDrIWuEjzg","logger":"proxy.relay","timestamp":1785495195949,"message":"client -> telegram has been finished because of EOF. Written 46 bytes"}
+mtg-1    | {"level":"debug","dc":1,"client-ip":"83.167.19.234","stream-id":"RlroBjNBtQStVq0J0O0yfg","logger":"proxy.relay","timestamp":1785495195949,"message":"client -> telegram has been finished because of EOF. Written 52 bytes"}
+mtg-1    | {"level":"debug","failure-category":"peer-closed","bytes-read":0,"client-ip":"83.167.19.234","stream-id":"LjayMMl13GdaVIz0O-YEuw","logger":"proxy","timestamp":1785495195949,"message":"WebSocket obfuscated handshake diagnostic"}
+mtg-1    | {"level":"info","client-ip":"83.167.19.234","stream-id":"LjayMMl13GdaVIz0O-YEuw","logger":"proxy","error":"cannot process client handshake: cannot read frame: failed to get reader: failed to read frame header: EOF","timestamp":1785495195949,"message":"obfuscated handshake is failed"}
+mtg-1    | {"level":"info","client-ip":"83.167.19.234","stream-id":"LjayMMl13GdaVIz0O-YEuw","logger":"proxy","timestamp":1785495195949,"message":"Stream has been finished"}
+mtg-1    | {"level":"debug","dc":1,"client-ip":"83.167.19.234","stream-id":"cw1fDoD9N9kU8VY-Ey_xXQ","logger":"proxy.relay","timestamp":1785495195949,"message":"client -> telegram has been finished because of EOF. Written 817 bytes"}
+mtg-1    | {"level":"debug","dc":1,"client-ip":"83.167.19.234","stream-id":"RlroBjNBtQStVq0J0O0yfg","logger":"proxy.relay","timestamp":1785495195949,"message":"telegram -> client has been finished"}
+mtg-1    | {"level":"debug","dc":2,"client-ip":"83.167.19.234","stream-id":"IXvk13EOmM67sT609ZTZfg","logger":"proxy.relay","timestamp":1785495195950,"message":"client -> telegram has been finished because of EOF. Written 1989 bytes"}
+mtg-1    | {"level":"debug","dc":1,"client-ip":"83.167.19.234","stream-id":"PvKj-PZTrKzqPFIGJfOwlg","logger":"proxy.relay","timestamp":1785495195950,"message":"client -> telegram has been finished because of EOF. Written 55 bytes"}
+mtg-1    | {"level":"debug","dc":2,"client-ip":"83.167.19.234","stream-id":"IXvk13EOmM67sT609ZTZfg","logger":"proxy.relay","timestamp":1785495195950,"message":"telegram -> client has been finished"}
+mtg-1    | {"level":"debug","dc":1,"client-ip":"83.167.19.234","stream-id":"4RUw3hbyV46QZpsLRXEh3Q","logger":"proxy.relay","timestamp":1785495195950,"message":"client -> telegram has been finished because of EOF. Written 50 bytes"}
+mtg-1    | {"level":"debug","dc":1,"client-ip":"83.167.19.234","stream-id":"95cosJnQq_e5qvCJ6a9BzQ","logger":"proxy.relay","timestamp":1785495195951,"message":"client -> telegram has been finished because of EOF. Written 45 bytes"}
+mtg-1    | {"level":"debug","dc":1,"client-ip":"83.167.19.234","stream-id":"95cosJnQq_e5qvCJ6a9BzQ","logger":"proxy.relay","timestamp":1785495195951,"message":"telegram -> client has been finished"}
+mtg-1    | {"level":"debug","dc":1,"client-ip":"83.167.19.234","stream-id":"cw1fDoD9N9kU8VY-Ey_xXQ","logger":"proxy.relay","timestamp":1785495195952,"message":"telegram -> client has been finished"}
+mtg-1    | {"level":"debug","dc":1,"client-ip":"83.167.19.234","stream-id":"4RUw3hbyV46QZpsLRXEh3Q","logger":"proxy.relay","timestamp":1785495195952,"message":"telegram -> client has been finished"}
+mtg-1    | {"level":"debug","dc":1,"client-ip":"83.167.19.234","stream-id":"qm2GpD31bPXQLDrIWuEjzg","logger":"proxy.relay","timestamp":1785495195952,"message":"telegram -> client has been finished"}
+mtg-1    | {"level":"debug","dc":1,"client-ip":"83.167.19.234","stream-id":"TLQJMaSj2_OPE-2LfgEgTg","logger":"proxy.relay","timestamp":1785495195953,"message":"telegram -> client has been finished"}
+mtg-1    | {"level":"debug","dc":1,"client-ip":"83.167.19.234","stream-id":"jZffbx1qUxTBrfCstI8a5w","logger":"proxy.relay","timestamp":1785495195953,"message":"telegram -> client has been finished"}
+mtg-1    | {"level":"debug","dc":1,"client-ip":"83.167.19.234","stream-id":"Ib4tgORiAYdEsZwoc5urZw","logger":"proxy.relay","timestamp":1785495195953,"message":"telegram -> client has been finished"}
+mtg-1    | {"level":"debug","dc":1,"client-ip":"83.167.19.234","stream-id":"msvmfxg2l06udSeS0uCB1Q","logger":"proxy.relay","timestamp":1785495195953,"message":"telegram -> client has been finished"}
+mtg-1    | {"level":"debug","dc":2,"client-ip":"83.167.19.234","stream-id":"QmVvNHeumYPHUffFJm7_4w","logger":"proxy.relay","timestamp":1785495195953,"message":"telegram -> client has been finished"}
+mtg-1    | {"level":"debug","dc":1,"client-ip":"83.167.19.234","stream-id":"qqR_kgcYw8Ge9FCIyrAe9g","logger":"proxy.relay","timestamp":1785495195953,"message":"telegram -> client has been finished"}
+mtg-1    | {"level":"debug","dc":1,"client-ip":"83.167.19.234","stream-id":"Jx9n4MNQuOQRgNEbqM_xOQ","logger":"proxy.relay","timestamp":1785495195953,"message":"telegram -> client has been finished"}
+mtg-1    | {"level":"debug","dc":1,"client-ip":"83.167.19.234","stream-id":"wqe90lK8qCDFeEPtIBrTLQ","logger":"proxy.relay","timestamp":1785495195953,"message":"telegram -> client has been finished"}
+mtg-1    | {"level":"debug","dc":1,"client-ip":"83.167.19.234","stream-id":"DSVPWvg0ilAobD7IilSQhg","logger":"proxy.relay","timestamp":1785495195953,"message":"telegram -> client has been finished"}
+mtg-1    | {"level":"debug","dc":1,"client-ip":"83.167.19.234","stream-id":"dowJJbXZCWQmveps9OtHVA","logger":"proxy.relay","timestamp":1785495195953,"message":"telegram -> client has been finished"}
+mtg-1    | {"level":"info","dc":1,"client-ip":"83.167.19.234","stream-id":"dowJJbXZCWQmveps9OtHVA","logger":"proxy","timestamp":1785495195957,"message":"Stream has been finished"}
+mtg-1    | {"level":"debug","dc":1,"client-ip":"83.167.19.234","stream-id":"0ou3EULj0Biz082-HDi3nw","logger":"proxy.relay","timestamp":1785495195953,"message":"telegram -> client has been finished"}
+mtg-1    | {"level":"debug","dc":1,"client-ip":"83.167.19.234","stream-id":"PvKj-PZTrKzqPFIGJfOwlg","logger":"proxy.relay","timestamp":1785495195953,"message":"telegram -> client has been finished"}
+mtg-1    | {"level":"info","dc":1,"client-ip":"83.167.19.234","stream-id":"TLQJMaSj2_OPE-2LfgEgTg","logger":"proxy","timestamp":1785495195959,"message":"Stream has been finished"}
+mtg-1    | {"level":"info","dc":1,"client-ip":"83.167.19.234","stream-id":"qqR_kgcYw8Ge9FCIyrAe9g","logger":"proxy","timestamp":1785495195963,"message":"Stream has been finished"}
+mtg-1    | {"level":"info","dc":1,"client-ip":"83.167.19.234","stream-id":"jZffbx1qUxTBrfCstI8a5w","logger":"proxy","timestamp":1785495195965,"message":"Stream has been finished"}
+mtg-1    | {"level":"info","dc":1,"client-ip":"83.167.19.234","stream-id":"0ou3EULj0Biz082-HDi3nw","logger":"proxy","timestamp":1785495195966,"message":"Stream has been finished"}
+mtg-1    | {"level":"info","dc":1,"client-ip":"83.167.19.234","stream-id":"wqe90lK8qCDFeEPtIBrTLQ","logger":"proxy","timestamp":1785495195969,"message":"Stream has been finished"}
+mtg-1    | {"level":"info","dc":1,"client-ip":"83.167.19.234","stream-id":"msvmfxg2l06udSeS0uCB1Q","logger":"proxy","timestamp":1785495195975,"message":"Stream has been finished"}
+mtg-1    | {"level":"info","dc":1,"client-ip":"83.167.19.234","stream-id":"Jx9n4MNQuOQRgNEbqM_xOQ","logger":"proxy","timestamp":1785495195979,"message":"Stream has been finished"}
+mtg-1    | {"level":"info","dc":1,"client-ip":"83.167.19.234","stream-id":"DSVPWvg0ilAobD7IilSQhg","logger":"proxy","timestamp":1785495195985,"message":"Stream has been finished"}
+mtg-1    | {"level":"info","dc":2,"client-ip":"83.167.19.234","stream-id":"EiDImWxBoiL04Mt32bCQ4A","logger":"proxy","timestamp":1785495195996,"message":"Stream has been finished"}
+mtg-1    | {"level":"info","dc":2,"client-ip":"83.167.19.234","stream-id":"IXvk13EOmM67sT609ZTZfg","logger":"proxy","timestamp":1785495196015,"message":"Stream has been finished"}
+mtg-1    | {"level":"info","dc":2,"client-ip":"83.167.19.234","stream-id":"QmVvNHeumYPHUffFJm7_4w","logger":"proxy","timestamp":1785495196023,"message":"Stream has been finished"}
+mtg-1    | {"level":"info","dc":1,"client-ip":"83.167.19.234","stream-id":"RTUEp6v8rtyCtOWOuefIkA","logger":"proxy","timestamp":1785495196037,"message":"Stream has been finished"}
+mtg-1    | {"level":"info","dc":1,"client-ip":"83.167.19.234","stream-id":"4RUw3hbyV46QZpsLRXEh3Q","logger":"proxy","timestamp":1785495196100,"message":"Stream has been finished"}
+mtg-1    | {"level":"info","dc":1,"client-ip":"83.167.19.234","stream-id":"RlroBjNBtQStVq0J0O0yfg","logger":"proxy","timestamp":1785495196102,"message":"Stream has been finished"}
+mtg-1    | {"level":"info","dc":1,"client-ip":"83.167.19.234","stream-id":"95cosJnQq_e5qvCJ6a9BzQ","logger":"proxy","timestamp":1785495196103,"message":"Stream has been finished"}
+mtg-1    | {"level":"info","dc":1,"client-ip":"83.167.19.234","stream-id":"qm2GpD31bPXQLDrIWuEjzg","logger":"proxy","timestamp":1785495196106,"message":"Stream has been finished"}
+mtg-1    | {"level":"info","dc":1,"client-ip":"83.167.19.234","stream-id":"PvKj-PZTrKzqPFIGJfOwlg","logger":"proxy","timestamp":1785495196106,"message":"Stream has been finished"}
+mtg-1    | {"level":"info","dc":1,"client-ip":"83.167.19.234","stream-id":"Ib4tgORiAYdEsZwoc5urZw","logger":"proxy","timestamp":1785495196112,"message":"Stream has been finished"}
+mtg-1    | {"level":"info","dc":1,"client-ip":"83.167.19.234","stream-id":"cw1fDoD9N9kU8VY-Ey_xXQ","logger":"proxy","timestamp":1785495196115,"message":"Stream has been finished"}
+mtg-1    | {"level":"info","client-ip":"83.167.19.234","stream-id":"d2ZcskhHC_8ZHX4wKfxPxg","logger":"proxy","timestamp":1785495196175,"message":"Stream has been started"}
+mtg-1    | {"level":"info","client-ip":"83.167.19.234","stream-id":"K-J00jxETkaO98TJdnor_g","logger":"proxy","timestamp":1785495196181,"message":"Stream has been started"}
+mtg-1    | {"level":"info","client-ip":"83.167.19.234","stream-id":"PfEmPEr7HLXNlbBtExrl-g","logger":"proxy","timestamp":1785495196186,"message":"Stream has been started"}
+mtg-1    | {"level":"info","client-ip":"83.167.19.234","stream-id":"6jahpk91F3RYfbvwyb7xiA","logger":"proxy","timestamp":1785495196192,"message":"Stream has been started"}
+mtg-1    | {"level":"info","client-ip":"83.167.19.234","stream-id":"uxrAW7cUbNn_mUf_nNwmtw","logger":"proxy","timestamp":1785495196245,"message":"Stream has been started"}
+mtg-1    | {"level":"info","client-ip":"83.167.19.234","stream-id":"Sv7VQSA1JyFph1JTgS3Wtg","logger":"proxy","timestamp":1785495196251,"message":"Stream has been started"}
+mtg-1    | {"level":"info","client-ip":"83.167.19.234","stream-id":"gZk33TxaSUWwkMIgjjjiBw","logger":"proxy","timestamp":1785495196253,"message":"Stream has been started"}
+mtg-1    | {"level":"info","client-ip":"83.167.19.234","stream-id":"LvLNDkW_JHKoryiHsWYatg","logger":"proxy","timestamp":1785495196288,"message":"Stream has been started"}
+mtg-1    | {"level":"info","client-ip":"83.167.19.234","stream-id":"kljON2JfkKdppvH7r__upw","logger":"proxy","timestamp":1785495196292,"message":"Stream has been started"}
+mtg-1    | {"level":"info","client-ip":"83.167.19.234","stream-id":"6j-nMBMcIiyGeZsSznmjYw","logger":"proxy","timestamp":1785495196298,"message":"Stream has been started"}
+mtg-1    | {"level":"info","client-ip":"83.167.19.234","stream-id":"ONePoJJqgFOk-bnGXXcjNg","logger":"proxy","timestamp":1785495196302,"message":"Stream has been started"}
+nginx-1  | 83.167.19.234 - [31/Jul/2026:10:53:16 +0000] "GET /relay/v1/c1771c319bba20d9583b6629aae3d834671e5c8498a396a6 HTTP/1.1" 101 373
+mtg-1    | {"level":"debug","dc":2,"client-ip":"83.167.19.234","stream-id":"Sv7VQSA1JyFph1JTgS3Wtg","logger":"proxy.relay","timestamp":1785495196682,"message":"client -> telegram has been finished"}
+mtg-1    | {"level":"debug","dc":2,"client-ip":"83.167.19.234","stream-id":"Sv7VQSA1JyFph1JTgS3Wtg","logger":"proxy.relay","timestamp":1785495196682,"message":"telegram -> client has been finished"}
+nginx-1  | 83.167.19.234 - [31/Jul/2026:10:53:16 +0000] "GET /relay/v1/c1771c319bba20d9583b6629aae3d834671e5c8498a396a6 HTTP/1.1" 101 0
+nginx-1  | 83.167.19.234 - [31/Jul/2026:10:53:16 +0000] "GET /relay/v1/c1771c319bba20d9583b6629aae3d834671e5c8498a396a6 HTTP/1.1" 101 0
+nginx-1  | 83.167.19.234 - [31/Jul/2026:10:53:16 +0000] "GET /relay/v1/c1771c319bba20d9583b6629aae3d834671e5c8498a396a6 HTTP/1.1" 101 0
+mtg-1    | {"level":"debug","failure-category":"peer-closed","bytes-read":0,"client-ip":"83.167.19.234","stream-id":"ONePoJJqgFOk-bnGXXcjNg","logger":"proxy","timestamp":1785495196692,"message":"WebSocket obfuscated handshake diagnostic"}
+mtg-1    | {"level":"info","client-ip":"83.167.19.234","stream-id":"ONePoJJqgFOk-bnGXXcjNg","logger":"proxy","error":"cannot process client handshake: cannot read frame: EOF","timestamp":1785495196693,"message":"obfuscated handshake is failed"}
+mtg-1    | {"level":"debug","failure-category":"peer-closed","bytes-read":0,"client-ip":"83.167.19.234","stream-id":"kljON2JfkKdppvH7r__upw","logger":"proxy","timestamp":1785495196693,"message":"WebSocket obfuscated handshake diagnostic"}
+mtg-1    | {"level":"info","client-ip":"83.167.19.234","stream-id":"kljON2JfkKdppvH7r__upw","logger":"proxy","error":"cannot process client handshake: cannot read frame: EOF","timestamp":1785495196693,"message":"obfuscated handshake is failed"}
+mtg-1    | {"level":"info","client-ip":"83.167.19.234","stream-id":"kljON2JfkKdppvH7r__upw","logger":"proxy","timestamp":1785495196693,"message":"Stream has been finished"}
+mtg-1    | {"level":"debug","failure-category":"peer-closed","bytes-read":0,"client-ip":"83.167.19.234","stream-id":"gZk33TxaSUWwkMIgjjjiBw","logger":"proxy","timestamp":1785495196693,"message":"WebSocket obfuscated handshake diagnostic"}
+mtg-1    | {"level":"info","client-ip":"83.167.19.234","stream-id":"gZk33TxaSUWwkMIgjjjiBw","logger":"proxy","error":"cannot process client handshake: cannot read frame: EOF","timestamp":1785495196693,"message":"obfuscated handshake is failed"}
+mtg-1    | {"level":"info","client-ip":"83.167.19.234","stream-id":"gZk33TxaSUWwkMIgjjjiBw","logger":"proxy","timestamp":1785495196693,"message":"Stream has been finished"}
+mtg-1    | {"level":"info","client-ip":"83.167.19.234","stream-id":"ONePoJJqgFOk-bnGXXcjNg","logger":"proxy","timestamp":1785495196693,"message":"Stream has been finished"}
+mtg-1    | {"level":"info","dc":2,"client-ip":"83.167.19.234","stream-id":"Sv7VQSA1JyFph1JTgS3Wtg","logger":"proxy","timestamp":1785495196743,"message":"Stream has been finished"}
+mtg-1    | {"level":"info","client-ip":"83.167.19.234","stream-id":"ejY9xDRx6XSSyitjnqyp5Q","logger":"proxy","timestamp":1785495196970,"message":"Stream has been started"}
+mtg-1    | {"level":"info","client-ip":"83.167.19.234","stream-id":"EunhDPtgaxZrCTvphB1phA","logger":"proxy","timestamp":1785495196978,"message":"Stream has been started"}
+mtg-1    | {"level":"info","client-ip":"83.167.19.234","stream-id":"xJfjNk1SWs0llCrpu39wSg","logger":"proxy","timestamp":1785495196990,"message":"Stream has been started"}
+mtg-1    | {"level":"info","client-ip":"83.167.19.234","stream-id":"9y3sy2Q46pUPuvjHagT2lQ","logger":"proxy","timestamp":1785495196996,"message":"Stream has been started"}
+mtg-1    | {"level":"info","client-ip":"83.167.19.234","stream-id":"deNqkQZBR2pZVi2EsDkT1w","logger":"proxy","timestamp":1785495197244,"message":"Stream has been started"}
+mtg-1    | {"level":"info","client-ip":"83.167.19.234","stream-id":"OY8JfnND4SybAucgGMF5iQ","logger":"proxy","timestamp":1785495197251,"message":"Stream has been started"}
+mtg-1    | {"level":"info","client-ip":"83.167.19.234","stream-id":"QJBn7N6O1AM1bpxNhFTyOw","logger":"proxy","timestamp":1785495197259,"message":"Stream has been started"}
+mtg-1    | {"level":"info","client-ip":"83.167.19.234","stream-id":"D3y2Q_gd_nwACZva9TdoIg","logger":"proxy","timestamp":1785495197263,"message":"Stream has been started"}
+mtg-1    | {"level":"info","client-ip":"83.167.19.234","stream-id":"45A8Ki5P9Fw_bIFnio7rRg","logger":"proxy","timestamp":1785495197269,"message":"Stream has been started"}
+mtg-1    | {"level":"info","client-ip":"83.167.19.234","stream-id":"Xy5Jy_7ogbkkg7vSeem3jA","logger":"proxy","timestamp":1785495197274,"message":"Stream has been started"}
+mtg-1    | {"level":"info","client-ip":"83.167.19.234","stream-id":"Y0giVImvIPbjX1ghyhz_xg","logger":"proxy","timestamp":1785495197274,"message":"Stream has been started"}
+mtg-1    | {"level":"info","client-ip":"83.167.19.234","stream-id":"CgIiMjQcpEjcX9Upj5V-Hw","logger":"proxy","timestamp":1785495197275,"message":"Stream has been started"}
+mtg-1    | {"level":"info","client-ip":"83.167.19.234","stream-id":"lHwAuJhRQYn5Awb2HpvvGg","logger":"proxy","timestamp":1785495197278,"message":"Stream has been started"}
+mtg-1    | {"level":"info","client-ip":"83.167.19.234","stream-id":"w8RPC42CDJCjn4qJvBIdaA","logger":"proxy","timestamp":1785495197282,"message":"Stream has been started"}
+mtg-1    | {"level":"info","client-ip":"83.167.19.234","stream-id":"3Xfy_gnQApw0Czwma3Sz0w","logger":"proxy","timestamp":1785495197286,"message":"Stream has been started"}
+mtg-1    | {"level":"info","client-ip":"83.167.19.234","stream-id":"iMwsbcZ3Zzfw3xWzwFWHgw","logger":"proxy","timestamp":1785495197288,"message":"Stream has been started"}
+mtg-1    | {"level":"info","client-ip":"83.167.19.234","stream-id":"A-jJ8Flg1P-ds7JjquNW8A","logger":"proxy","timestamp":1785495197291,"message":"Stream has been started"}
+mtg-1    | {"level":"info","client-ip":"83.167.19.234","stream-id":"H67rdS1J-3XTjhZjeH44TQ","logger":"proxy","timestamp":1785495197292,"message":"Stream has been started"}
+mtg-1    | {"level":"info","client-ip":"83.167.19.234","stream-id":"mbnK3huAYkdWmT1S8YHW0Q","logger":"proxy","timestamp":1785495197295,"message":"Stream has been started"}
+nginx-1  | 83.167.19.234 - [31/Jul/2026:10:53:17 +0000] "GET /relay/v1/c1771c319bba20d9583b6629aae3d834671e5c8498a396a6 HTTP/1.1" 101 302
+mtg-1    | {"level":"debug","dc":2,"client-ip":"83.167.19.234","stream-id":"LvLNDkW_JHKoryiHsWYatg","logger":"proxy.relay","timestamp":1785495197478,"message":"client -> telegram has been finished"}
+mtg-1    | {"level":"debug","dc":2,"client-ip":"83.167.19.234","stream-id":"LvLNDkW_JHKoryiHsWYatg","logger":"proxy.relay","timestamp":1785495197478,"message":"telegram -> client has been finished"}
+nginx-1  | 83.167.19.234 - [31/Jul/2026:10:53:17 +0000] "GET /relay/v1/c1771c319bba20d9583b6629aae3d834671e5c8498a396a6 HTTP/1.1" 101 0
+nginx-1  | 83.167.19.234 - [31/Jul/2026:10:53:17 +0000] "GET /relay/v1/c1771c319bba20d9583b6629aae3d834671e5c8498a396a6 HTTP/1.1" 101 449
+nginx-1  | 83.167.19.234 - [31/Jul/2026:10:53:17 +0000] "GET /relay/v1/c1771c319bba20d9583b6629aae3d834671e5c8498a396a6 HTTP/1.1" 101 102
+nginx-1  | 83.167.19.234 - [31/Jul/2026:10:53:17 +0000] "GET /relay/v1/c1771c319bba20d9583b6629aae3d834671e5c8498a396a6 HTTP/1.1" 101 0
+nginx-1  | 83.167.19.234 - [31/Jul/2026:10:53:17 +0000] "GET /relay/v1/c1771c319bba20d9583b6629aae3d834671e5c8498a396a6 HTTP/1.1" 101 0
+nginx-1  | 83.167.19.234 - [31/Jul/2026:10:53:17 +0000] "GET /relay/v1/c1771c319bba20d9583b6629aae3d834671e5c8498a396a6 HTTP/1.1" 101 117
+nginx-1  | 83.167.19.234 - [31/Jul/2026:10:53:17 +0000] "GET /relay/v1/c1771c319bba20d9583b6629aae3d834671e5c8498a396a6 HTTP/1.1" 101 112
+nginx-1  | 83.167.19.234 - [31/Jul/2026:10:53:17 +0000] "GET /relay/v1/c1771c319bba20d9583b6629aae3d834671e5c8498a396a6 HTTP/1.1" 101 463
+mtg-1    | {"level":"debug","dc":2,"client-ip":"83.167.19.234","stream-id":"6j-nMBMcIiyGeZsSznmjYw","logger":"proxy.relay","timestamp":1785495197488,"message":"client -> telegram has been finished"}
+mtg-1    | {"level":"debug","dc":2,"client-ip":"83.167.19.234","stream-id":"EunhDPtgaxZrCTvphB1phA","logger":"proxy.relay","timestamp":1785495197489,"message":"client -> telegram has been finished"}
+mtg-1    | {"level":"debug","dc":1,"client-ip":"83.167.19.234","stream-id":"uxrAW7cUbNn_mUf_nNwmtw","logger":"proxy.relay","timestamp":1785495197488,"message":"client -> telegram has been finished"}
+mtg-1    | {"level":"debug","failure-category":"peer-closed","bytes-read":0,"client-ip":"83.167.19.234","stream-id":"d2ZcskhHC_8ZHX4wKfxPxg","logger":"proxy","timestamp":1785495197489,"message":"WebSocket obfuscated handshake diagnostic"}
+mtg-1    | {"level":"info","client-ip":"83.167.19.234","stream-id":"d2ZcskhHC_8ZHX4wKfxPxg","logger":"proxy","error":"cannot process client handshake: cannot read frame: EOF","timestamp":1785495197489,"message":"obfuscated handshake is failed"}
+mtg-1    | {"level":"info","client-ip":"83.167.19.234","stream-id":"d2ZcskhHC_8ZHX4wKfxPxg","logger":"proxy","timestamp":1785495197489,"message":"Stream has been finished"}
+mtg-1    | {"level":"debug","dc":2,"client-ip":"83.167.19.234","stream-id":"xJfjNk1SWs0llCrpu39wSg","logger":"proxy.relay","timestamp":1785495197489,"message":"client -> telegram has been finished"}
+mtg-1    | {"level":"debug","failure-category":"peer-closed","bytes-read":0,"client-ip":"83.167.19.234","stream-id":"K-J00jxETkaO98TJdnor_g","logger":"proxy","timestamp":1785495197489,"message":"WebSocket obfuscated handshake diagnostic"}
+nginx-1  | 83.167.19.234 - [31/Jul/2026:10:53:17 +0000] "GET /relay/v1/c1771c319bba20d9583b6629aae3d834671e5c8498a396a6 HTTP/1.1" 101 0
+mtg-1    | {"level":"info","client-ip":"83.167.19.234","stream-id":"K-J00jxETkaO98TJdnor_g","logger":"proxy","error":"cannot process client handshake: cannot read frame: EOF","timestamp":1785495197489,"message":"obfuscated handshake is failed"}
+mtg-1    | {"level":"info","client-ip":"83.167.19.234","stream-id":"K-J00jxETkaO98TJdnor_g","logger":"proxy","timestamp":1785495197489,"message":"Stream has been finished"}
+mtg-1    | {"level":"debug","failure-category":"peer-closed","bytes-read":0,"client-ip":"83.167.19.234","stream-id":"PfEmPEr7HLXNlbBtExrl-g","logger":"proxy","timestamp":1785495197489,"message":"WebSocket obfuscated handshake diagnostic"}
+mtg-1    | {"level":"info","client-ip":"83.167.19.234","stream-id":"PfEmPEr7HLXNlbBtExrl-g","logger":"proxy","error":"cannot process client handshake: cannot read frame: EOF","timestamp":1785495197489,"message":"obfuscated handshake is failed"}
+mtg-1    | {"level":"info","client-ip":"83.167.19.234","stream-id":"PfEmPEr7HLXNlbBtExrl-g","logger":"proxy","timestamp":1785495197489,"message":"Stream has been finished"}
+mtg-1    | {"level":"debug","dc":2,"client-ip":"83.167.19.234","stream-id":"xJfjNk1SWs0llCrpu39wSg","logger":"proxy.relay","timestamp":1785495197489,"message":"telegram -> client has been finished"}
+mtg-1    | {"level":"debug","dc":1,"client-ip":"83.167.19.234","stream-id":"uxrAW7cUbNn_mUf_nNwmtw","logger":"proxy.relay","timestamp":1785495197490,"message":"telegram -> client has been finished"}
+mtg-1    | {"level":"debug","dc":2,"client-ip":"83.167.19.234","stream-id":"ejY9xDRx6XSSyitjnqyp5Q","logger":"proxy.relay","timestamp":1785495197490,"message":"client -> telegram has been finished"}
+mtg-1    | {"level":"debug","dc":2,"client-ip":"83.167.19.234","stream-id":"ejY9xDRx6XSSyitjnqyp5Q","logger":"proxy.relay","timestamp":1785495197490,"message":"telegram -> client has been finished"}
+mtg-1    | {"level":"debug","dc":2,"client-ip":"83.167.19.234","stream-id":"EunhDPtgaxZrCTvphB1phA","logger":"proxy.relay","timestamp":1785495197490,"message":"telegram -> client has been finished"}
+mtg-1    | {"level":"debug","dc":2,"client-ip":"83.167.19.234","stream-id":"6j-nMBMcIiyGeZsSznmjYw","logger":"proxy.relay","timestamp":1785495197491,"message":"telegram -> client has been finished"}
+mtg-1    | {"level":"debug","failure-category":"peer-closed","bytes-read":0,"client-ip":"83.167.19.234","stream-id":"6jahpk91F3RYfbvwyb7xiA","logger":"proxy","timestamp":1785495197491,"message":"WebSocket obfuscated handshake diagnostic"}
+mtg-1    | {"level":"info","client-ip":"83.167.19.234","stream-id":"6jahpk91F3RYfbvwyb7xiA","logger":"proxy","error":"cannot process client handshake: cannot read frame: EOF","timestamp":1785495197491,"message":"obfuscated handshake is failed"}
+mtg-1    | {"level":"info","client-ip":"83.167.19.234","stream-id":"6jahpk91F3RYfbvwyb7xiA","logger":"proxy","timestamp":1785495197491,"message":"Stream has been finished"}
+mtg-1    | {"level":"info","dc":2,"client-ip":"83.167.19.234","stream-id":"xJfjNk1SWs0llCrpu39wSg","logger":"proxy","timestamp":1785495197535,"message":"Stream has been finished"}
+mtg-1    | {"level":"info","dc":2,"client-ip":"83.167.19.234","stream-id":"EunhDPtgaxZrCTvphB1phA","logger":"proxy","timestamp":1785495197538,"message":"Stream has been finished"}
+mtg-1    | {"level":"info","dc":2,"client-ip":"83.167.19.234","stream-id":"LvLNDkW_JHKoryiHsWYatg","logger":"proxy","timestamp":1785495197546,"message":"Stream has been finished"}
+mtg-1    | {"level":"info","dc":2,"client-ip":"83.167.19.234","stream-id":"ejY9xDRx6XSSyitjnqyp5Q","logger":"proxy","timestamp":1785495197558,"message":"Stream has been finished"}
+mtg-1    | {"level":"info","dc":2,"client-ip":"83.167.19.234","stream-id":"6j-nMBMcIiyGeZsSznmjYw","logger":"proxy","timestamp":1785495197561,"message":"Stream has been finished"}
+nginx-1  | 83.167.19.234 - [31/Jul/2026:10:53:17 +0000] "GET /relay/v1/c1771c319bba20d9583b6629aae3d834671e5c8498a396a6 HTTP/1.1" 101 116
+mtg-1    | {"level":"debug","dc":2,"client-ip":"83.167.19.234","stream-id":"9y3sy2Q46pUPuvjHagT2lQ","logger":"proxy.relay","timestamp":1785495197622,"message":"client -> telegram has been finished"}
+mtg-1    | {"level":"debug","dc":2,"client-ip":"83.167.19.234","stream-id":"9y3sy2Q46pUPuvjHagT2lQ","logger":"proxy.relay","timestamp":1785495197622,"message":"telegram -> client has been finished"}
+mtg-1    | {"level":"info","dc":1,"client-ip":"83.167.19.234","stream-id":"uxrAW7cUbNn_mUf_nNwmtw","logger":"proxy","timestamp":1785495197644,"message":"Stream has been finished"}
+mtg-1    | {"level":"info","dc":2,"client-ip":"83.167.19.234","stream-id":"9y3sy2Q46pUPuvjHagT2lQ","logger":"proxy","timestamp":1785495197687,"message":"Stream has been finished"}
+mtg-1    | {"level":"debug","dc":1,"client-ip":"83.167.19.234","stream-id":"Y0giVImvIPbjX1ghyhz_xg","logger":"proxy.relay","timestamp":1785495197974,"message":"client -> telegram has been finished"}
+nginx-1  | 83.167.19.234 - [31/Jul/2026:10:53:17 +0000] "GET /relay/v1/c1771c319bba20d9583b6629aae3d834671e5c8498a396a6 HTTP/1.1" 101 144
+nginx-1  | 83.167.19.234 - [31/Jul/2026:10:53:17 +0000] "GET /relay/v1/c1771c319bba20d9583b6629aae3d834671e5c8498a396a6 HTTP/1.1" 101 154
+nginx-1  | 83.167.19.234 - [31/Jul/2026:10:53:17 +0000] "GET /relay/v1/c1771c319bba20d9583b6629aae3d834671e5c8498a396a6 HTTP/1.1" 101 234
+mtg-1    | {"level":"debug","dc":1,"client-ip":"83.167.19.234","stream-id":"Y0giVImvIPbjX1ghyhz_xg","logger":"proxy.relay","timestamp":1785495197974,"message":"telegram -> client has been finished"}
+nginx-1  | 83.167.19.234 - [31/Jul/2026:10:53:17 +0000] "GET /relay/v1/c1771c319bba20d9583b6629aae3d834671e5c8498a396a6 HTTP/1.1" 101 111
+mtg-1    | {"level":"debug","dc":1,"client-ip":"83.167.19.234","stream-id":"lHwAuJhRQYn5Awb2HpvvGg","logger":"proxy.relay","timestamp":1785495197975,"message":"client -> telegram has been finished"}
+mtg-1    | {"level":"debug","dc":1,"client-ip":"83.167.19.234","stream-id":"lHwAuJhRQYn5Awb2HpvvGg","logger":"proxy.relay","timestamp":1785495197975,"message":"telegram -> client has been finished"}
+nginx-1  | 83.167.19.234 - [31/Jul/2026:10:53:17 +0000] "GET /relay/v1/c1771c319bba20d9583b6629aae3d834671e5c8498a396a6 HTTP/1.1" 101 122
+nginx-1  | 83.167.19.234 - [31/Jul/2026:10:53:17 +0000] "GET /relay/v1/c1771c319bba20d9583b6629aae3d834671e5c8498a396a6 HTTP/1.1" 101 136
+nginx-1  | 83.167.19.234 - [31/Jul/2026:10:53:17 +0000] "GET /relay/v1/c1771c319bba20d9583b6629aae3d834671e5c8498a396a6 HTTP/1.1" 101 162
+mtg-1    | {"level":"debug","dc":1,"client-ip":"83.167.19.234","stream-id":"OY8JfnND4SybAucgGMF5iQ","logger":"proxy.relay","timestamp":1785495197976,"message":"client -> telegram has been finished"}
+mtg-1    | {"level":"debug","dc":1,"client-ip":"83.167.19.234","stream-id":"deNqkQZBR2pZVi2EsDkT1w","logger":"proxy.relay","timestamp":1785495197977,"message":"client -> telegram has been finished"}
+mtg-1    | {"level":"debug","dc":1,"client-ip":"83.167.19.234","stream-id":"QJBn7N6O1AM1bpxNhFTyOw","logger":"proxy.relay","timestamp":1785495197977,"message":"client -> telegram has been finished"}
+mtg-1    | {"level":"debug","dc":1,"client-ip":"83.167.19.234","stream-id":"QJBn7N6O1AM1bpxNhFTyOw","logger":"proxy.relay","timestamp":1785495197977,"message":"telegram -> client has been finished"}
+nginx-1  | 83.167.19.234 - [31/Jul/2026:10:53:17 +0000] "GET /relay/v1/c1771c319bba20d9583b6629aae3d834671e5c8498a396a6 HTTP/1.1" 101 232
+mtg-1    | {"level":"debug","dc":1,"client-ip":"83.167.19.234","stream-id":"D3y2Q_gd_nwACZva9TdoIg","logger":"proxy.relay","timestamp":1785495197978,"message":"client -> telegram has been finished"}
+mtg-1    | {"level":"debug","dc":1,"client-ip":"83.167.19.234","stream-id":"deNqkQZBR2pZVi2EsDkT1w","logger":"proxy.relay","timestamp":1785495197978,"message":"telegram -> client has been finished"}
+mtg-1    | {"level":"debug","dc":1,"client-ip":"83.167.19.234","stream-id":"w8RPC42CDJCjn4qJvBIdaA","logger":"proxy.relay","timestamp":1785495197979,"message":"client -> telegram has been finished"}
+nginx-1  | 83.167.19.234 - [31/Jul/2026:10:53:17 +0000] "GET /relay/v1/c1771c319bba20d9583b6629aae3d834671e5c8498a396a6 HTTP/1.1" 101 185
+mtg-1    | {"level":"debug","dc":1,"client-ip":"83.167.19.234","stream-id":"OY8JfnND4SybAucgGMF5iQ","logger":"proxy.relay","timestamp":1785495197978,"message":"telegram -> client has been finished"}
+nginx-1  | 83.167.19.234 - [31/Jul/2026:10:53:17 +0000] "GET /relay/v1/c1771c319bba20d9583b6629aae3d834671e5c8498a396a6 HTTP/1.1" 101 120
+nginx-1  | 83.167.19.234 - [31/Jul/2026:10:53:17 +0000] "GET /relay/v1/c1771c319bba20d9583b6629aae3d834671e5c8498a396a6 HTTP/1.1" 101 206
+nginx-1  | 83.167.19.234 - [31/Jul/2026:10:53:17 +0000] "GET /relay/v1/c1771c319bba20d9583b6629aae3d834671e5c8498a396a6 HTTP/1.1" 101 0
+mtg-1    | {"level":"debug","dc":1,"client-ip":"83.167.19.234","stream-id":"H67rdS1J-3XTjhZjeH44TQ","logger":"proxy.relay","timestamp":1785495197978,"message":"client -> telegram has been finished"}
+mtg-1    | {"level":"debug","dc":1,"client-ip":"83.167.19.234","stream-id":"iMwsbcZ3Zzfw3xWzwFWHgw","logger":"proxy.relay","timestamp":1785495197979,"message":"client -> telegram has been finished"}
+nginx-1  | 83.167.19.234 - [31/Jul/2026:10:53:17 +0000] "GET /relay/v1/c1771c319bba20d9583b6629aae3d834671e5c8498a396a6 HTTP/1.1" 101 106
+mtg-1    | {"level":"debug","dc":1,"client-ip":"83.167.19.234","stream-id":"iMwsbcZ3Zzfw3xWzwFWHgw","logger":"proxy.relay","timestamp":1785495197980,"message":"telegram -> client has been finished"}
+mtg-1    | {"level":"debug","dc":1,"client-ip":"83.167.19.234","stream-id":"Xy5Jy_7ogbkkg7vSeem3jA","logger":"proxy.relay","timestamp":1785495197978,"message":"client -> telegram has been finished"}
+mtg-1    | {"level":"debug","dc":1,"client-ip":"83.167.19.234","stream-id":"Xy5Jy_7ogbkkg7vSeem3jA","logger":"proxy.relay","timestamp":1785495197981,"message":"telegram -> client has been finished"}
+mtg-1    | {"level":"debug","dc":1,"client-ip":"83.167.19.234","stream-id":"H67rdS1J-3XTjhZjeH44TQ","logger":"proxy.relay","timestamp":1785495197981,"message":"telegram -> client has been finished"}
+nginx-1  | 83.167.19.234 - [31/Jul/2026:10:53:17 +0000] "GET /relay/v1/c1771c319bba20d9583b6629aae3d834671e5c8498a396a6 HTTP/1.1" 101 228
+mtg-1    | {"level":"debug","dc":1,"client-ip":"83.167.19.234","stream-id":"w8RPC42CDJCjn4qJvBIdaA","logger":"proxy.relay","timestamp":1785495197981,"message":"telegram -> client has been finished"}
+mtg-1    | {"level":"debug","dc":1,"client-ip":"83.167.19.234","stream-id":"3Xfy_gnQApw0Czwma3Sz0w","logger":"proxy.relay","timestamp":1785495197982,"message":"client -> telegram has been finished"}
+mtg-1    | {"level":"debug","dc":1,"client-ip":"83.167.19.234","stream-id":"A-jJ8Flg1P-ds7JjquNW8A","logger":"proxy.relay","timestamp":1785495197982,"message":"client -> telegram has been finished"}
+nginx-1  | 83.167.19.234 - [31/Jul/2026:10:53:17 +0000] "GET /relay/v1/c1771c319bba20d9583b6629aae3d834671e5c8498a396a6 HTTP/1.1" 101 220
+mtg-1    | {"level":"debug","dc":1,"client-ip":"83.167.19.234","stream-id":"45A8Ki5P9Fw_bIFnio7rRg","logger":"proxy.relay","timestamp":1785495197982,"message":"client -> telegram has been finished"}
+mtg-1    | {"level":"debug","dc":1,"client-ip":"83.167.19.234","stream-id":"A-jJ8Flg1P-ds7JjquNW8A","logger":"proxy.relay","timestamp":1785495197983,"message":"telegram -> client has been finished"}
+mtg-1    | {"level":"debug","dc":1,"client-ip":"83.167.19.234","stream-id":"3Xfy_gnQApw0Czwma3Sz0w","logger":"proxy.relay","timestamp":1785495197983,"message":"telegram -> client has been finished"}
+mtg-1    | {"level":"debug","dc":1,"client-ip":"83.167.19.234","stream-id":"CgIiMjQcpEjcX9Upj5V-Hw","logger":"proxy.relay","timestamp":1785495197983,"message":"client -> telegram has been finished"}
+mtg-1    | {"level":"debug","dc":1,"client-ip":"83.167.19.234","stream-id":"mbnK3huAYkdWmT1S8YHW0Q","logger":"proxy.relay","timestamp":1785495197984,"message":"client -> telegram has been finished"}
+mtg-1    | {"level":"debug","dc":1,"client-ip":"83.167.19.234","stream-id":"D3y2Q_gd_nwACZva9TdoIg","logger":"proxy.relay","timestamp":1785495197984,"message":"telegram -> client has been finished"}
+mtg-1    | {"level":"debug","dc":1,"client-ip":"83.167.19.234","stream-id":"CgIiMjQcpEjcX9Upj5V-Hw","logger":"proxy.relay","timestamp":1785495197984,"message":"telegram -> client has been finished"}
+mtg-1    | {"level":"debug","dc":1,"client-ip":"83.167.19.234","stream-id":"45A8Ki5P9Fw_bIFnio7rRg","logger":"proxy.relay","timestamp":1785495197984,"message":"telegram -> client has been finished"}
+mtg-1    | {"level":"debug","dc":1,"client-ip":"83.167.19.234","stream-id":"mbnK3huAYkdWmT1S8YHW0Q","logger":"proxy.relay","timestamp":1785495197985,"message":"telegram -> client has been finished"}
+mtg-1    | {"level":"info","dc":1,"client-ip":"83.167.19.234","stream-id":"A-jJ8Flg1P-ds7JjquNW8A","logger":"proxy","timestamp":1785495198126,"message":"Stream has been finished"}
+mtg-1    | {"level":"info","dc":1,"client-ip":"83.167.19.234","stream-id":"w8RPC42CDJCjn4qJvBIdaA","logger":"proxy","timestamp":1785495198127,"message":"Stream has been finished"}
+mtg-1    | {"level":"info","dc":1,"client-ip":"83.167.19.234","stream-id":"lHwAuJhRQYn5Awb2HpvvGg","logger":"proxy","timestamp":1785495198128,"message":"Stream has been finished"}
+mtg-1    | {"level":"info","dc":1,"client-ip":"83.167.19.234","stream-id":"deNqkQZBR2pZVi2EsDkT1w","logger":"proxy","timestamp":1785495198128,"message":"Stream has been finished"}
+mtg-1    | {"level":"info","dc":1,"client-ip":"83.167.19.234","stream-id":"Xy5Jy_7ogbkkg7vSeem3jA","logger":"proxy","timestamp":1785495198129,"message":"Stream has been finished"}
+mtg-1    | {"level":"info","dc":1,"client-ip":"83.167.19.234","stream-id":"45A8Ki5P9Fw_bIFnio7rRg","logger":"proxy","timestamp":1785495198132,"message":"Stream has been finished"}
+mtg-1    | {"level":"info","dc":1,"client-ip":"83.167.19.234","stream-id":"QJBn7N6O1AM1bpxNhFTyOw","logger":"proxy","timestamp":1785495198134,"message":"Stream has been finished"}
+mtg-1    | {"level":"info","dc":1,"client-ip":"83.167.19.234","stream-id":"CgIiMjQcpEjcX9Upj5V-Hw","logger":"proxy","timestamp":1785495198135,"message":"Stream has been finished"}
+mtg-1    | {"level":"info","dc":1,"client-ip":"83.167.19.234","stream-id":"mbnK3huAYkdWmT1S8YHW0Q","logger":"proxy","timestamp":1785495198137,"message":"Stream has been finished"}
+mtg-1    | {"level":"info","dc":1,"client-ip":"83.167.19.234","stream-id":"OY8JfnND4SybAucgGMF5iQ","logger":"proxy","timestamp":1785495198140,"message":"Stream has been finished"}
+mtg-1    | {"level":"info","dc":1,"client-ip":"83.167.19.234","stream-id":"Y0giVImvIPbjX1ghyhz_xg","logger":"proxy","timestamp":1785495198141,"message":"Stream has been finished"}
+mtg-1    | {"level":"info","dc":1,"client-ip":"83.167.19.234","stream-id":"H67rdS1J-3XTjhZjeH44TQ","logger":"proxy","timestamp":1785495198141,"message":"Stream has been finished"}
+mtg-1    | {"level":"info","dc":1,"client-ip":"83.167.19.234","stream-id":"iMwsbcZ3Zzfw3xWzwFWHgw","logger":"proxy","timestamp":1785495198143,"message":"Stream has been finished"}
+mtg-1    | {"level":"info","dc":1,"client-ip":"83.167.19.234","stream-id":"D3y2Q_gd_nwACZva9TdoIg","logger":"proxy","timestamp":1785495198144,"message":"Stream has been finished"}
+mtg-1    | {"level":"info","dc":1,"client-ip":"83.167.19.234","stream-id":"3Xfy_gnQApw0Czwma3Sz0w","logger":"proxy","timestamp":1785495198145,"message":"Stream has been finished"}
+mtg-1    | {"level":"info","client-ip":"83.167.19.234","stream-id":"FAFo1lpGdpLoUYq3X-Cjww","logger":"proxy","timestamp":1785495200655,"message":"Stream has been started"}
+mtg-1    | {"level":"info","client-ip":"83.167.19.234","stream-id":"zthxkLwkEgbjVX33GEI8NQ","logger":"proxy","timestamp":1785495200664,"message":"Stream has been started"}
+mtg-1    | {"level":"info","client-ip":"83.167.19.234","stream-id":"4aH7A3bo_aN0ti4tHQJj_A","logger":"proxy","timestamp":1785495200667,"message":"Stream has been started"}
+mtg-1    | {"level":"info","client-ip":"83.167.19.234","stream-id":"frK0RXVH4hfnvDq75cxtIQ","logger":"proxy","timestamp":1785495200672,"message":"Stream has been started"}
+mtg-1    | {"level":"info","client-ip":"83.167.19.234","stream-id":"IL4M5E1OIiIScfRbpywWqA","logger":"proxy","timestamp":1785495200675,"message":"Stream has been started"}
+mtg-1    | {"level":"info","client-ip":"83.167.19.234","stream-id":"lmHb8TgOmK_ICwgeuuE7rQ","logger":"proxy","timestamp":1785495200680,"message":"Stream has been started"}
+mtg-1    | {"level":"info","client-ip":"83.167.19.234","stream-id":"EgdU6AYFrGlrZLfbdGpeeg","logger":"proxy","timestamp":1785495200681,"message":"Stream has been started"}
+mtg-1    | {"level":"info","client-ip":"83.167.19.234","stream-id":"8S5R2ta4aNR0oe8TLRf4jg","logger":"proxy","timestamp":1785495200759,"message":"Stream has been started"}
+mtg-1    | {"level":"info","client-ip":"83.167.19.234","stream-id":"V1d7MbAnhgWROYiW_Mt7Pg","logger":"proxy","timestamp":1785495200762,"message":"Stream has been started"}
+mtg-1    | {"level":"info","client-ip":"83.167.19.234","stream-id":"RkLF4DLdKFTQa6eXFukmlw","logger":"proxy","timestamp":1785495200765,"message":"Stream has been started"}
+mtg-1    | {"level":"info","client-ip":"83.167.19.234","stream-id":"CSS22LY6ORJIGIHSO7siyQ","logger":"proxy","timestamp":1785495200769,"message":"Stream has been started"}
+mtg-1    | {"level":"info","client-ip":"83.167.19.234","stream-id":"JFU22idlJdylscpvMo4XuA","logger":"proxy","timestamp":1785495200771,"message":"Stream has been started"}
+nginx-1  | 83.167.19.234 - [31/Jul/2026:10:53:21 +0000] "GET /relay/v1/c1771c319bba20d9583b6629aae3d834671e5c8498a396a6 HTTP/1.1" 101 380
+mtg-1    | {"level":"debug","dc":1,"client-ip":"83.167.19.234","stream-id":"V1d7MbAnhgWROYiW_Mt7Pg","logger":"proxy.relay","timestamp":1785495201359,"message":"client -> telegram has been finished"}
+mtg-1    | {"level":"debug","dc":1,"client-ip":"83.167.19.234","stream-id":"V1d7MbAnhgWROYiW_Mt7Pg","logger":"proxy.relay","timestamp":1785495201359,"message":"telegram -> client has been finished"}
+nginx-1  | 83.167.19.234 - [31/Jul/2026:10:53:21 +0000] "GET /relay/v1/c1771c319bba20d9583b6629aae3d834671e5c8498a396a6 HTTP/1.1" 101 0
+nginx-1  | 83.167.19.234 - [31/Jul/2026:10:53:21 +0000] "GET /relay/v1/c1771c319bba20d9583b6629aae3d834671e5c8498a396a6 HTTP/1.1" 101 0
+nginx-1  | 83.167.19.234 - [31/Jul/2026:10:53:21 +0000] "GET /relay/v1/c1771c319bba20d9583b6629aae3d834671e5c8498a396a6 HTTP/1.1" 101 0
+nginx-1  | 83.167.19.234 - [31/Jul/2026:10:53:21 +0000] "GET /relay/v1/c1771c319bba20d9583b6629aae3d834671e5c8498a396a6 HTTP/1.1" 101 0
+nginx-1  | 83.167.19.234 - [31/Jul/2026:10:53:21 +0000] "GET /relay/v1/c1771c319bba20d9583b6629aae3d834671e5c8498a396a6 HTTP/1.1" 101 0
+mtg-1    | {"level":"debug","failure-category":"peer-closed","bytes-read":0,"client-ip":"83.167.19.234","stream-id":"IL4M5E1OIiIScfRbpywWqA","logger":"proxy","timestamp":1785495201370,"message":"WebSocket obfuscated handshake diagnostic"}
+mtg-1    | {"level":"info","client-ip":"83.167.19.234","stream-id":"IL4M5E1OIiIScfRbpywWqA","logger":"proxy","error":"cannot process client handshake: cannot read frame: EOF","timestamp":1785495201370,"message":"obfuscated handshake is failed"}
+mtg-1    | {"level":"info","client-ip":"83.167.19.234","stream-id":"IL4M5E1OIiIScfRbpywWqA","logger":"proxy","timestamp":1785495201370,"message":"Stream has been finished"}
+mtg-1    | {"level":"debug","failure-category":"peer-closed","bytes-read":0,"client-ip":"83.167.19.234","stream-id":"EgdU6AYFrGlrZLfbdGpeeg","logger":"proxy","timestamp":1785495201370,"message":"WebSocket obfuscated handshake diagnostic"}
+mtg-1    | {"level":"info","client-ip":"83.167.19.234","stream-id":"EgdU6AYFrGlrZLfbdGpeeg","logger":"proxy","error":"cannot process client handshake: cannot read frame: EOF","timestamp":1785495201370,"message":"obfuscated handshake is failed"}
+mtg-1    | {"level":"info","client-ip":"83.167.19.234","stream-id":"EgdU6AYFrGlrZLfbdGpeeg","logger":"proxy","timestamp":1785495201370,"message":"Stream has been finished"}
+mtg-1    | {"level":"debug","failure-category":"peer-closed","bytes-read":0,"client-ip":"83.167.19.234","stream-id":"RkLF4DLdKFTQa6eXFukmlw","logger":"proxy","timestamp":1785495201370,"message":"WebSocket obfuscated handshake diagnostic"}
+mtg-1    | {"level":"info","client-ip":"83.167.19.234","stream-id":"RkLF4DLdKFTQa6eXFukmlw","logger":"proxy","error":"cannot process client handshake: cannot read frame: EOF","timestamp":1785495201370,"message":"obfuscated handshake is failed"}
+mtg-1    | {"level":"info","client-ip":"83.167.19.234","stream-id":"RkLF4DLdKFTQa6eXFukmlw","logger":"proxy","timestamp":1785495201370,"message":"Stream has been finished"}
+mtg-1    | {"level":"debug","failure-category":"peer-closed","bytes-read":0,"client-ip":"83.167.19.234","stream-id":"FAFo1lpGdpLoUYq3X-Cjww","logger":"proxy","timestamp":1785495201370,"message":"WebSocket obfuscated handshake diagnostic"}
+mtg-1    | {"level":"info","client-ip":"83.167.19.234","stream-id":"FAFo1lpGdpLoUYq3X-Cjww","logger":"proxy","error":"cannot process client handshake: cannot read frame: EOF","timestamp":1785495201370,"message":"obfuscated handshake is failed"}
+mtg-1    | {"level":"info","client-ip":"83.167.19.234","stream-id":"FAFo1lpGdpLoUYq3X-Cjww","logger":"proxy","timestamp":1785495201370,"message":"Stream has been finished"}
+mtg-1    | {"level":"debug","failure-category":"peer-closed","bytes-read":0,"client-ip":"83.167.19.234","stream-id":"frK0RXVH4hfnvDq75cxtIQ","logger":"proxy","timestamp":1785495201371,"message":"WebSocket obfuscated handshake diagnostic"}
+mtg-1    | {"level":"info","client-ip":"83.167.19.234","stream-id":"frK0RXVH4hfnvDq75cxtIQ","logger":"proxy","error":"cannot process client handshake: cannot read frame: EOF","timestamp":1785495201371,"message":"obfuscated handshake is failed"}
+mtg-1    | {"level":"info","client-ip":"83.167.19.234","stream-id":"frK0RXVH4hfnvDq75cxtIQ","logger":"proxy","timestamp":1785495201371,"message":"Stream has been finished"}
+mtg-1    | {"level":"info","dc":1,"client-ip":"83.167.19.234","stream-id":"V1d7MbAnhgWROYiW_Mt7Pg","logger":"proxy","timestamp":1785495201520,"message":"Stream has been finished"}
+mtg-1    | {"level":"info","client-ip":"83.167.19.234","stream-id":"SGJf4H-ntnw4_bQhL232Zg","logger":"proxy","timestamp":1785495201668,"message":"Stream has been started"}
+mtg-1    | {"level":"info","client-ip":"83.167.19.234","stream-id":"iTHDc9MnekpqEBaZpTYMrg","logger":"proxy","timestamp":1785495201675,"message":"Stream has been started"}
+mtg-1    | {"level":"info","client-ip":"83.167.19.234","stream-id":"EeCl_5LROQAa8FLYLoF4dQ","logger":"proxy","timestamp":1785495201678,"message":"Stream has been started"}
+mtg-1    | {"level":"info","client-ip":"83.167.19.234","stream-id":"BHToviSnFmQofMp-BX_xpg","logger":"proxy","timestamp":1785495201685,"message":"Stream has been started"}
+mtg-1    | {"level":"debug","dc":2,"client-ip":"83.167.19.234","stream-id":"lmHb8TgOmK_ICwgeuuE7rQ","logger":"proxy.relay","timestamp":1785495201909,"message":"client -> telegram has been finished"}
+mtg-1    | {"level":"debug","dc":2,"client-ip":"83.167.19.234","stream-id":"lmHb8TgOmK_ICwgeuuE7rQ","logger":"proxy.relay","timestamp":1785495201909,"message":"telegram -> client has been finished"}
+nginx-1  | 83.167.19.234 - [31/Jul/2026:10:53:21 +0000] "GET /relay/v1/c1771c319bba20d9583b6629aae3d834671e5c8498a396a6 HTTP/1.1" 101 0
+nginx-1  | 83.167.19.234 - [31/Jul/2026:10:53:21 +0000] "GET /relay/v1/c1771c319bba20d9583b6629aae3d834671e5c8498a396a6 HTTP/1.1" 101 0
+nginx-1  | 83.167.19.234 - [31/Jul/2026:10:53:21 +0000] "GET /relay/v1/c1771c319bba20d9583b6629aae3d834671e5c8498a396a6 HTTP/1.1" 101 508
+nginx-1  | 83.167.19.234 - [31/Jul/2026:10:53:21 +0000] "GET /relay/v1/c1771c319bba20d9583b6629aae3d834671e5c8498a396a6 HTTP/1.1" 101 0
+nginx-1  | 83.167.19.234 - [31/Jul/2026:10:53:21 +0000] "GET /relay/v1/c1771c319bba20d9583b6629aae3d834671e5c8498a396a6 HTTP/1.1" 101 0
+nginx-1  | 83.167.19.234 - [31/Jul/2026:10:53:21 +0000] "GET /relay/v1/c1771c319bba20d9583b6629aae3d834671e5c8498a396a6 HTTP/1.1" 101 826
+nginx-1  | 83.167.19.234 - [31/Jul/2026:10:53:21 +0000] "GET /relay/v1/c1771c319bba20d9583b6629aae3d834671e5c8498a396a6 HTTP/1.1" 101 807
+nginx-1  | 83.167.19.234 - [31/Jul/2026:10:53:21 +0000] "GET /relay/v1/c1771c319bba20d9583b6629aae3d834671e5c8498a396a6 HTTP/1.1" 101 125337
+nginx-1  | 83.167.19.234 - [31/Jul/2026:10:53:21 +0000] "GET /relay/v1/c1771c319bba20d9583b6629aae3d834671e5c8498a396a6 HTTP/1.1" 101 790
+nginx-1  | 83.167.19.234 - [31/Jul/2026:10:53:21 +0000] "GET /relay/v1/c1771c319bba20d9583b6629aae3d834671e5c8498a396a6 HTTP/1.1" 101 778
+mtg-1    | {"level":"debug","dc":2,"client-ip":"83.167.19.234","stream-id":"CSS22LY6ORJIGIHSO7siyQ","logger":"proxy.relay","timestamp":1785495201921,"message":"client -> telegram has been finished"}
+mtg-1    | {"level":"debug","dc":2,"client-ip":"83.167.19.234","stream-id":"4aH7A3bo_aN0ti4tHQJj_A","logger":"proxy.relay","timestamp":1785495201921,"message":"client -> telegram has been finished"}
+mtg-1    | {"level":"debug","dc":2,"client-ip":"83.167.19.234","stream-id":"JFU22idlJdylscpvMo4XuA","logger":"proxy.relay","timestamp":1785495201921,"message":"client -> telegram has been finished"}
+mtg-1    | {"level":"debug","dc":2,"client-ip":"83.167.19.234","stream-id":"zthxkLwkEgbjVX33GEI8NQ","logger":"proxy.relay","timestamp":1785495201921,"message":"client -> telegram has been finished"}
+mtg-1    | {"level":"debug","dc":2,"client-ip":"83.167.19.234","stream-id":"zthxkLwkEgbjVX33GEI8NQ","logger":"proxy.relay","timestamp":1785495201921,"message":"telegram -> client has been finished"}
+mtg-1    | {"level":"debug","dc":2,"client-ip":"83.167.19.234","stream-id":"8S5R2ta4aNR0oe8TLRf4jg","logger":"proxy.relay","timestamp":1785495201921,"message":"client -> telegram has been finished"}
+mtg-1    | {"level":"debug","dc":2,"client-ip":"83.167.19.234","stream-id":"8S5R2ta4aNR0oe8TLRf4jg","logger":"proxy.relay","timestamp":1785495201921,"message":"telegram -> client has been finished"}
+mtg-1    | {"level":"debug","dc":2,"client-ip":"83.167.19.234","stream-id":"JFU22idlJdylscpvMo4XuA","logger":"proxy.relay","timestamp":1785495201921,"message":"telegram -> client has been finished"}
+mtg-1    | {"level":"debug","dc":2,"client-ip":"83.167.19.234","stream-id":"4aH7A3bo_aN0ti4tHQJj_A","logger":"proxy.relay","timestamp":1785495201922,"message":"telegram -> client has been finished"}
+mtg-1    | {"level":"debug","dc":2,"client-ip":"83.167.19.234","stream-id":"CSS22LY6ORJIGIHSO7siyQ","logger":"proxy.relay","timestamp":1785495201922,"message":"telegram -> client has been finished"}
+mtg-1    | {"level":"debug","dc":1,"client-ip":"83.167.19.234","stream-id":"SGJf4H-ntnw4_bQhL232Zg","logger":"proxy.relay","timestamp":1785495201944,"message":"client -> telegram has been finished"}
+mtg-1    | {"level":"debug","dc":1,"client-ip":"83.167.19.234","stream-id":"SGJf4H-ntnw4_bQhL232Zg","logger":"proxy.relay","timestamp":1785495201944,"message":"telegram -> client has been finished"}
+mtg-1    | {"level":"info","dc":2,"client-ip":"83.167.19.234","stream-id":"lmHb8TgOmK_ICwgeuuE7rQ","logger":"proxy","timestamp":1785495201968,"message":"Stream has been finished"}
+mtg-1    | {"level":"debug","dc":1,"client-ip":"83.167.19.234","stream-id":"BHToviSnFmQofMp-BX_xpg","logger":"proxy.relay","timestamp":1785495201968,"message":"client -> telegram has been finished"}
+mtg-1    | {"level":"debug","dc":1,"client-ip":"83.167.19.234","stream-id":"BHToviSnFmQofMp-BX_xpg","logger":"proxy.relay","timestamp":1785495201968,"message":"telegram -> client has been finished"}
+mtg-1    | {"level":"debug","dc":1,"client-ip":"83.167.19.234","stream-id":"EeCl_5LROQAa8FLYLoF4dQ","logger":"proxy.relay","timestamp":1785495201980,"message":"client -> telegram has been finished"}
+mtg-1    | {"level":"debug","dc":1,"client-ip":"83.167.19.234","stream-id":"EeCl_5LROQAa8FLYLoF4dQ","logger":"proxy.relay","timestamp":1785495201980,"message":"telegram -> client has been finished"}
+mtg-1    | {"level":"info","dc":2,"client-ip":"83.167.19.234","stream-id":"JFU22idlJdylscpvMo4XuA","logger":"proxy","timestamp":1785495201980,"message":"Stream has been finished"}
+mtg-1    | {"level":"debug","dc":1,"client-ip":"83.167.19.234","stream-id":"iTHDc9MnekpqEBaZpTYMrg","logger":"proxy.relay","timestamp":1785495201980,"message":"client -> telegram has been finished"}
+mtg-1    | {"level":"debug","dc":1,"client-ip":"83.167.19.234","stream-id":"iTHDc9MnekpqEBaZpTYMrg","logger":"proxy.relay","timestamp":1785495201980,"message":"telegram -> client has been finished"}
+mtg-1    | {"level":"info","dc":2,"client-ip":"83.167.19.234","stream-id":"4aH7A3bo_aN0ti4tHQJj_A","logger":"proxy","timestamp":1785495201982,"message":"Stream has been finished"}
+mtg-1    | {"level":"info","dc":2,"client-ip":"83.167.19.234","stream-id":"8S5R2ta4aNR0oe8TLRf4jg","logger":"proxy","timestamp":1785495201983,"message":"Stream has been finished"}
+mtg-1    | {"level":"info","dc":2,"client-ip":"83.167.19.234","stream-id":"zthxkLwkEgbjVX33GEI8NQ","logger":"proxy","timestamp":1785495201985,"message":"Stream has been finished"}
+mtg-1    | {"level":"info","dc":2,"client-ip":"83.167.19.234","stream-id":"CSS22LY6ORJIGIHSO7siyQ","logger":"proxy","timestamp":1785495201988,"message":"Stream has been finished"}
+mtg-1    | {"level":"info","dc":1,"client-ip":"83.167.19.234","stream-id":"SGJf4H-ntnw4_bQhL232Zg","logger":"proxy","timestamp":1785495202091,"message":"Stream has been finished"}
+mtg-1    | {"level":"info","dc":1,"client-ip":"83.167.19.234","stream-id":"BHToviSnFmQofMp-BX_xpg","logger":"proxy","timestamp":1785495202118,"message":"Stream has been finished"}
+mtg-1    | {"level":"info","dc":1,"client-ip":"83.167.19.234","stream-id":"EeCl_5LROQAa8FLYLoF4dQ","logger":"proxy","timestamp":1785495202143,"message":"Stream has been finished"}
+mtg-1    | {"level":"info","dc":1,"client-ip":"83.167.19.234","stream-id":"iTHDc9MnekpqEBaZpTYMrg","logger":"proxy","timestamp":1785495202147,"message":"Stream has been finished"}

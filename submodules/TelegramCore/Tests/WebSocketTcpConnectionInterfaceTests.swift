@@ -1,7 +1,95 @@
 import Foundation
+import ObjectiveC
 import XCTest
 import MtProtoKit
 @testable import TelegramCore
+
+private final class TcpConnectionTestEncryptionProvider: NSObject, EncryptionProvider {
+    func createBignumContext() -> MTBignumContext {
+        preconditionFailure("Not needed by MTTcpConnection startup tests")
+    }
+
+    func rsaEncrypt(withPublicKey publicKey: String, data: Data) -> Data? {
+        preconditionFailure("Not needed by MTTcpConnection startup tests")
+    }
+
+    func rsaEncryptPKCS1OAEP(withPublicKey publicKey: String, data: Data) -> Data? {
+        preconditionFailure("Not needed by MTTcpConnection startup tests")
+    }
+
+    func parseRSAPublicKey(_ publicKey: String) -> MTRsaPublicKey {
+        preconditionFailure("Not needed by MTTcpConnection startup tests")
+    }
+
+    func macosRSAEncrypt(_ publicKey: String, data: Data) -> Data {
+        preconditionFailure("Not needed by MTTcpConnection startup tests")
+    }
+}
+
+private final class CapturingTcpConnectionInterface: NSObject, MTTcpConnectionInterface {
+    struct Read: Equatable {
+        let length: UInt
+        let tag: Int
+    }
+
+    weak var delegate: MTTcpConnectionInterfaceDelegate?
+    private let delegateQueue: DispatchQueue
+    private let lock = NSLock()
+    private var capturedWrites: [Data] = []
+    private var capturedReads: [Read] = []
+
+    init(delegate: MTTcpConnectionInterfaceDelegate, delegateQueue: DispatchQueue) {
+        self.delegate = delegate
+        self.delegateQueue = delegateQueue
+    }
+
+    var writes: [Data] {
+        self.lock.lock()
+        defer { self.lock.unlock() }
+        return self.capturedWrites
+    }
+
+    var reads: [Read] {
+        self.lock.lock()
+        defer { self.lock.unlock() }
+        return self.capturedReads
+    }
+
+    func setGetLogPrefix(_ getLogPrefix: (() -> String)?) {
+    }
+
+    func setUsageCalculationInfo(_ usageCalculationInfo: MTNetworkUsageCalculationInfo?) {
+    }
+
+    func connect(toHost inHost: String, onPort port: UInt16, viaInterface inInterface: String?, withTimeout timeout: TimeInterval, error errPtr: NSErrorPointer) -> Bool {
+        return true
+    }
+
+    func write(_ data: Data) {
+        self.lock.lock()
+        self.capturedWrites.append(data)
+        self.lock.unlock()
+    }
+
+    func readData(toLength length: UInt, withTimeout timeout: TimeInterval, tag: Int) {
+        self.lock.lock()
+        self.capturedReads.append(Read(length: length, tag: tag))
+        self.lock.unlock()
+    }
+
+    func disconnect() {
+    }
+
+    func resetDelegate() {
+        self.delegate = nil
+    }
+
+    func simulateOpen() {
+        self.delegateQueue.async { [weak self] in
+            self?.delegate?.connectionInterfaceDidConnect()
+        }
+    }
+}
 
 final class WebSocketTcpConnectionInterfaceTests: XCTestCase {
     func testOneMessageSatisfiesMultipleReads() throws {
@@ -153,6 +241,94 @@ final class WebSocketTcpConnectionInterfaceTests: XCTestCase {
         XCTAssertNotEqual(NSSelectorFromString("makeTcpConnectionInterface"), NSSelectorFromString("makeWebSocketTcpConnectionInterface"))
     }
 
+    func testWebSocketTcpConnectionWaitsForOpenBeforeWritingObfuscated2Stream() throws {
+        let settings = MTSocksProxySettings(
+            ip: "127.0.0.1",
+            port: 443,
+            webSocketPath: "/relay",
+            webSocketToken: "synthetic-token"
+        )
+        let apiEnvironment = MTApiEnvironment(deviceModelName: "TelegramCoreTests")
+            .withUpdatedSocksProxySettings(settings)
+        let context = MTContext(
+            serialization: Serialization(),
+            encryptionProvider: TcpConnectionTestEncryptionProvider(),
+            apiEnvironment: apiEnvironment,
+            isTestingEnvironment: false,
+            useTempAuthKeys: false
+        )
+
+        let interfaceCreated = self.expectation(description: "WebSocket connection interface created")
+        var capturingInterface: CapturingTcpConnectionInterface?
+        context.makeWebSocketTcpConnectionInterface = { _, delegate, delegateQueue in
+            let interface = CapturingTcpConnectionInterface(delegate: delegate, delegateQueue: delegateQueue)
+            capturingInterface = interface
+            interfaceCreated.fulfill()
+            return interface
+        }
+
+        let address = MTDatacenterAddress(
+            ip: "149.154.167.50",
+            port: 443,
+            preferForMedia: false,
+            restrictToTcp: true,
+            cdn: false,
+            preferForProxy: false,
+            secret: nil
+        )
+        let scheme = MTTransportScheme(transport: MTTcpTransport.self, address: address, media: false)
+        let connection = try self.makeTcpConnection(context: context, datacenterId: 4, scheme: scheme)
+        defer { self.invokeVoid(connection, selector: NSSelectorFromString("stop")) }
+
+        let payload = Data([0x10, 0x20, 0x30, 0x40, 0x50])
+        self.invokeSendDatas(connection, datas: [payload])
+        self.invokeVoid(connection, selector: NSSelectorFromString("start"))
+
+        self.wait(for: [interfaceCreated], timeout: 2.0)
+        let interface = try XCTUnwrap(capturingInterface)
+        self.waitForTcpQueue()
+        XCTAssertEqual(interface.writes, [])
+        XCTAssertEqual(interface.reads, [])
+
+        interface.simulateOpen()
+        self.waitForTcpQueue()
+        let firstWrite = try XCTUnwrap(interface.writes.first)
+        XCTAssertGreaterThanOrEqual(firstWrite.count, 64 + 4 + payload.count)
+        XCTAssertFalse(firstWrite.starts(with: Data([0x05, 0x01, 0x00])))
+
+        let wireHeader = firstWrite.subdata(in: 0 ..< 64)
+        let encryptedFrame = firstWrite.subdata(in: 64 ..< firstWrite.count)
+        let decryptedStream = try self.decryptObfuscated2Stream(
+            wireHeader: wireHeader,
+            encryptedFrame: encryptedFrame
+        )
+        XCTAssertEqual(decryptedStream.subdata(in: 56 ..< 60), Data([0xdd, 0xdd, 0xdd, 0xdd]))
+        XCTAssertEqual(decryptedStream.subdata(in: 60 ..< 62), Data([0x04, 0x00]))
+
+        let frame = decryptedStream.subdata(in: 64 ..< decryptedStream.count)
+        let framedLength = frame.prefix(4).withUnsafeBytes { bytes in
+            Int(UInt32(littleEndian: bytes.loadUnaligned(as: UInt32.self)))
+        }
+        XCTAssertEqual(framedLength, frame.count - 4)
+        XCTAssertGreaterThanOrEqual(framedLength, payload.count)
+        XCTAssertLessThan(framedLength - payload.count, 16)
+        XCTAssertEqual(frame.subdata(in: 4 ..< 4 + payload.count), payload)
+        XCTAssertEqual(interface.reads.map(\.length), [4])
+    }
+
+    func testSocksTcpConnectionStillStartsMethodNegotiation() throws {
+        try self.assertSocksStartup(
+            username: nil,
+            password: nil,
+            expectedGreeting: Data([0x05, 0x01, 0x00])
+        )
+        try self.assertSocksStartup(
+            username: "user",
+            password: "password",
+            expectedGreeting: Data([0x05, 0x02, 0x00, 0x02])
+        )
+    }
+
     func testSecretlessObfuscated2HeaderAndFirstFrameUseContinuousCtr() throws {
         let prefix = try self.makeEncryptedObfuscated2Prefix(datacenterTag: 4)
         let decryptedStream = try self.decryptObfuscated2Stream(
@@ -234,6 +410,55 @@ final class WebSocketTcpConnectionInterfaceTests: XCTestCase {
         )
     }
 
+    private func assertSocksStartup(username: String?, password: String?, expectedGreeting: Data) throws {
+        let settings = MTSocksProxySettings(
+            ip: "127.0.0.1",
+            port: 1080,
+            username: username,
+            password: password,
+            secret: nil
+        )
+        let apiEnvironment = MTApiEnvironment(deviceModelName: "TelegramCoreTests")
+            .withUpdatedSocksProxySettings(settings)
+        let context = MTContext(
+            serialization: Serialization(),
+            encryptionProvider: TcpConnectionTestEncryptionProvider(),
+            apiEnvironment: apiEnvironment,
+            isTestingEnvironment: false,
+            useTempAuthKeys: false
+        )
+
+        let interfaceCreated = self.expectation(description: "SOCKS connection interface created")
+        var capturingInterface: CapturingTcpConnectionInterface?
+        context.makeTcpConnectionInterface = { delegate, delegateQueue in
+            let interface = CapturingTcpConnectionInterface(delegate: delegate, delegateQueue: delegateQueue)
+            capturingInterface = interface
+            interfaceCreated.fulfill()
+            return interface
+        }
+
+        let address = MTDatacenterAddress(
+            ip: "149.154.167.50",
+            port: 443,
+            preferForMedia: false,
+            restrictToTcp: true,
+            cdn: false,
+            preferForProxy: false,
+            secret: nil
+        )
+        let scheme = MTTransportScheme(transport: MTTcpTransport.self, address: address, media: false)
+        let connection = try self.makeTcpConnection(context: context, datacenterId: 4, scheme: scheme)
+        defer { self.invokeVoid(connection, selector: NSSelectorFromString("stop")) }
+
+        self.invokeVoid(connection, selector: NSSelectorFromString("start"))
+        self.wait(for: [interfaceCreated], timeout: 2.0)
+        let interface = try XCTUnwrap(capturingInterface)
+        self.waitForTcpQueue()
+
+        XCTAssertEqual(interface.writes, [expectedGreeting])
+        XCTAssertEqual(interface.reads.map(\.length), [2])
+    }
+
     private func makeEncryptedObfuscated2Prefix(datacenterTag: Int16) throws -> (
         randomBytes: Data,
         wireHeader: Data,
@@ -277,6 +502,67 @@ final class WebSocketTcpConnectionInterfaceTests: XCTestCase {
         return try XCTUnwrap(MTAesCtrDecrypt(stream, key, iv))
     }
 
+    private func makeTcpConnection(context: MTContext, datacenterId: Int, scheme: MTTransportScheme) throws -> AnyObject {
+        guard let connectionClass = NSClassFromString("MTTcpConnection") else {
+            throw TcpConnectionRuntimeError.classNotFound
+        }
+        let selector = NSSelectorFromString("initWithContext:datacenterId:scheme:interface:usageCalculationInfo:getLogPrefix:")
+        guard
+            let instance = class_createInstance(connectionClass, 0) as AnyObject?,
+            let method = class_getInstanceMethod(connectionClass, selector)
+        else {
+            throw TcpConnectionRuntimeError.methodNotFound
+        }
+        typealias Function = @convention(c) (
+            AnyObject,
+            Selector,
+            MTContext,
+            Int,
+            MTTransportScheme,
+            NSString?,
+            MTNetworkUsageCalculationInfo?,
+            AnyObject?
+        ) -> AnyObject
+        let function = unsafeBitCast(method_getImplementation(method), to: Function.self)
+        return function(instance, selector, context, datacenterId, scheme, nil, nil, nil)
+    }
+
+    private func invokeVoid(_ object: AnyObject, selector: Selector) {
+        guard let method = class_getInstanceMethod(type(of: object), selector) else {
+            XCTFail("Missing Objective-C method \(selector)")
+            return
+        }
+        typealias Function = @convention(c) (AnyObject, Selector) -> Void
+        let function = unsafeBitCast(method_getImplementation(method), to: Function.self)
+        function(object, selector)
+    }
+
+    private func invokeSendDatas(_ object: AnyObject, datas: [Data]) {
+        let selector = NSSelectorFromString("sendDatas:completion:requestQuickAck:expectDataInResponse:")
+        guard let method = class_getInstanceMethod(type(of: object), selector) else {
+            XCTFail("Missing Objective-C method \(selector)")
+            return
+        }
+        typealias Function = @convention(c) (AnyObject, Selector, NSArray, AnyObject?, Bool, Bool) -> Void
+        let function = unsafeBitCast(method_getImplementation(method), to: Function.self)
+        function(object, selector, datas as NSArray, nil, false, false)
+    }
+
+    private func waitForTcpQueue() {
+        guard
+            let connectionClass = NSClassFromString("MTTcpConnection"),
+            let method = class_getClassMethod(connectionClass, NSSelectorFromString("tcpQueue"))
+        else {
+            XCTFail("Missing MTTcpConnection.tcpQueue")
+            return
+        }
+        typealias Function = @convention(c) (AnyClass, Selector) -> MTQueue
+        let function = unsafeBitCast(method_getImplementation(method), to: Function.self)
+        let queue = function(connectionClass, NSSelectorFromString("tcpQueue"))
+        queue.dispatch(onQueue: {
+        }, synchronous: true)
+    }
+
     private func data(hex: String) throws -> Data {
         guard hex.count.isMultiple(of: 2) else {
             throw HexDataError.invalidLength
@@ -298,6 +584,11 @@ final class WebSocketTcpConnectionInterfaceTests: XCTestCase {
     private enum HexDataError: Error {
         case invalidLength
         case invalidByte
+    }
+
+    private enum TcpConnectionRuntimeError: Error {
+        case classNotFound
+        case methodNotFound
     }
 
     private func sendQueueOutput(

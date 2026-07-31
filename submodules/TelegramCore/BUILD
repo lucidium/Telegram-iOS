@@ -44,6 +44,7 @@ swift_library(
     deps = [
         ":TelegramCore",
         "//submodules/MtProtoKit:MtProtoKit",
+        "//submodules/SSignalKit/SwiftSignalKit:SwiftSignalKit",
     ],
 )
 

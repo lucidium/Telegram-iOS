@@ -1101,7 +1101,9 @@ struct ctr_state {
                     __autoreleasing NSError *error = nil;
                     if (![strongSelf->_socket connectToHost:connectionData.ip onPort:connectionData.port viaInterface:strongSelf->_interface withTimeout:12 error:&error] || error != nil) {
                         [strongSelf closeAndNotifyWithError:true];
-                    } else if (strongSelf->_webSocketSettings == nil && strongSelf->_socksIp == nil) {
+                    } else if (strongSelf->_webSocketSettings != nil) {
+                        // The WebSocket open callback owns readiness and starts the Obfuscated2 stream.
+                    } else if (strongSelf->_socksIp == nil) {
                         if (strongSelf->_mtpIp != nil && [strongSelf->_mtpSecret isKindOfClass:[MTProxySecretType2 class]]) {
                             MTProxySecretType2 *secret = (MTProxySecretType2 *)(strongSelf->_mtpSecret);
                             NSMutableData *helloData = MTCreateSafariClientHello(secret.domain, strongSelf->_encryptionProvider);

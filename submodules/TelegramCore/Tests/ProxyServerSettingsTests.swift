@@ -1,7 +1,29 @@
 import Foundation
 import XCTest
 import MtProtoKit
+import SwiftSignalKit
 @testable import TelegramCore
+
+private final class ManagedProxySettingsTestHarness {
+    private(set) var currentSettings: MTSocksProxySettings?
+    private(set) var updateCount: Int = 0
+    private(set) var connectionStatusDropCount: Int = 0
+
+    init(currentSettings: MTSocksProxySettings?) {
+        self.currentSettings = currentSettings
+    }
+
+    func update(
+        settings: MTSocksProxySettings?,
+        shouldUpdate: @escaping (MTSocksProxySettings?) -> Bool
+    ) {
+        if shouldUpdate(self.currentSettings) {
+            self.connectionStatusDropCount += 1
+            self.updateCount += 1
+            self.currentSettings = settings
+        }
+    }
+}
 
 final class ProxyServerSettingsTests: XCTestCase {
     private func token(byteCount: Int = 32) -> String {
@@ -111,6 +133,135 @@ final class ProxyServerSettingsTests: XCTestCase {
         XCTAssertFalse(settings.isEqual(differentToken))
     }
     
+    func testManagedProxySettingsSuppressesInitialNilAndEquivalentSettings() {
+        let settingsPipe = ValuePipe<MTSocksProxySettings?>()
+        let harness = ManagedProxySettingsTestHarness(currentSettings: nil)
+        let disposable = managedProxySettings(settingsPipe.signal(), update: harness.update)
+        defer {
+            disposable.dispose()
+        }
+
+        settingsPipe.putNext(nil)
+        XCTAssertEqual(harness.updateCount, 0)
+        XCTAssertEqual(harness.connectionStatusDropCount, 0)
+
+        let settings = MTSocksProxySettings(
+            ip: "relay.example.com",
+            port: 443,
+            webSocketPath: "/relay/test/a",
+            webSocketToken: self.token()
+        )
+        settingsPipe.putNext(settings)
+        XCTAssertEqual(harness.updateCount, 1)
+        XCTAssertEqual(harness.connectionStatusDropCount, 1)
+        XCTAssertTrue(harness.currentSettings?.isEqual(settings) == true)
+
+        settingsPipe.putNext(MTSocksProxySettings(
+            ip: "relay.example.com",
+            port: 443,
+            webSocketPath: "/relay/test/a",
+            webSocketToken: self.token()
+        ))
+        XCTAssertEqual(harness.updateCount, 1)
+        XCTAssertEqual(harness.connectionStatusDropCount, 1)
+    }
+
+    func testManagedProxySettingsDetectsEveryWebSocketIdentityChange() {
+        let token = self.token()
+        let initial = MTSocksProxySettings(
+            ip: "relay.example.com",
+            port: 443,
+            webSocketPath: "/relay/test/a",
+            webSocketToken: token
+        )
+        let settingsPipe = ValuePipe<MTSocksProxySettings?>()
+        let harness = ManagedProxySettingsTestHarness(currentSettings: initial)
+        let disposable = managedProxySettings(settingsPipe.signal(), update: harness.update)
+        defer {
+            disposable.dispose()
+        }
+
+        settingsPipe.putNext(MTSocksProxySettings(
+            ip: "relay.example.com",
+            port: 443,
+            webSocketPath: "/relay/test/a",
+            webSocketToken: token
+        ))
+        XCTAssertEqual(harness.updateCount, 0)
+        XCTAssertEqual(harness.connectionStatusDropCount, 0)
+
+        let replacements = [
+            MTSocksProxySettings(ip: "other.example.com", port: 443, webSocketPath: "/relay/test/a", webSocketToken: token),
+            MTSocksProxySettings(ip: "other.example.com", port: 8443, webSocketPath: "/relay/test/a", webSocketToken: token),
+            MTSocksProxySettings(ip: "other.example.com", port: 8443, webSocketPath: "/relay/test/b", webSocketToken: token),
+            MTSocksProxySettings(ip: "other.example.com", port: 8443, webSocketPath: "/relay/test/b", webSocketToken: self.token(byteCount: 33))
+        ]
+        for (index, replacement) in replacements.enumerated() {
+            settingsPipe.putNext(replacement)
+            XCTAssertEqual(harness.updateCount, index + 1)
+            XCTAssertEqual(harness.connectionStatusDropCount, index + 1)
+            XCTAssertTrue(harness.currentSettings?.isEqual(replacement) == true)
+        }
+    }
+
+    func testManagedProxySettingsSwitchesProxyTypesAndDisablesProxy() {
+        let webSocket = MTSocksProxySettings(
+            ip: "relay.example.com",
+            port: 443,
+            webSocketPath: "/relay/test/a",
+            webSocketToken: self.token()
+        )
+        let socks5 = MTSocksProxySettings(
+            ip: "proxy.example.com",
+            port: 1080,
+            username: "synthetic-user",
+            password: "synthetic-password",
+            secret: nil
+        )
+        let mtProxy = MTSocksProxySettings(
+            ip: "mtp.example.com",
+            port: 443,
+            username: nil,
+            password: nil,
+            secret: Data(repeating: 1, count: 16)
+        )
+        let settingsPipe = ValuePipe<MTSocksProxySettings?>()
+        let harness = ManagedProxySettingsTestHarness(currentSettings: webSocket)
+        let disposable = managedProxySettings(settingsPipe.signal(), update: harness.update)
+        defer {
+            disposable.dispose()
+        }
+
+        settingsPipe.putNext(socks5)
+        XCTAssertEqual(harness.updateCount, 1)
+        XCTAssertTrue(harness.currentSettings?.isEqual(socks5) == true)
+
+        settingsPipe.putNext(mtProxy)
+        XCTAssertEqual(harness.updateCount, 2)
+        XCTAssertTrue(harness.currentSettings?.isEqual(mtProxy) == true)
+
+        settingsPipe.putNext(nil)
+        XCTAssertEqual(harness.updateCount, 3)
+        XCTAssertEqual(harness.connectionStatusDropCount, 3)
+        XCTAssertNil(harness.currentSettings)
+    }
+
+    func testManagedProxySettingsDisposalStopsUpdates() {
+        let settingsPipe = ValuePipe<MTSocksProxySettings?>()
+        let harness = ManagedProxySettingsTestHarness(currentSettings: nil)
+        let disposable = managedProxySettings(settingsPipe.signal(), update: harness.update)
+
+        disposable.dispose()
+        settingsPipe.putNext(MTSocksProxySettings(
+            ip: "relay.example.com",
+            port: 443,
+            webSocketPath: "/relay/test/a",
+            webSocketToken: self.token()
+        ))
+        XCTAssertEqual(harness.updateCount, 0)
+        XCTAssertEqual(harness.connectionStatusDropCount, 0)
+    }
+
     func testWebSocketRelayValidationAcceptsCanonicalSettings() throws {
         let token = self.token()
         let url = try XCTUnwrap(ProxyServerWebSocketRelayValidation.validatedURL(

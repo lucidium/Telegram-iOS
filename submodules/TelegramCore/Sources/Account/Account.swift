@@ -65,6 +65,49 @@ func _internal_test(_ network: Network) -> Signal<Bool, String> {
     }
 }
 
+func managedProxySettings(
+    _ settings: Signal<MTSocksProxySettings?, NoError>,
+    update: @escaping (MTSocksProxySettings?, @escaping (MTSocksProxySettings?) -> Bool) -> Void
+) -> Disposable {
+    return settings.start(next: { updated in
+        update(updated, { current in
+            if let current, let updated {
+                return !current.isEqual(updated)
+            } else {
+                return (current != nil) != (updated != nil)
+            }
+        })
+    })
+}
+
+private func managedProxySettings(
+    accountManager: AccountManager<TelegramAccountManagerTypes>,
+    network: Network
+) -> Disposable {
+    let settings = accountManager.sharedData(keys: [SharedDataKeys.proxySettings])
+    |> map { sharedData -> ProxyServerSettings? in
+        return sharedData.entries[SharedDataKeys.proxySettings]?.get(ProxySettings.self)?.effectiveActiveServer
+    }
+    |> distinctUntilChanged
+    |> map { activeServer -> MTSocksProxySettings? in
+        return activeServer?.mtProxySettings
+    }
+
+    return managedProxySettings(settings, update: { [weak network] updated, shouldUpdate in
+        network?.context.updateApiEnvironment { [weak network] environment in
+            guard let network else {
+                return nil
+            }
+            if shouldUpdate(environment?.socksProxySettings) {
+                network.dropConnectionStatus()
+                return environment?.withUpdatedSocksProxySettings(updated)
+            } else {
+                return nil
+            }
+        }
+    })
+}
+
 public class UnauthorizedAccount {
     public let networkArguments: NetworkInitializationArguments
     public let id: AccountRecordId
@@ -74,6 +117,7 @@ public class UnauthorizedAccount {
     public let postbox: Postbox
     public let network: Network
     let stateManager: UnauthorizedAccountStateManager
+    private let proxySettingsDisposable = MetaDisposable()
     
     private let updateLoginTokenPipe = ValuePipe<Void>()
     public var updateLoginTokenEvents: Signal<Void, NoError> {
@@ -210,8 +254,13 @@ public class UnauthorizedAccount {
         })
         
         self.stateManager.reset()
+        self.proxySettingsDisposable.set(managedProxySettings(accountManager: accountManager, network: network))
     }
     
+    deinit {
+        self.proxySettingsDisposable.dispose()
+    }
+
     public func changedMasterDatacenterId(accountManager: AccountManager<TelegramAccountManagerTypes>, masterDatacenterId: Int32) -> Signal<UnauthorizedAccount, NoError> {
         if masterDatacenterId == Int32(self.network.mtProto.datacenterId) {
             return .single(self)
@@ -231,6 +280,7 @@ public class UnauthorizedAccount {
                 |> map { network in
                     let updated = UnauthorizedAccount(accountManager: accountManager, networkArguments: self.networkArguments, id: self.id, rootPath: self.rootPath, basePath: self.basePath, testingEnvironment: self.testingEnvironment, postbox: self.postbox, network: network)
                     updated.shouldBeServiceTaskMaster.set(self.shouldBeServiceTaskMaster.get())
+                    self.proxySettingsDisposable.dispose()
                     return updated
                 }
             }
@@ -1484,34 +1534,7 @@ public class Account {
                 strongSelf._importantTasksRunning.set(value)
             }
         }))
-        self.managedOperationsDisposable.add((accountManager.sharedData(keys: [SharedDataKeys.proxySettings])
-        |> map { sharedData -> ProxyServerSettings? in
-            if let settings = sharedData.entries[SharedDataKeys.proxySettings]?.get(ProxySettings.self) {
-                return settings.effectiveActiveServer
-            } else {
-                return nil
-            }
-        }
-        |> distinctUntilChanged).start(next: { activeServer in
-            let updated = activeServer.flatMap { activeServer -> MTSocksProxySettings? in
-                return activeServer.mtProxySettings
-            }
-            network.context.updateApiEnvironment { environment in
-                let current = environment?.socksProxySettings
-                let updateNetwork: Bool
-                if let current = current, let updated = updated {
-                    updateNetwork = !current.isEqual(updated)
-                } else {
-                    updateNetwork = (current != nil) != (updated != nil)
-                }
-                if updateNetwork {
-                    network.dropConnectionStatus()
-                    return environment?.withUpdatedSocksProxySettings(updated)
-                } else {
-                    return nil
-                }
-            }
-        }))
+        self.managedOperationsDisposable.add(managedProxySettings(accountManager: accountManager, network: network))
 
         if !supplementary {
             let mediaBox = postbox.mediaBox
