@@ -15,6 +15,87 @@ import TelegramPresentationData
 import PresentationDataUtils
 import PasswordSetupUI
 import InstantPageCache
+import ItemListUI
+
+private final class AboutAppControllerArguments {
+    let openUrl: (String) -> Void
+
+    init(openUrl: @escaping (String) -> Void) {
+        self.openUrl = openUrl
+    }
+}
+
+private enum AboutAppControllerSection: Int32 {
+    case info
+}
+
+private enum AboutAppControllerEntry: ItemListNodeEntry {
+    case info(PresentationTheme, String)
+
+    var section: ItemListSectionId {
+        return AboutAppControllerSection.info.rawValue
+    }
+
+    var stableId: Int32 {
+        return 0
+    }
+
+    static func ==(lhs: AboutAppControllerEntry, rhs: AboutAppControllerEntry) -> Bool {
+        switch (lhs, rhs) {
+        case let (.info(lhsTheme, lhsText), .info(rhsTheme, rhsText)):
+            return lhsTheme === rhsTheme && lhsText == rhsText
+        }
+    }
+
+    static func <(lhs: AboutAppControllerEntry, rhs: AboutAppControllerEntry) -> Bool {
+        return lhs.stableId < rhs.stableId
+    }
+
+    func item(presentationData: ItemListPresentationData, arguments: Any) -> ListViewItem {
+        let arguments = arguments as! AboutAppControllerArguments
+        switch self {
+        case let .info(_, text):
+            return ItemListTextItem(presentationData: presentationData, text: .markdown(text), sectionId: self.section, linkAction: { action in
+                if case let .tap(url) = action {
+                    arguments.openUrl(url)
+                }
+            }, textSize: .larger, additionalInsets: UIEdgeInsets(top: 8.0, left: 0.0, bottom: 8.0, right: 0.0))
+        }
+    }
+}
+
+private func aboutAppController(context: AccountContext) -> ViewController {
+    var openUrlImpl: ((String) -> Void)?
+    let arguments = AboutAppControllerArguments(openUrl: { url in
+        openUrlImpl?(url)
+    })
+
+    let signal = context.sharedContext.presentationData
+    |> deliverOnMainQueue
+    |> map { presentationData -> (ItemListControllerState, (ItemListNodeState, Any)) in
+        let isRussian = presentationData.strings.primaryComponent.languageCode.lowercased().hasPrefix("ru")
+        let title = isRussian ? "О приложении" : "About"
+        let text: String
+        if isRussian {
+            text = "Это неофициальное приложение, которое является полной и чистой копией официального с модифицированным прокси функционалом (WSS).\n\nОфициальный репозиторий: [https://github.com/TelegramMessenger/Telegram-iOS](https://github.com/TelegramMessenger/Telegram-iOS)\nРепозиторий форка: [https://github.com/lucidium/Telegram-iOS](https://github.com/lucidium/Telegram-iOS)\n\nОснован на версии Telegram iOS: 12.9.2"
+        } else {
+            text = "This is unofficial app based entirely on the clean official version of the Telegram iOS app with proxy enhancements (WSS).\n\nOfficial repo: [https://github.com/TelegramMessenger/Telegram-iOS](https://github.com/TelegramMessenger/Telegram-iOS)\nFork repo: [https://github.com/lucidium/Telegram-iOS](https://github.com/lucidium/Telegram-iOS)\n\nBase Telegram iOS version: 12.9.2"
+        }
+
+        let controllerState = ItemListControllerState(presentationData: ItemListPresentationData(presentationData), title: .text(title), leftNavigationButton: nil, rightNavigationButton: nil, backNavigationButton: ItemListBackButton(title: presentationData.strings.Common_Back), animateChanges: false)
+        let listState = ItemListNodeState(presentationData: ItemListPresentationData(presentationData), entries: [AboutAppControllerEntry.info(presentationData.theme, text)], style: .blocks, emptyStateItem: nil, animateChanges: false)
+        return (controllerState, (listState, arguments))
+    }
+
+    let controller = ItemListController(context: context, state: signal)
+    openUrlImpl = { [weak controller] url in
+        guard let controller else {
+            return
+        }
+        context.sharedContext.openExternalUrl(context: context, urlContext: .generic, url: url, forceExternal: true, presentationData: context.sharedContext.currentPresentationData.with { $0 }, navigationController: controller.navigationController as? NavigationController, dismissInput: {})
+    }
+    return controller
+}
 
 extension PeerInfoScreenNode {
     func openSettings(section: PeerInfoSettingsSection) {
@@ -192,6 +273,8 @@ extension PeerInfoScreenNode {
             self.openFaq()
         case .tips:
             self.openTips()
+        case .aboutApp:
+            push(aboutAppController(context: self.context))
         case .phoneNumber:
             guard let controller = self.controller, !controller.presentAccountFrozenInfoIfNeeded() else {
                 return

@@ -848,7 +848,6 @@ struct ctr_state {
     int32_t _mtpPort;
     MTProxySecret *_mtpSecret;
     MTSocksProxySettings *_webSocketSettings;
-    bool _loggedWebSocketFirstWriteDiagnostic;
     NSData *_helloRandom;
     NSData *_currentHelloResponse;
     
@@ -1287,16 +1286,6 @@ struct ctr_state {
                             _incomingAesCtr = connectionState.incomingAesCtr;
                             _outgoingAesCtr = connectionState.outgoingAesCtr;
                             [completeData appendData:outData];
-
-                            if (_webSocketSettings != nil && !_loggedWebSocketFirstWriteDiagnostic && MTLogEnabled()) {
-                                _loggedWebSocketFirstWriteDiagnostic = true;
-                                uint32_t marker = 0;
-                                int16_t datacenterTag = 0;
-                                memcpy(&marker, controlBytes + 56, sizeof(marker));
-                                memcpy(&datacenterTag, controlBytes + 60, sizeof(datacenterTag));
-                                bool headerMatchesMode = marker == (_useIntermediateFormat ? 0xdddddddd : 0xefefefef) && datacenterTag == (int16_t)_datacenterTag;
-                                MTLogWithPrefix(_getLogPrefix, @"[WSS relay boundary first-write headerBytes=64 writeBytes=%lu intermediate=%d secretPresent=%d marker=%08" PRIx32 " dc=%d match=%d]", (unsigned long)outData.length, _useIntermediateFormat ? 1 : 0, effectiveSecret != nil ? 1 : 0, marker, (int)datacenterTag, headerMatchesMode ? 1 : 0);
-                            }
 
                             break;
                         }

@@ -2,7 +2,6 @@ import Foundation
 import Network
 
 import MtProtoKit
-import NetworkLogging
 
 enum WebSocketByteStreamBufferError: Error {
     case invalidReadLength
@@ -638,9 +637,8 @@ final class WebSocketTcpConnectionInterface: NSObject, MTTcpConnectionInterface,
         }
     }
 
-    private func log(_ message: String) {
-        let prefix = self.getLogPrefix?() ?? ""
-        NetworkLog(WebSocketRelayDiagnostic.domain, "\(prefix)[WSS relay \(message)]")
+    private func log(_ message: @autoclosure () -> String) {
+        // Relay diagnostics are intentionally disabled in production builds.
     }
 
     private static func error(_ code: ErrorCode) -> NSError {

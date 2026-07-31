@@ -3295,7 +3295,7 @@ Unused sets are archived when you add more.";
 "SocksProxySetup.ProxyType" = "TYPE";
 "SocksProxySetup.ProxySocks5" = "SOCKS5";
 "SocksProxySetup.ProxyTelegram" = "MTProto";
-"SocksProxySetup.ProxyHttpsRelay" = "HTTPS Relay";
+"SocksProxySetup.ProxyHttpsRelay" = "WSS";
 "SocksProxySetup.Path" = "Path";
 "SocksProxySetup.AccessToken" = "Access Token";
 "SocksProxySetup.HostnamePlaceholder" = "Server";
