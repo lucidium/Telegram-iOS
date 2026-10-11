@@ -1356,7 +1356,13 @@ private func resolveInternalUrl(context: AccountContext, url: ParsedInternalUrl)
         case let .localization(identifier):
             return .single(.result(.localization(identifier)))
         case let .proxy(host, port, username, password, secret):
-            return .single(.result(.proxy(host: host, port: port, username: username, password: password, secret: secret)))
+            let settings: ProxyServerSettings
+            if let secret {
+                settings = ProxyServerSettings(host: host, port: port, connection: .mtp(secret: secret))
+            } else {
+                settings = ProxyServerSettings(host: host, port: port, connection: .socks5(username: username, password: password))
+            }
+            return .single(.result(.proxy(settings)))
         case let .webProxy(host, path, secret):
             return .single(.result(.webProxy(host: host, path: path, secret: secret)))
         case let .internalInstantView(url):
@@ -1514,24 +1520,35 @@ public func isTelegraPhLink(_ url: String) -> Bool {
     return false
 }
 
-public func parseProxyUrl(sharedContext: SharedAccountContext, url: String) -> (host: String, port: Int32, username: String?, password: String?, secret: Data?)? {
+public func parseProxyUrl(sharedContext: SharedAccountContext, url: String) -> ProxyServerSettings? {
+    if let settings = parseWebProxySettingsLink(url) {
+        return settings
+    }
+    if let settings = ProxyServerWebSocketRelayConfigurationLink.parse(url) {
+        return settings
+    }
+    func settings(from internalUrl: ParsedInternalUrl) -> ProxyServerSettings? {
+        guard case let .proxy(host, port, username, password, secret) = internalUrl else {
+            return nil
+        }
+        if let secret {
+            return ProxyServerSettings(host: host, port: port, connection: .mtp(secret: secret))
+        } else {
+            return ProxyServerSettings(host: host, port: port, connection: .socks5(username: username, password: password))
+        }
+    }
     let schemes = ["http://", "https://", ""]
     for basePath in baseTelegramMePaths {
         for scheme in schemes {
             let basePrefix = scheme + basePath + "/"
-            if url.lowercased().hasPrefix(basePrefix) {
-                if let internalUrl = parseInternalUrl(sharedContext: sharedContext, context: nil, query: String(url[basePrefix.endIndex...])), case let .proxy(host, port, username, password, secret) = internalUrl {
-                    return (host, port, username, password, secret)
-                }
+            if url.lowercased().hasPrefix(basePrefix), let internalUrl = parseInternalUrl(sharedContext: sharedContext, context: nil, query: String(url[basePrefix.endIndex...])), let settings = settings(from: internalUrl) {
+                return settings
             }
         }
     }
-    if let parsedUrl = URL(string: url), parsedUrl.scheme == "tg", let host = parsedUrl.host, let query = parsedUrl.query {
-        if let internalUrl = parseInternalUrl(sharedContext: sharedContext, context: nil, query: host + "?" + query), case let .proxy(host, port, username, password, secret) = internalUrl {
-            return (host, port, username, password, secret)
-        }
+    if let parsedUrl = URL(string: url), parsedUrl.scheme == "tg", let host = parsedUrl.host, let query = parsedUrl.query, let internalUrl = parseInternalUrl(sharedContext: sharedContext, context: nil, query: host + "?" + query) {
+        return settings(from: internalUrl)
     }
-    
     return nil
 }
 

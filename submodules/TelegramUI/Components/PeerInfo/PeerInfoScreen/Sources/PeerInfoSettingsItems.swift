@@ -185,6 +185,8 @@ func settingsItems(data: PeerInfoScreenData?, context: AccountContext, presentat
                     proxyType = presentationData.strings.SocksProxySetup_ProxyWeb
                 case .socks5:
                     proxyType = presentationData.strings.SocksProxySetup_ProxySocks5
+                case .webSocketRelay:
+                    proxyType = presentationData.strings.SocksProxySetup_ProxyHttpsRelay
                 }
             } else {
                 proxyType = presentationData.strings.Settings_ProxyDisabled
@@ -350,6 +352,10 @@ func settingsItems(data: PeerInfoScreenData?, context: AccountContext, presentat
     }))
     items[.support]!.append(PeerInfoScreenDisclosureItem(id: 2, text: presentationData.strings.Settings_Tips, icon: PresentationResourcesSettings.tips, action: {
         interaction.openSettings(.tips)
+    }))
+    let isRussian = presentationData.strings.primaryComponent.languageCode.lowercased().hasPrefix("ru")
+    items[.support]!.append(PeerInfoScreenDisclosureItem(id: 3, text: isRussian ? "О приложении" : "About", icon: PresentationResourcesSettings.settings, action: {
+        interaction.openSettings(.aboutApp)
     }))
     
     var result: [(AnyHashable, [PeerInfoScreenItem])] = []

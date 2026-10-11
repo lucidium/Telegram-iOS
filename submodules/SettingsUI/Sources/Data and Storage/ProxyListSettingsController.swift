@@ -296,6 +296,8 @@ private func proxySettingsControllerEntries(theme: PresentationTheme, strings: P
                     // Unreachable - the branch above catches every WEB server - but naming it
                     // MTProto here would be wrong if that ordering ever changed.
                     text = strings.SocksProxySetup_ProxyWeb
+                case .webSocketRelay:
+                    text = strings.SocksProxySetup_ProxyHttpsRelay
             }
             switch status {
                 case .notAvailable:
@@ -563,6 +565,8 @@ public func proxySettingsController(accountManager: AccountManager<TelegramAccou
                             continue
                         }
                         string = link
+                    case .webSocketRelay:
+                        string = ProxyServerWebSocketRelayConfigurationLink.string(for: server) ?? ""
                     }
                     
                     if !result.isEmpty {

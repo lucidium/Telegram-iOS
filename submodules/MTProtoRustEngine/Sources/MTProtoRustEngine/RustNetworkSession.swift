@@ -176,7 +176,7 @@ final class RustNetworkSession: NetworkEngineSession {
         let preferForMedia = schemes.first?.address.preferForMedia ?? false
         self.selector = RustNetworkSession.authInfoSelector(context: context, isCdn: self.isCdn, preferForMedia: preferForMedia)
         self.obfuscationDatacenterId = rustEngineObfuscationDatacenterId(datacenterId: datacenterId, isTestingEnvironment: context.isTestingEnvironment, preferForMedia: preferForMedia)
-        self.holdForUnsupportedProxy = (self.apiEnvironment.socksProxySettings?.webProxy ?? false) && !runtime.carriesWebProxy
+        self.holdForUnsupportedProxy = RustNetworkSession.isUnsupportedProxy(self.apiEnvironment.socksProxySettings, carriesWebProxy: runtime.carriesWebProxy)
         self.logPrefix = "[MTProtoRust#0 dc\(datacenterId) \(roleName)]"
 
         let authInfo = context.authInfoForDatacenter(withId: datacenterId, selector: self.keySelector)
@@ -1291,8 +1291,8 @@ final class RustNetworkSession: NetworkEngineSession {
 
         let proxyChanged = !RustNetworkSession.isSameProxy(previous.socksProxySettings, apiEnvironment.socksProxySettings)
         if proxyChanged {
-            let unsupported = (apiEnvironment.socksProxySettings?.webProxy ?? false) && !self.runtime.carriesWebProxy
-            rustEngineImportantLog("\(self.logPrefix) proxy changed\(unsupported ? " to a WEB proxy, which this engine cannot carry: staying disconnected" : "")")
+            let unsupported = RustNetworkSession.isUnsupportedProxy(apiEnvironment.socksProxySettings, carriesWebProxy: self.runtime.carriesWebProxy)
+            rustEngineImportantLog("\(self.logPrefix) proxy changed\(unsupported ? " to an unsupported proxy: staying disconnected until the engine is restarted" : "")")
             if unsupported {
                 self.holdForUnsupportedProxy = true
                 self.applyPaused()
@@ -1660,6 +1660,13 @@ extension RustNetworkSession {
         }
     }
 
+    private static func isUnsupportedProxy(_ settings: MTSocksProxySettings?, carriesWebProxy: Bool) -> Bool {
+        guard let settings else {
+            return false
+        }
+        return settings.webSocketPath != nil || settings.webSocketToken != nil || (settings.webProxy && !carriesWebProxy)
+    }
+
     fileprivate static func makeProxy(_ settings: MTSocksProxySettings?, arena: RustEngineArena) -> MTProxy {
         var proxy = MTProxy()
         proxy.kind = UInt8(MTProxyKindNone)
@@ -1668,7 +1675,11 @@ extension RustNetworkSession {
         }
         proxy.host = arena.string(settings.ip)
         proxy.port = settings.port
-        if settings.webProxy {
+        if settings.webSocketPath != nil || settings.webSocketToken != nil {
+            // This session is held paused. Keep an invalid WEB proxy as a second guard:
+            // never reinterpret WSS credentials as SOCKS5 or a direct connection.
+            proxy.kind = UInt8(MTProxyKindWeb)
+        } else if settings.webProxy {
             proxy.kind = UInt8(MTProxyKindWeb)
             proxy.secret = arena.bytes(settings.secret)
         } else if let secret = settings.secret {
@@ -1687,7 +1698,7 @@ extension RustNetworkSession {
         case (nil, nil):
             return true
         case let (lhs?, rhs?):
-            return lhs.ip == rhs.ip && lhs.port == rhs.port && lhs.username == rhs.username && lhs.password == rhs.password && lhs.secret == rhs.secret && lhs.webProxy == rhs.webProxy
+            return lhs.isEqual(rhs)
         default:
             return false
         }

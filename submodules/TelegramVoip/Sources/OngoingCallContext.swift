@@ -974,7 +974,7 @@ public final class OngoingCallContext {
                     switch proxyServer.connection {
                     case let .socks5(username, password):
                         voipProxyServer = VoipProxyServerWebrtc(host: proxyServer.host, port: proxyServer.port, username: username, password: password)
-                    case .mtp:
+                    case .mtp, .webSocketRelay:
                         break
                     case .web:
                         // Calls are SOCKS5-only by design. A web proxy is secret-based (see

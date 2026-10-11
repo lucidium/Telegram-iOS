@@ -68,6 +68,22 @@ bool MTCheckMod(id<EncryptionProvider> _Nonnull provider, NSData * _Nonnull numb
 - (bool)encryptIn:(const unsigned char * _Nonnull)in out:(unsigned char * _Nonnull)out len:(size_t)len;
 
 @end
+
+@interface MTObfuscated2ConnectionState : NSObject
+
+@property (nonatomic, strong, readonly) NSData * _Nonnull wireHeader;
+@property (nonatomic, strong, readonly) MTAesCtr * _Nonnull outgoingAesCtr;
+@property (nonatomic, strong, readonly) MTAesCtr * _Nonnull incomingAesCtr;
+@property (nonatomic, readonly) bool requiresSecretRetry;
+
+@end
+
+MTObfuscated2ConnectionState * _Nullable MTMakeObfuscated2ConnectionState(
+    NSData * _Nonnull randomBytes,
+    bool useIntermediateFormat,
+    int16_t datacenterTag,
+    NSData * _Nullable secret
+);
     
 uint64_t MTRsaFingerprint(id<EncryptionProvider> _Nonnull provider, NSString * _Nonnull key);
     

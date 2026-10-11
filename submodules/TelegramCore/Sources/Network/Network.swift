@@ -531,6 +531,12 @@ func initializedNetwork(accountId: AccountRecordId, arguments: NetworkInitializa
             let context = MTContext(serialization: serialization, encryptionProvider: arguments.encryptionProvider, apiEnvironment: apiEnvironment, isTestingEnvironment: testingEnvironment, useTempAuthKeys: useTempAuthKeys)
             context.refreshesTemporaryKeys = !supplementary
             
+            if #available(iOS 13.0, macOS 10.15, tvOS 13.0, watchOS 6.0, *) {
+                context.makeWebSocketTcpConnectionInterface = { settings, delegate, delegateQueue in
+                    return WebSocketTcpConnectionInterface(settings: settings, delegate: delegate, delegateQueue: delegateQueue)
+                }
+            }
+
             if let networkSettings = networkSettings {
                 let useNetworkFramework: Bool
                 if let customValue = networkSettings.useNetworkFramework {
@@ -790,15 +796,20 @@ private final class NetworkHelper: NSObject, MTContextChangeListener {
 }
 
 struct NetworkContextProxyId: Equatable {
-    private let ip: String
-    private let port: Int
-    private let secret: Data
+    private enum Value: Equatable {
+        case mtProxy(ip: String, port: Int, secret: Data)
+        case webSocketRelay(host: String, port: Int, path: String, token: String)
+    }
+
+    private let value: Value
 }
 
-private extension NetworkContextProxyId {
+extension NetworkContextProxyId {
     init?(settings: MTSocksProxySettings) {
-        if let secret = settings.secret, !secret.isEmpty {
-            self.init(ip: settings.ip, port: Int(settings.port), secret: secret)
+        if let path = settings.webSocketPath, let token = settings.webSocketToken {
+            self.init(value: .webSocketRelay(host: settings.ip, port: Int(settings.port), path: path, token: token))
+        } else if let secret = settings.secret, !secret.isEmpty {
+            self.init(value: .mtProxy(ip: settings.ip, port: Int(settings.port), secret: secret))
         } else {
             return nil
         }

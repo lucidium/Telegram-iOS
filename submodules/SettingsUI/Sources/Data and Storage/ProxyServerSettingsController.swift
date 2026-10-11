@@ -39,6 +39,7 @@ private enum ProxySettingsEntry: ItemListNodeEntry {
     case modeSocks5(PresentationTheme, String, Bool)
     case modeMtp(PresentationTheme, String, Bool)
     case modeWeb(PresentationTheme, String, Bool)
+    case modeWebSocketRelay(PresentationTheme, String, Bool)
     
     case connectionHeader(PresentationTheme, String)
     case connectionServer(PresentationTheme, PresentationStrings, String, String)
@@ -48,6 +49,8 @@ private enum ProxySettingsEntry: ItemListNodeEntry {
     case credentialsUsername(PresentationTheme, PresentationStrings, String, String)
     case credentialsPassword(PresentationTheme, PresentationStrings, String, String)
     case credentialsSecret(PresentationTheme, PresentationStrings, String, String)
+    case credentialsPath(PresentationTheme, PresentationStrings, String, String)
+    case credentialsToken(PresentationTheme, PresentationStrings, String, String)
     
     case share(PresentationTheme, String, Bool)
     
@@ -55,11 +58,11 @@ private enum ProxySettingsEntry: ItemListNodeEntry {
         switch self {
             case .usePasteboardSettings, .usePasteboardInfo:
                 return ProxySettingsSection.pasteboard.rawValue
-            case .modeSocks5, .modeMtp, .modeWeb:
+            case .modeSocks5, .modeMtp, .modeWeb, .modeWebSocketRelay:
                 return ProxySettingsSection.mode.rawValue
             case .connectionHeader, .connectionServer, .connectionPort:
                 return ProxySettingsSection.connection.rawValue
-            case .credentialsHeader, .credentialsUsername, .credentialsPassword, .credentialsSecret:
+            case .credentialsHeader, .credentialsUsername, .credentialsPassword, .credentialsSecret, .credentialsPath, .credentialsToken:
                 return ProxySettingsSection.credentials.rawValue
             case .share:
                 return ProxySettingsSection.share.rawValue
@@ -78,22 +81,28 @@ private enum ProxySettingsEntry: ItemListNodeEntry {
                 return 3
             case .modeWeb:
                 return 4
-            case .connectionHeader:
+            case .modeWebSocketRelay:
                 return 5
-            case .connectionServer:
+            case .connectionHeader:
                 return 6
-            case .connectionPort:
+            case .connectionServer:
                 return 7
-            case .credentialsHeader:
+            case .connectionPort:
                 return 8
-            case .credentialsUsername:
+            case .credentialsHeader:
                 return 9
-            case .credentialsPassword:
+            case .credentialsUsername:
                 return 10
-            case .credentialsSecret:
+            case .credentialsPassword:
                 return 11
-            case .share:
+            case .credentialsSecret:
+                return 12
+            case .credentialsPath:
                 return 13
+            case .credentialsToken:
+                return 14
+            case .share:
+                return 15
         }
     }
     
@@ -126,6 +135,12 @@ private enum ProxySettingsEntry: ItemListNodeEntry {
                 return ItemListCheckboxItem(presentationData: presentationData, systemStyle: .glass, title: text, style: .left, checked: value, zeroSeparatorInsets: false, sectionId: self.section, action: {
                     arguments.updateState { state in
                         return state.withMode(.web)
+                    }
+                })
+            case let .modeWebSocketRelay(_, text, value):
+                return ItemListCheckboxItem(presentationData: presentationData, systemStyle: .glass, title: text, style: .left, checked: value, zeroSeparatorInsets: false, sectionId: self.section, action: {
+                    arguments.updateState { state in
+                        return state.withMode(.webSocketRelay)
                     }
                 })
             case let .connectionHeader(_, text):
@@ -172,6 +187,22 @@ private enum ProxySettingsEntry: ItemListNodeEntry {
                         return state
                     }
                 }, action: {})
+            case let .credentialsPath(_, _, placeholder, text):
+                return ItemListSingleLineInputItem(presentationData: presentationData, systemStyle: .glass, title: NSAttributedString(), text: text, placeholder: placeholder, type: .regular(capitalization: false, autocorrection: false), sectionId: self.section, textUpdated: { value in
+                    arguments.updateState { current in
+                        var state = current
+                        state.webSocketPath = value
+                        return state
+                    }
+                }, action: {})
+            case let .credentialsToken(_, _, placeholder, text):
+                return ItemListSingleLineInputItem(presentationData: presentationData, systemStyle: .glass, title: NSAttributedString(), text: text, placeholder: placeholder, type: .password, sectionId: self.section, textUpdated: { value in
+                    arguments.updateState { current in
+                        var state = current
+                        state.webSocketToken = value
+                        return state
+                    }
+                }, action: {})
             case let .share(_, text, enabled):
                 return ItemListActionItem(presentationData: presentationData, systemStyle: .glass, title: text, kind: enabled ? .generic : .disabled, alignment: .natural, sectionId: self.section, style: .blocks, action: {
                     arguments.share()
@@ -184,6 +215,7 @@ enum ProxyServerSettingsControllerMode {
     case socks5
     case mtp
     case web
+    case webSocketRelay
 }
 
 /// A WEB proxy is host + secret only: its port is always 443, so the editor omits the
@@ -194,6 +226,8 @@ func proxyServerSettingsControllerMode(for connection: ProxyServerConnection) ->
             return .socks5
         case .mtp:
             return .mtp
+        case .webSocketRelay:
+            return .webSocketRelay
         case .web:
             return .web
     }
@@ -206,6 +240,8 @@ struct ProxyServerSettingsControllerState: Equatable {
     var username: String
     var password: String
     var secret: String
+    var webSocketPath: String = ""
+    var webSocketToken: String = ""
     
     /// Switching away from `.web` must drop the base path from the shared server field.
     /// Only a WEB address is `host/base-path`; SOCKS5 and MTProxy take a bare host, and
@@ -226,7 +262,7 @@ struct ProxyServerSettingsControllerState: Equatable {
             return false
         }
         switch self.mode {
-            case .socks5, .mtp:
+            case .socks5, .mtp, .webSocketRelay:
                 if self.port.isEmpty || Int(self.port) == nil {
                     return false
                 }
@@ -247,6 +283,10 @@ struct ProxyServerSettingsControllerState: Equatable {
                 if canonicalWebProxyAddress(self.host) == nil || parseWebProxySecret(self.secret) == nil {
                     return false
                 }
+            case .webSocketRelay:
+                guard let port = Int32(self.port), ProxyServerWebSocketRelayValidation.isValid(host: self.host, port: port, path: self.webSocketPath, token: self.webSocketToken) else {
+                    return false
+                }
         }
         return true
     }
@@ -262,6 +302,7 @@ private func proxyServerSettingsControllerEntries(presentationData: Presentation
     entries.append(.modeSocks5(presentationData.theme, presentationData.strings.SocksProxySetup_ProxySocks5, state.mode == .socks5))
     entries.append(.modeMtp(presentationData.theme, presentationData.strings.SocksProxySetup_ProxyTelegram, state.mode == .mtp))
     entries.append(.modeWeb(presentationData.theme, presentationData.strings.SocksProxySetup_ProxyWeb, state.mode == .web))
+    entries.append(.modeWebSocketRelay(presentationData.theme, presentationData.strings.SocksProxySetup_ProxyHttpsRelay, state.mode == .webSocketRelay))
     
     entries.append(.connectionHeader(presentationData.theme, presentationData.strings.SocksProxySetup_Connection.uppercased()))
     entries.append(.connectionServer(presentationData.theme, presentationData.strings, presentationData.strings.SocksProxySetup_Hostname, state.host))
@@ -282,6 +323,10 @@ private func proxyServerSettingsControllerEntries(presentationData: Presentation
         case .web:
             entries.append(.credentialsHeader(presentationData.theme, presentationData.strings.SocksProxySetup_RequiredCredentials))
             entries.append(.credentialsSecret(presentationData.theme, presentationData.strings, presentationData.strings.SocksProxySetup_SecretPlaceholder, state.secret))
+        case .webSocketRelay:
+            entries.append(.credentialsHeader(presentationData.theme, presentationData.strings.SocksProxySetup_RequiredCredentials))
+            entries.append(.credentialsPath(presentationData.theme, presentationData.strings, presentationData.strings.SocksProxySetup_Path, state.webSocketPath))
+            entries.append(.credentialsToken(presentationData.theme, presentationData.strings, presentationData.strings.SocksProxySetup_AccessToken, state.webSocketToken))
     }
     
     entries.append(.share(presentationData.theme, presentationData.strings.Conversation_ContextMenuShare, state.isComplete))
@@ -309,6 +354,8 @@ func proxyServerSettings(with state: ProxyServerSettingsControllerState) -> Prox
             return nil
         case .web:
             return nil
+        case .webSocketRelay:
+            return ProxyServerSettings(host: state.host, port: port, connection: .webSocketRelay(path: state.webSocketPath, token: state.webSocketToken))
     }
 }
 
@@ -323,6 +370,8 @@ func proxyServerSettingsController(sharedContext: SharedAccountContext, context:
     var currentUsername: String?
     var currentPassword: String?
     var currentSecret: String?
+    var currentWebSocketPath: String?
+    var currentWebSocketToken: String?
     var pasteboardSettings: ProxyServerSettings?
     if let currentSettings = currentSettings {
         switch currentSettings.connection {
@@ -339,21 +388,16 @@ func proxyServerSettingsController(sharedContext: SharedAccountContext, context:
                 currentAddress = currentSettings.webProxyAddress
                 currentSecret = webProxySecretString(secret)
                 currentMode = .web
+            case let .webSocketRelay(path, token):
+                currentWebSocketPath = path
+                currentWebSocketToken = token
+                currentMode = .webSocketRelay
         }
     } else {
-        let pasteboardText = UIPasteboard.general.string ?? ""
-        if let webSettings = parseWebProxySettingsLink(pasteboardText) {
-            pasteboardSettings = webSettings
-        } else if let proxy = parseProxyUrl(sharedContext: sharedContext, url: pasteboardText) {
-            if let secret = proxy.secret, let parsedSecret = MTProxySecret.parseData(secret) {
-                pasteboardSettings = ProxyServerSettings(host: proxy.host, port: proxy.port, connection: .mtp(secret: parsedSecret.serialize()))
-            } else {
-                pasteboardSettings = ProxyServerSettings(host: proxy.host, port: proxy.port, connection: .socks5(username: proxy.username, password: proxy.password))
-            }
-        }
+        pasteboardSettings = parseProxyUrl(sharedContext: sharedContext, url: UIPasteboard.general.string ?? "")
     }
 
-    let initialState = ProxyServerSettingsControllerState(mode: currentMode, host: currentAddress ?? currentSettings?.host ?? "", port: (currentSettings?.port).flatMap { "\($0)" } ?? "", username: currentUsername ?? "", password: currentPassword ?? "", secret: currentSecret ?? "")
+    let initialState = ProxyServerSettingsControllerState(mode: currentMode, host: currentAddress ?? currentSettings?.host ?? "", port: (currentSettings?.port).flatMap { "\($0)" } ?? "", username: currentUsername ?? "", password: currentPassword ?? "", secret: currentSecret ?? "", webSocketPath: currentWebSocketPath ?? "", webSocketToken: currentWebSocketToken ?? "")
     let stateValue = Atomic(value: initialState)
     let statePromise = ValuePromise(initialState, ignoreRepeated: true)
     let updateState: ((ProxyServerSettingsControllerState) -> ProxyServerSettingsControllerState) -> Void = { f in
@@ -387,6 +431,10 @@ func proxyServerSettingsController(sharedContext: SharedAccountContext, context:
                         state.mode = .web
                         state.host = pasteboardSettings.webProxyAddress ?? pasteboardSettings.host
                         state.secret = webProxySecretString(secret)
+                    case let .webSocketRelay(path, token):
+                        state.mode = .webSocketRelay
+                        state.webSocketPath = path
+                        state.webSocketToken = token
                 }
                 return state
             }

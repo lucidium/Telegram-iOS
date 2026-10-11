@@ -627,6 +627,23 @@ The non-obvious parts:
   pings an inactive WEB row: it would read "checking…" forever, so the row shows
   "not tested" and only the active one follows the real account connection state.
 
+## Fork WSS relay (`tg://wssproxy`)
+
+The fork's `.webSocketRelay(path:token:)` is a separate protocol from upstream `.web`:
+`URLSessionWebSocketTask` carries secretless padded-intermediate Obfuscated2, with the bearer
+token only in the HTTPS upgrade header. It uses `makeWebSocketTcpConnectionInterface`; preserve
+the WEB carrier's separate factory, demand management and fail-closed transport selection.
+
+Persistence on the 13.0 fork writes WSS as `_t = 4`. The 12.9.2 fork used `_t = 2`, which
+upstream later assigned to WEB. Decode 2 with either `webSocketPath` or `webSocketToken` as legacy
+WSS; otherwise decode upstream WEB. WEB root/base-path records keep types 2/3. Compatibility
+coverage lives in `TelegramCore/Tests/ProxyServerSettingsTests.swift`, alongside the existing
+upstream `ProxySettingsTests.swift`; transport/startup coverage is `WebSocketTcpConnectionInterfaceTests.swift`.
+
+WSS requires MtProtoKit. The Rust factory declines it at launch. If WSS is enabled while Rust
+is already running, Rust stays disconnected until restart (never sends SOCKS5 to the relay);
+iOS still follows upstream's launch-time engine selection policy.
+
 ## Postbox shared-media removal (deferred design: tombstones)
 
 `Transaction.updateMedia(id, update: nil)` is meant to remove a media from every message that
@@ -758,3 +775,23 @@ This repo includes a tgcalls testbench (CLI tool, Go/Pion SFU, Docker build) lay
 Build the test binary from this directory with:
 
 `./build-input/bazel-9.2.0-darwin-arm64 build //submodules/TgVoipWebrtc/tgcalls/tools/cli:tgcalls_cli`
+
+## Code Search (Semble)
+
+Use `semble search` to find code by describing what it does or naming a symbol/identifier, instead of grep. The index is built on first run and cached; it auto-rebuilds when files change.
+
+```bash
+semble search "chat list unread badge" .
+semble search "ListViewImpl" .
+semble search "Postbox message history anchor" . --top-k 10
+```
+
+For cross-file discovery (where Serena's LSP can't resolve references due to missing Bazel build index), semble is the preferred tool. Use `semble find-related` to discover similar code from a known location:
+
+```bash
+semble find-related submodules/Display/Source/ListView.swift 156 .
+```
+
+**Workflow:** Start with `semble search` → inspect the returned chunk → use Serena's symbolic tools (`get_symbols_overview`, `find_symbol`) on the identified file for precise analysis → use Serena for edits.
+
+If `semble` is not on `$PATH`, use `uvx --from "semble[mcp]" semble` in its place.

@@ -853,6 +853,7 @@ struct ctr_state {
     int32_t _mtpPort;
     MTProxySecret *_mtpSecret;
     bool _isWebProxy;
+    MTSocksProxySettings *_webSocketSettings;
     NSData *_helloRandom;
     NSData *_currentHelloResponse;
     
@@ -868,6 +869,7 @@ struct ctr_state {
 @property (nonatomic, strong) id packetProgressToken;
 
 @property (nonatomic, copy) id<MTTcpConnectionInterface> _Nonnull (^ _Nullable makeTcpConnectionInterface)(id<MTTcpConnectionInterfaceDelegate> _Nonnull delegate, dispatch_queue_t _Nonnull delegateQueue);
+@property (nonatomic, copy) id<MTTcpConnectionInterface> _Nullable (^ _Nullable makeWebSocketTcpConnectionInterface)(MTSocksProxySettings * _Nonnull settings, id<MTTcpConnectionInterfaceDelegate> _Nonnull delegate, dispatch_queue_t _Nonnull delegateQueue);
 
 @end
 
@@ -905,6 +907,7 @@ struct ctr_state {
         _usageCalculationInfo = usageCalculationInfo;
         
         _makeTcpConnectionInterface = context.makeTcpConnectionInterface;
+        _makeWebSocketTcpConnectionInterface = context.makeWebSocketTcpConnectionInterface;
         
         if (context.apiEnvironment.datacenterAddressOverrides[@(datacenterId)] != nil) {
             _firstPacketControlByte = [context.apiEnvironment tcpPayloadPrefix];
@@ -918,19 +921,26 @@ struct ctr_state {
         
         if (context.apiEnvironment.socksProxySettings != nil) {
             _isWebProxy = context.apiEnvironment.socksProxySettings.webProxy;
-            if (context.apiEnvironment.socksProxySettings.secret != nil) {
-                _mtpIp = context.apiEnvironment.socksProxySettings.ip;
-                _mtpPort = context.apiEnvironment.socksProxySettings.port;
-                _mtpSecret = [MTProxySecret parseData:context.apiEnvironment.socksProxySettings.secret];
+            MTSocksProxySettings *proxySettings = context.apiEnvironment.socksProxySettings;
+            if (proxySettings.webSocketPath != nil || proxySettings.webSocketToken != nil) {
+                _webSocketSettings = proxySettings;
+                _mtpIp = nil;
+                _mtpPort = 0;
+                _mtpSecret = nil;
+                _useIntermediateFormat = true;
+            } else if (proxySettings.secret != nil) {
+                _mtpIp = proxySettings.ip;
+                _mtpPort = proxySettings.port;
+                _mtpSecret = [MTProxySecret parseData:proxySettings.secret];
             } else {
-                _socksIp = context.apiEnvironment.socksProxySettings.ip;
-                _socksPort = context.apiEnvironment.socksProxySettings.port;
-                _socksUsername = context.apiEnvironment.socksProxySettings.username;
-                _socksPassword = context.apiEnvironment.socksProxySettings.password;
+                _socksIp = proxySettings.ip;
+                _socksPort = proxySettings.port;
+                _socksUsername = proxySettings.username;
+                _socksPassword = proxySettings.password;
             }
         }
         
-        if (_mtpSecret != nil) {
+        if (_webSocketSettings == nil && _mtpSecret != nil) {
             if ([_mtpSecret isKindOfClass:[MTProxySecretType1 class]] || [_mtpSecret isKindOfClass:[MTProxySecretType2 class]]) {
                 _useIntermediateFormat = true;
             }
@@ -960,8 +970,8 @@ struct ctr_state {
 
 - (void)dealloc
 {
-    GCDAsyncSocket *socket = _socket;
-    socket.delegate = nil;
+    id<MTTcpConnectionInterface> socket = _socket;
+    [socket resetDelegate];
     _socket = nil;
     
     MTTimer *responseTimeoutTimer = _responseTimeoutTimer;
@@ -999,40 +1009,50 @@ struct ctr_state {
     {
         if (_socket == nil)
         {
-            // The injected interface must be paired with `_isWebProxy`, because the WEB
-            // carrier ignores the address it is handed. Derived contexts copy the factory
-            // while deliberately carrying DIFFERENT proxy settings - MTBackupAddressSignals
-            // nils them to fetch a backup address off-proxy, MTProxyConnectivity swaps in
-            // the server it is pinging - so an ungated factory silently routes those through
-            // the carrier to the relay's own backend instead of the address they asked for.
-            id<MTTcpConnectionInterface> injected = nil;
-            if (_makeTcpConnectionInterface) {
-                injected = _makeTcpConnectionInterface(self, [[MTTcpConnection tcpQueue] nativeQueue]);
-            }
-            bool injectedIsWebProxyCarrier = injected != nil
-                && [injected respondsToSelector:@selector(isWebProxyCarrier)]
-                && [injected isWebProxyCarrier];
-
-            if (_isWebProxy) {
-                if (!injectedIsWebProxyCarrier) {
-                    // Fail closed. There is no local endpoint to dial - the carrier is not a
-                    // loopback listener - and falling back to a socket would reach the
-                    // destination directly, defeating the proxy the user chose. This is the
-                    // state an app extension is in: it shares the settings but never runs a
-                    // carrier.
-                    if (MTLogEnabled()) {
-                        MTLog(@"[MTTcpConnection#%" PRIxPTR " no WEB proxy carrier; failing]", (intptr_t)self);
-                    }
-                    [injected resetDelegate];
+            if (_webSocketSettings != nil) {
+                if (_makeWebSocketTcpConnectionInterface) {
+                    _socket = _makeWebSocketTcpConnectionInterface(_webSocketSettings, self, [[MTTcpConnection tcpQueue] nativeQueue]);
+                }
+                if (_socket == nil) {
                     [self closeAndNotifyWithError:true];
                     return;
                 }
-                _socket = injected;
             } else {
-                _socket = injectedIsWebProxyCarrier ? nil : injected;
-                if (_socket == nil) {
-                    [injected resetDelegate];
-                    _socket = [[MTGcdAsyncSocketTcpConnectionInterface alloc] initWithDelegate:self delegateQueue:[[MTTcpConnection tcpQueue] nativeQueue]];
+                // The injected interface must be paired with `_isWebProxy`, because the WEB
+                // carrier ignores the address it is handed. Derived contexts copy the factory
+                // while deliberately carrying DIFFERENT proxy settings - MTBackupAddressSignals
+                // nils them to fetch a backup address off-proxy, MTProxyConnectivity swaps in
+                // the server it is pinging - so an ungated factory silently routes those through
+                // the carrier to the relay's own backend instead of the address they asked for.
+                id<MTTcpConnectionInterface> injected = nil;
+                if (_makeTcpConnectionInterface) {
+                    injected = _makeTcpConnectionInterface(self, [[MTTcpConnection tcpQueue] nativeQueue]);
+                }
+                bool injectedIsWebProxyCarrier = injected != nil
+                    && [injected respondsToSelector:@selector(isWebProxyCarrier)]
+                    && [injected isWebProxyCarrier];
+
+                if (_isWebProxy) {
+                    if (!injectedIsWebProxyCarrier) {
+                        // Fail closed. There is no local endpoint to dial - the carrier is not a
+                        // loopback listener - and falling back to a socket would reach the
+                        // destination directly, defeating the proxy the user chose. This is the
+                        // state an app extension is in: it shares the settings but never runs a
+                        // carrier.
+                        if (MTLogEnabled()) {
+                            MTLog(@"[MTTcpConnection#%" PRIxPTR " no WEB proxy carrier; failing]", (intptr_t)self);
+                        }
+                        [injected resetDelegate];
+                        [self closeAndNotifyWithError:true];
+                        return;
+                    }
+                    _socket = injected;
+                } else {
+                    _socket = injectedIsWebProxyCarrier ? nil : injected;
+                    if (_socket == nil) {
+                        [injected resetDelegate];
+                        _socket = [[MTGcdAsyncSocketTcpConnectionInterface alloc] initWithDelegate:self delegateQueue:[[MTTcpConnection tcpQueue] nativeQueue]];
+                    }
                 }
             }
             
@@ -1042,7 +1062,9 @@ struct ctr_state {
             NSString *addressIp = _scheme.address.ip;
             MTSignal *resolveSignal = [MTSignal single:[[MTTcpConnectionData alloc] initWithIp:addressIp port:_scheme.address.port isSocks:false]];
             
-            if (_isWebProxy) {
+            if (_webSocketSettings != nil) {
+                resolveSignal = [MTSignal single:[[MTTcpConnectionData alloc] initWithIp:_webSocketSettings.ip port:_webSocketSettings.port isSocks:false]];
+            } else if (_isWebProxy) {
                 // Resolve NOTHING, and keep the default signal above. This branch is
                 // load-bearing even though the carrier ignores whatever address it is
                 // handed: `_socksIp` is nil for a WEB proxy and `_mtpIp` is the relay
@@ -1116,6 +1138,8 @@ struct ctr_state {
                             }
                         } else if (strongSelf->_mtpIp != nil && strongSelf->_isWebProxy) {
                             MTLog(@"[MTTcpConnection#%" PRIxPTR " connecting via WEB proxy %@:%d]", (intptr_t)strongSelf, strongSelf->_mtpIp, (int)strongSelf->_mtpPort);
+                        } else if (strongSelf->_webSocketSettings != nil) {
+                            MTLog(@"[MTTcpConnection#%" PRIxPTR " connecting to %@:%d via WebSocket relay %@:%d%@]", (intptr_t)strongSelf, strongSelf->_scheme.address.ip, (int)strongSelf->_scheme.address.port, strongSelf->_webSocketSettings.ip, (int)strongSelf->_webSocketSettings.port, strongSelf->_webSocketSettings.webSocketPath);
                         } else if (strongSelf->_mtpIp != nil) {
                             MTLog(@"[MTTcpConnection#%" PRIxPTR " connecting to %@:%d via mtp://%@:%d:%@]", (intptr_t)strongSelf, strongSelf->_scheme.address.ip, (int)strongSelf->_scheme.address.port, strongSelf->_mtpIp, (int)strongSelf->_mtpPort, strongSelf->_mtpSecret);
                         } else {
@@ -1126,6 +1150,8 @@ struct ctr_state {
                     __autoreleasing NSError *error = nil;
                     if (![strongSelf->_socket connectToHost:connectionData.ip onPort:connectionData.port viaInterface:strongSelf->_interface withTimeout:12 error:&error] || error != nil) {
                         [strongSelf closeAndNotifyWithError:true];
+                    } else if (strongSelf->_webSocketSettings != nil) {
+                        // The WebSocket open callback owns readiness and starts the Obfuscated2 stream.
                     } else if (strongSelf->_socksIp == nil) {
                         if (strongSelf->_mtpIp != nil && [strongSelf->_mtpSecret isKindOfClass:[MTProxySecretType2 class]]) {
                             MTProxySecretType2 *secret = (MTProxySecretType2 *)(strongSelf->_mtpSecret);
@@ -1276,29 +1302,7 @@ struct ctr_state {
                         for (int retryCount = 0; retryCount < 10; retryCount++) {
                             uint8_t controlBytes[64];
                             arc4random_buf(controlBytes, 64);
-                            
-                            int32_t controlVersion;
-                            if (_useIntermediateFormat) {
-                                controlVersion = 0xdddddddd;
-                            } else {
-                                controlVersion = 0xefefefef;
-                            }
-                            
-                            memcpy(controlBytes + 56, &controlVersion, 4);
-                            int16_t datacenterTag = (int16_t)_datacenterTag;
-                            memcpy(controlBytes + 60, &datacenterTag, 2);
-                            
-                            uint8_t controlBytesReversed[64];
-                            for (int i = 0; i < 64; i++) {
-                                controlBytesReversed[i] = controlBytes[64 - 1 - i];
-                            }
-                            
-                            NSData *aesKey = [[NSData alloc] initWithBytes:controlBytes + 8 length:32];
-                            NSData *aesIv = [[NSData alloc] initWithBytes:controlBytes + 8 + 32 length:16];
-                            
-                            NSData *incomingAesKey = [[NSData alloc] initWithBytes:controlBytesReversed + 8 length:32];
-                            NSData *incomingAesIv = [[NSData alloc] initWithBytes:controlBytesReversed + 8 + 32 length:16];
-                            
+
                             NSData *effectiveSecret = nil;
                             if (_mtpSecret != nil) {
                                 effectiveSecret = _mtpSecret.secret;
@@ -1306,34 +1310,14 @@ struct ctr_state {
                             if (effectiveSecret.length != 16 && effectiveSecret.length != 17) {
                                 effectiveSecret = nil;
                             }
-                            
-                            if (effectiveSecret) {
-                                NSMutableData *aesKeyData = [[NSMutableData alloc] init];
-                                [aesKeyData appendData:aesKey];
-                                if (effectiveSecret.length == 16) {
-                                    [aesKeyData appendData:effectiveSecret];
-                                } else if (effectiveSecret.length == 17) {
-                                    [aesKeyData appendData:[effectiveSecret subdataWithRange:NSMakeRange(1, effectiveSecret.length - 1)]];
-                                }
-                                NSData *aesKeyHash = MTSha256(aesKeyData);
-                                aesKey = [aesKeyHash subdataWithRange:NSMakeRange(0, 32)];
-                                
-                                NSMutableData *incomingAesKeyData = [[NSMutableData alloc] init];
-                                [incomingAesKeyData appendData:incomingAesKey];
-                                if (effectiveSecret.length == 16) {
-                                    [incomingAesKeyData appendData:effectiveSecret];
-                                } else if (effectiveSecret.length == 17) {
-                                    [incomingAesKeyData appendData:[effectiveSecret subdataWithRange:NSMakeRange(1, effectiveSecret.length - 1)]];
-                                }
-                                NSData *incomingAesKeyHash = MTSha256(incomingAesKeyData);
-                                incomingAesKey = [incomingAesKeyHash subdataWithRange:NSMakeRange(0, 32)];
-                            }
-                            
-                            MTAesCtr *outgoingAesCtr = [[MTAesCtr alloc] initWithKey:aesKey.bytes keyLength:32 iv:aesIv.bytes decrypt:false];
-                            MTAesCtr *incomingAesCtr = [[MTAesCtr alloc] initWithKey:incomingAesKey.bytes keyLength:32 iv:incomingAesIv.bytes decrypt:false];
-                            
-                            uint8_t encryptedControlBytes[64];
-                            if (outgoingAesCtr == nil || incomingAesCtr == nil || ![outgoingAesCtr encryptIn:controlBytes out:encryptedControlBytes len:64]) {
+
+                            MTObfuscated2ConnectionState *connectionState = MTMakeObfuscated2ConnectionState(
+                                [[NSData alloc] initWithBytes:controlBytes length:sizeof(controlBytes)],
+                                _useIntermediateFormat,
+                                (int16_t)_datacenterTag,
+                                effectiveSecret
+                            );
+                            if (connectionState == nil) {
                                 if (MTLogEnabled()) {
                                     MTLog(@"***** %s: could not set up the obfuscation cipher", __PRETTY_FUNCTION__);
                                 }
@@ -1343,36 +1327,22 @@ struct ctr_state {
                                 }
                                 return;
                             }
-                            
-                            uint32_t intHeader = 0;
-                            memcpy(&intHeader, encryptedControlBytes, 4);
-                            
-                            if (effectiveSecret) {
+                            if (connectionState.requiresSecretRetry) {
                                 if (retryCount == 9) {
                                     assert(false);
                                 } else {
-                                    if (intHeader == 0x44414548 ||
-                                        intHeader == 0x54534f50 ||
-                                        intHeader == 0x20544547 ||
-                                        intHeader == 0x4954504f ||
-                                        intHeader == 0xdddddddd ||
-                                        intHeader == 0xeeeeeeee ||
-                                        intHeader == 0x02010316) {
-                                        continue;
-                                    }
+                                    continue;
                                 }
                             }
-                            
-                            NSMutableData *outData = [[NSMutableData alloc] initWithLength:64 + packetData.length];
-                            memcpy(outData.mutableBytes, controlBytes, 56);
-                            memcpy(outData.mutableBytes + 56, encryptedControlBytes + 56, 8);
-                            
-                            [outgoingAesCtr encryptIn:packetData.bytes out:outData.mutableBytes + 64 len:packetData.length];
-                            
-                            _incomingAesCtr = incomingAesCtr;
-                            _outgoingAesCtr = outgoingAesCtr;
+
+                            NSMutableData *outData = [[NSMutableData alloc] initWithData:connectionState.wireHeader];
+                            [outData increaseLengthBy:packetData.length];
+                            [connectionState.outgoingAesCtr encryptIn:packetData.bytes out:outData.mutableBytes + 64 len:packetData.length];
+
+                            _incomingAesCtr = connectionState.incomingAesCtr;
+                            _outgoingAesCtr = connectionState.outgoingAesCtr;
                             [completeData appendData:outData];
-                            
+
                             break;
                         }
                     } else {
@@ -2083,7 +2053,17 @@ struct ctr_state {
              
 - (void)connectionInterfaceDidConnect
 {
-    if (_socksIp != nil) {
+    if (_webSocketSettings != nil) {
+        _readyToSendData = true;
+        [self sendDataIfNeeded];
+        [self requestReadDataWithLength:4 tag:MTTcpReadTagPacketFullLength];
+
+        if (_connectionOpened)
+            _connectionOpened();
+        id<MTTcpConnectionDelegate> delegate = _delegate;
+        if ([delegate respondsToSelector:@selector(tcpConnectionOpened:)])
+            [delegate tcpConnectionOpened:self];
+    } else if (_socksIp != nil) {
         
     } else {
         if (_connectionOpened)

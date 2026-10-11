@@ -36,3 +36,9 @@ void NetworkRegisterLoggingFunction() {
 void NetworkSetLoggingEnabled(bool value) {
     MTLogSetEnabled(value);
 }
+
+void NetworkLog(NSString *domain, NSString *message) {
+    if (bridgingTrace) {
+        bridgingTrace(domain, message);
+    }
+}

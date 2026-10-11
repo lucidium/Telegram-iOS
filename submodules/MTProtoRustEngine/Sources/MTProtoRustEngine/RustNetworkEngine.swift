@@ -26,7 +26,7 @@ final class RustNetworkEngine: NetworkEngine {
 /// Supplies the Rust MTProto engine (`third-party/mtproto-engine`) to `NetworkInitializationArguments`.
 ///
 /// Declines (the network then stays on MtProtoKit) in app extensions, when the engine library
-/// cannot start, and for configurations the engine cannot carry yet: a WEB proxy and developer
+/// cannot start, and for configurations the engine cannot carry yet: a WSS relay and developer
 /// datacenter address overrides.
 public struct RustNetworkEngineFactory: NetworkEngineFactory {
     public init() {
@@ -42,6 +42,10 @@ public struct RustNetworkEngineFactory: NetworkEngineFactory {
             return nil
         }
         let apiEnvironment = context.apiEnvironment
+        if apiEnvironment.socksProxySettings?.webSocketPath != nil || apiEnvironment.socksProxySettings?.webSocketToken != nil {
+            rustEngineImportantLog("[MTProtoRust] declined: WSS relay requires MtProtoKit")
+            return nil
+        }
         if let overrides = apiEnvironment.datacenterAddressOverrides, !overrides.isEmpty {
             rustEngineImportantLog("[MTProtoRust] declined: datacenter address overrides are not supported")
             return nil

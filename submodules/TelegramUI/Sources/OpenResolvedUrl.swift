@@ -573,14 +573,7 @@ func openResolvedUrlImpl(
         case let .localization(identifier):
             dismissInput()
             present(LanguageLinkPreviewController(context: context, identifier: identifier), nil)
-        case let .proxy(host, port, username, password, secret):
-            let server: ProxyServerSettings
-            if let secret = secret {
-                server = ProxyServerSettings(host: host, port: abs(port), connection: .mtp(secret: secret))
-            } else {
-                server = ProxyServerSettings(host: host, port: abs(port), connection: .socks5(username: username, password: password))
-            }
-
+        case let .proxy(server):
             dismissInput()
         
             let controller = ProxyServerPreviewScreen(context: context, server: server)

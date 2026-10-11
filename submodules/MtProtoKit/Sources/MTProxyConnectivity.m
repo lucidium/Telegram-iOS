@@ -67,6 +67,7 @@
             MTContext *proxyContext = [[MTContext alloc] initWithSerialization:context.serialization encryptionProvider:context.encryptionProvider apiEnvironment:[[context apiEnvironment] withUpdatedSocksProxySettings:settings]  isTestingEnvironment:context.isTestingEnvironment useTempAuthKeys:false];
             
             proxyContext.makeTcpConnectionInterface = context.makeTcpConnectionInterface;
+            proxyContext.makeWebSocketTcpConnectionInterface = context.makeWebSocketTcpConnectionInterface;
             
             MTTcpConnection *connection = [[MTTcpConnection alloc] initWithContext:proxyContext datacenterId:datacenterId scheme:[[MTTransportScheme alloc] initWithTransportClass:[MTTcpConnection class] address:address media:false] interface:nil usageCalculationInfo:nil getLogPrefix:nil];
             __weak MTTcpConnection *weakConnection = connection;

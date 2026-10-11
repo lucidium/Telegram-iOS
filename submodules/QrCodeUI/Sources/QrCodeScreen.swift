@@ -214,7 +214,12 @@ private final class SheetContent: CombinedComponent {
             
             let constrainedTitleWidth = context.availableSize.width - 16.0 * 2.0
 
-            if case .proxy = component.subject {
+            var displayProxyLinkSelector = false
+            if case let .proxy(server, _) = component.subject, case .webSocketRelay = server.connection {
+            } else if case .proxy = component.subject {
+                displayProxyLinkSelector = true
+            }
+            if displayProxyLinkSelector {
                 let constrainedSegmentWidth = min(constrainedTitleWidth, max(200.0, context.availableSize.width - 144.0))
                 
                 let theme = SegmentControlComponent.Theme(
@@ -514,6 +519,8 @@ public final class QrCodeScreen: ViewControllerComponentContainer {
                     // only builds that one, and parseWebProxySettingsLink accepts it alongside
                     // tg://webproxy. The public frontend has no /webproxy route yet.
                     link = webProxySettingsLink(server) ?? ""
+                case .webSocketRelay:
+                    link = ProxyServerWebSocketRelayConfigurationLink.string(for: server) ?? ""
                 }
                 return link
             }

@@ -1,0 +1,22 @@
+# Bazel execroot symlink (mirrors entire project — never index)
+bazel-Telegram-iOS/
+
+# SwiftPM build artifacts
+.build/
+
+# Bazel output symlinks (already in .gitignore but case mismatch risk)
+bazel-bin/
+bazel-genfiles/
+bazel-out/
+bazel-testlogs/
+
+# Xcode artifacts
+*.xcuserstate
+xcuserdata/
+DerivedData/
+
+# Third-party build tools cache
+build-input/bazel-*/
+
+# Documentation generated outputs
+docs/superpowers/

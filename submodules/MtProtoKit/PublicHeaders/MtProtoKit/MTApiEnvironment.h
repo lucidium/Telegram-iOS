@@ -42,6 +42,10 @@
 
 - (instancetype _Nonnull)initWithIp:(NSString * _Nonnull )ip port:(uint16_t)port username:(NSString * _Nullable)username password:(NSString * _Nullable)password secret:(NSData * _Nullable)secret;
 - (instancetype _Nonnull)initWithIp:(NSString * _Nonnull )ip port:(uint16_t)port username:(NSString * _Nullable)username password:(NSString * _Nullable)password secret:(NSData * _Nullable)secret webProxy:(bool)webProxy;
+@property (nonatomic, strong, readonly) NSString * _Nullable webSocketPath;
+@property (nonatomic, strong, readonly) NSString * _Nullable webSocketToken;
+
+- (instancetype _Nonnull)initWithIp:(NSString * _Nonnull)ip port:(uint16_t)port webSocketPath:(NSString * _Nonnull)webSocketPath webSocketToken:(NSString * _Nonnull)webSocketToken;
 
 @end
 

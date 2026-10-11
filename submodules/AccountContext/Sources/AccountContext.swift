@@ -347,7 +347,7 @@ public enum ResolvedUrl {
     case replyThread(messageId: EngineMessage.Id)
     case stickerPack(name: String, type: StickerPackUrlType)
     case instantView(TelegramMediaWebpage, String?)
-    case proxy(host: String, port: Int32, username: String?, password: String?, secret: Data?)
+    case proxy(ProxyServerSettings)
     case webProxy(host: String, path: String, secret: Data)
     case join(String)
     case joinCall(String)
