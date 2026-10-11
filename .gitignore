@@ -79,3 +79,10 @@ xcode-files
 **/node_modules/
 tools/sim-watcher/dist/
 .mcp.json
+.serena
+/.serena/
+docs/work/
+/docs/work/*
+docs/work/*
+/docs/work/**
+docs/work/**
