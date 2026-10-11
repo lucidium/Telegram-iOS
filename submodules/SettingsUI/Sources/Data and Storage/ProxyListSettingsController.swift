@@ -20,8 +20,10 @@ private final class ProxySettingsControllerArguments {
     let setServerWithRevealedOptions: (ProxyServerSettings?, ProxyServerSettings?) -> Void
     let toggleUseForCalls: (Bool) -> Void
     let shareProxyList: () -> Void
+    let toggleAutoRotation: (Bool) -> Void
+    let openAutoRotationPeriod: () -> Void
     
-    init(toggleEnabled: @escaping (Bool) -> Void, addNewServer: @escaping () -> Void, activateServer: @escaping (ProxyServerSettings) -> Void, editServer: @escaping (ProxyServerSettings) -> Void, removeServer: @escaping (ProxyServerSettings) -> Void, setServerWithRevealedOptions: @escaping (ProxyServerSettings?, ProxyServerSettings?) -> Void, toggleUseForCalls: @escaping (Bool) -> Void, shareProxyList: @escaping () -> Void) {
+    init(toggleEnabled: @escaping (Bool) -> Void, addNewServer: @escaping () -> Void, activateServer: @escaping (ProxyServerSettings) -> Void, editServer: @escaping (ProxyServerSettings) -> Void, removeServer: @escaping (ProxyServerSettings) -> Void, setServerWithRevealedOptions: @escaping (ProxyServerSettings?, ProxyServerSettings?) -> Void, toggleUseForCalls: @escaping (Bool) -> Void, shareProxyList: @escaping () -> Void, toggleAutoRotation: @escaping (Bool) -> Void, openAutoRotationPeriod: @escaping () -> Void) {
         self.toggleEnabled = toggleEnabled
         self.addNewServer = addNewServer
         self.activateServer = activateServer
@@ -30,6 +32,8 @@ private final class ProxySettingsControllerArguments {
         self.setServerWithRevealedOptions = setServerWithRevealedOptions
         self.toggleUseForCalls = toggleUseForCalls
         self.shareProxyList = shareProxyList
+        self.toggleAutoRotation = toggleAutoRotation
+        self.openAutoRotationPeriod = openAutoRotationPeriod
     }
 }
 
@@ -38,6 +42,18 @@ private enum ProxySettingsControllerSection: Int32 {
     case servers
     case share
     case calls
+    case autoRotation
+}
+
+private extension PresentationStrings {
+    // Fork-only strings are not supplied by Telegram's downloaded language packs.
+    var proxyAutoRotationTitle: String {
+        return self.baseLanguageCode == "ru" ? "Авторотация" : self.SocksProxySetup_AutoRotation
+    }
+
+    var proxyAutoRotationPeriodTitle: String {
+        return self.baseLanguageCode == "ru" ? "Период авторотации" : self.SocksProxySetup_AutoRotationPeriod
+    }
 }
 
 private enum ProxyServerAvailabilityStatus: Equatable {
@@ -80,6 +96,8 @@ private enum ProxySettingsControllerEntry: ItemListNodeEntry {
     case shareProxyList(PresentationTheme, String)
     case useForCalls(PresentationTheme, String, Bool)
     case useForCallsInfo(PresentationTheme, String)
+    case autoRotation(PresentationTheme, String, Bool)
+    case autoRotationPeriod(PresentationTheme, String, String, Bool)
     
     var section: ItemListSectionId {
         switch self {
@@ -91,6 +109,8 @@ private enum ProxySettingsControllerEntry: ItemListNodeEntry {
                 return ProxySettingsControllerSection.share.rawValue
             case .useForCalls, .useForCallsInfo:
                 return ProxySettingsControllerSection.calls.rawValue
+            case .autoRotation, .autoRotationPeriod:
+                return ProxySettingsControllerSection.autoRotation.rawValue
         }
     }
     
@@ -110,6 +130,10 @@ private enum ProxySettingsControllerEntry: ItemListNodeEntry {
                 return .index(4)
             case .useForCallsInfo:
                 return .index(5)
+            case .autoRotation:
+                return .index(6)
+            case .autoRotationPeriod:
+                return .index(7)
         }
     }
     
@@ -157,6 +181,16 @@ private enum ProxySettingsControllerEntry: ItemListNodeEntry {
                 } else {
                     return false
                 }
+            case let .autoRotation(lhsTheme, lhsText, lhsValue):
+                if case let .autoRotation(rhsTheme, rhsText, rhsValue) = rhs {
+                    return lhsTheme === rhsTheme && lhsText == rhsText && lhsValue == rhsValue
+                }
+                return false
+            case let .autoRotationPeriod(lhsTheme, lhsText, lhsValue, lhsEnabled):
+                if case let .autoRotationPeriod(rhsTheme, rhsText, rhsValue, rhsEnabled) = rhs {
+                    return lhsTheme === rhsTheme && lhsText == rhsText && lhsValue == rhsValue && lhsEnabled == rhsEnabled
+                }
+                return false
         }
     }
     
@@ -207,6 +241,18 @@ private enum ProxySettingsControllerEntry: ItemListNodeEntry {
                         return true
                 }
             case .useForCallsInfo:
+                switch rhs {
+                case .autoRotation, .autoRotationPeriod:
+                    return true
+                default:
+                    return false
+                }
+            case .autoRotation:
+                if case .autoRotationPeriod = rhs {
+                    return true
+                }
+                return false
+            case .autoRotationPeriod:
                 return false
         }
     }
@@ -248,6 +294,10 @@ private enum ProxySettingsControllerEntry: ItemListNodeEntry {
                 }, tag: ProxySettingsEntryTag.useForCalls)
             case let .useForCallsInfo(_, text):
                 return ItemListTextItem(presentationData: presentationData, text: .plain(text), sectionId: self.section)
+            case let .autoRotation(_, text, value):
+                return ItemListSwitchItem(presentationData: presentationData, systemStyle: .glass, title: text, value: value, sectionId: self.section, style: .blocks, updated: arguments.toggleAutoRotation)
+            case let .autoRotationPeriod(_, text, value, enabled):
+                return ItemListDisclosureItem(presentationData: presentationData, systemStyle: .glass, title: text, enabled: enabled, label: value, sectionId: self.section, style: .blocks, action: arguments.openAutoRotationPeriod)
         }
     }
 }
@@ -323,6 +373,11 @@ private func proxySettingsControllerEntries(theme: PresentationTheme, strings: P
         entries.append(.useForCalls(theme, strings.SocksProxySetup_UseForCalls, proxySettings.useForCalls))
         entries.append(.useForCallsInfo(theme, strings.SocksProxySetup_UseForCallsHelp))
     }
+
+    if existingServers.count > 1 {
+        entries.append(.autoRotation(theme, strings.proxyAutoRotationTitle, proxySettings.autoRotationEnabled))
+        entries.append(.autoRotationPeriod(theme, strings.proxyAutoRotationPeriodTitle, strings.MessageTimer_Seconds(proxySettings.autoRotationPeriod.rawValue), proxySettings.autoRotationEnabled))
+    }
     
     return entries
 }
@@ -370,6 +425,7 @@ public func proxySettingsController(accountManager: AccountManager<TelegramAccou
     }
     
     var shareProxyListImpl: (() -> Void)?
+    var openAutoRotationPeriodImpl: (() -> Void)?
     
     let arguments = ProxySettingsControllerArguments(toggleEnabled: { value in
         let _ = updateProxySettingsInteractively(accountManager: accountManager, { current in
@@ -420,6 +476,14 @@ public func proxySettingsController(accountManager: AccountManager<TelegramAccou
         }).start()
     }, shareProxyList: {
        shareProxyListImpl?()
+    }, toggleAutoRotation: { value in
+        let _ = updateProxySettingsInteractively(accountManager: accountManager, { current in
+            var current = current
+            current.autoRotationEnabled = value
+            return current
+        }).start()
+    }, openAutoRotationPeriod: {
+        openAutoRotationPeriodImpl?()
     })
     
     let proxySettings = Promise<ProxySettings>()
@@ -484,6 +548,35 @@ public func proxySettingsController(accountManager: AccountManager<TelegramAccou
     }
     dismissImpl = { [weak controller] in
         controller?.dismiss()
+    }
+    openAutoRotationPeriodImpl = { [weak controller] in
+        let _ = (proxySettings.get()
+        |> take(1)
+        |> deliverOnMainQueue).start(next: { settings in
+            guard settings.autoRotationEnabled, Set(settings.servers).count > 1 else {
+                return
+            }
+            let presentationData = sharedContext.currentPresentationData.with { $0 }
+            let actionSheet = ActionSheetController(presentationData: presentationData)
+            var items: [ActionSheetItem] = [ActionSheetTextItem(title: presentationData.strings.proxyAutoRotationPeriodTitle)]
+            for period in ProxyAutoRotationPeriod.allCases {
+                items.append(ActionSheetButtonItem(title: presentationData.strings.MessageTimer_Seconds(period.rawValue), color: .accent, font: period == settings.autoRotationPeriod ? .bold : .default, action: { [weak actionSheet] in
+                    actionSheet?.dismissAnimated()
+                    let _ = updateProxySettingsInteractively(accountManager: accountManager, { current in
+                        var current = current
+                        current.autoRotationPeriod = period
+                        return current
+                    }).start()
+                }))
+            }
+            actionSheet.setItemGroups([
+                ActionSheetItemGroup(items: items),
+                ActionSheetItemGroup(items: [ActionSheetButtonItem(title: presentationData.strings.Common_Cancel, color: .accent, font: .bold, action: { [weak actionSheet] in
+                    actionSheet?.dismissAnimated()
+                })])
+            ])
+            controller?.present(actionSheet, in: .window(.root))
+        })
     }
     controller.setReorderEntry({ (fromIndex: Int, toIndex: Int, entries: [ProxySettingsControllerEntry]) -> Signal<Bool, NoError> in
         let fromEntry = entries[fromIndex]

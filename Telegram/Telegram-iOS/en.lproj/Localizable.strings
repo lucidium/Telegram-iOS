@@ -2908,6 +2908,8 @@ Unused sets are archived when you add more.";
 
 "SocksProxySetup.UseForCalls" = "Use for calls";
 "SocksProxySetup.UseForCallsHelp" = "Proxy servers may degrade the quality of your calls.";
+"SocksProxySetup.AutoRotation" = "Autorotation";
+"SocksProxySetup.AutoRotationPeriod" = "Autorotation period";
 
 "InviteText.URL" = "https://telegram.org/dl";
 "InviteText.SingleContact" = "Hey, I'm using Telegram to chat. Join me! Download it here: %@";

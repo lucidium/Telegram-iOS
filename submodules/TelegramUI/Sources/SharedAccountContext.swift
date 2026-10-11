@@ -192,6 +192,7 @@ public final class SharedAccountContextImpl: SharedAccountContext {
         return self.activeAccountsPromise.get()
     }
     private let managedAccountDisposables = DisposableDict<AccountRecordId>()
+    private let proxyAutoRotationDisposable = MetaDisposable()
     private let activeAccountsWithInfoPromise = Promise<(primary: AccountRecordId?, accounts: [AccountWithInfo])>()
     public var activeAccountsWithInfo: Signal<(primary: AccountRecordId?, accounts: [AccountWithInfo]), NoError> {
         return self.activeAccountsWithInfoPromise.get()
@@ -1082,6 +1083,11 @@ public final class SharedAccountContextImpl: SharedAccountContext {
         self.updateNotificationTokensRegistration()
         
         if applicationBindings.isMainApp {
+            self.proxyAutoRotationDisposable.set(managedProxyAutoRotation(accountManager: accountManager, network: self.activeAccountContexts
+            |> map { primary, _, currentAuth in
+                return primary?.account.network ?? currentAuth?.network
+            }, inForeground: applicationBindings.applicationInForeground).start())
+
             self.widgetDataContext = WidgetDataContext(basePath: self.basePath, inForeground: self.applicationBindings.applicationInForeground, activeAccounts: self.activeAccountContexts
             |> map { _, accounts, _ in
                 return accounts.map { $0.1.account }
@@ -1122,6 +1128,7 @@ public final class SharedAccountContextImpl: SharedAccountContext {
     
     deinit {
         assertionFailure("SharedAccountContextImpl is not supposed to be deallocated")
+        self.proxyAutoRotationDisposable.dispose()
         self.registeredNotificationTokensDisposable.dispose()
         self.presentationDataDisposable.dispose()
         self.automaticMediaDownloadSettingsDisposable.dispose()

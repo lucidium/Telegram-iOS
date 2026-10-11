@@ -81,7 +81,7 @@ private func aboutAppController(context: AccountContext) -> ViewController {
         if isRussian {
             text = "Это неофициальное приложение, которое является полной и чистой копией официального с модифицированным прокси функционалом (WSS).\n\nОфициальный репозиторий: [https://github.com/TelegramMessenger/Telegram-iOS](https://github.com/TelegramMessenger/Telegram-iOS)\nРепозиторий форка: [https://github.com/lucidium/Telegram-iOS](https://github.com/lucidium/Telegram-iOS)\n\nОснован на версии Telegram iOS: 13.0"
         } else {
-            text = "This is unofficial app based entirely on the clean official version of the Telegram iOS app with proxy enhancements (WSS).\n\nOfficial repo: [https://github.com/TelegramMessenger/Telegram-iOS](https://github.com/TelegramMessenger/Telegram-iOS)\nFork repo: [https://github.com/lucidium/Telegram-iOS](https://github.com/lucidium/Telegram-iOS)\n\nBase Telegram iOS version: 13.0"
+            text = "This unofficial app based entirely on the clean official version of the Telegram iOS app with proxy enhancements (WSS).\n\nOfficial repo: [https://github.com/TelegramMessenger/Telegram-iOS](https://github.com/TelegramMessenger/Telegram-iOS)\nFork repo: [https://github.com/lucidium/Telegram-iOS](https://github.com/lucidium/Telegram-iOS)\n\nBase Telegram iOS version: 13.0"
         }
 
         let controllerState = ItemListControllerState(presentationData: ItemListPresentationData(presentationData), title: .text(title), leftNavigationButton: nil, rightNavigationButton: nil, backNavigationButton: ItemListBackButton(title: presentationData.strings.Common_Back), animateChanges: false)

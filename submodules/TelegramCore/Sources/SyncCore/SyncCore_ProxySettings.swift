@@ -239,21 +239,35 @@ public struct ProxyServerSettings: Codable, Equatable, Hashable {
     }
 }
 
+/// The supported reconnect deadlines before trying the next saved proxy.
+public enum ProxyAutoRotationPeriod: Int32, CaseIterable {
+    case seconds5 = 5
+    case seconds10 = 10
+    case seconds15 = 15
+    case seconds30 = 30
+    case seconds45 = 45
+    case seconds60 = 60
+}
+
 public struct ProxySettings: Codable, Equatable {
     public var enabled: Bool
     public var servers: [ProxyServerSettings]
     public var activeServer: ProxyServerSettings?
     public var useForCalls: Bool
+    public var autoRotationEnabled: Bool
+    public var autoRotationPeriod: ProxyAutoRotationPeriod
     
     public static var defaultSettings: ProxySettings {
         return ProxySettings(enabled: false, servers: [], activeServer: nil, useForCalls: false)
     }
     
-    public init(enabled: Bool, servers: [ProxyServerSettings], activeServer: ProxyServerSettings?, useForCalls: Bool) {
+    public init(enabled: Bool, servers: [ProxyServerSettings], activeServer: ProxyServerSettings?, useForCalls: Bool, autoRotationEnabled: Bool = false, autoRotationPeriod: ProxyAutoRotationPeriod = .seconds10) {
         self.enabled = enabled
         self.servers = servers
         self.activeServer = activeServer
         self.useForCalls = useForCalls
+        self.autoRotationEnabled = autoRotationEnabled
+        self.autoRotationPeriod = autoRotationPeriod
     }
     
     public init(from decoder: Decoder) throws {
@@ -263,6 +277,8 @@ public struct ProxySettings: Codable, Equatable {
         self.servers = try container.decode([ProxyServerSettings].self, forKey: "servers")
         self.activeServer = try container.decodeIfPresent(ProxyServerSettings.self, forKey: "activeServer")
         self.useForCalls = ((try? container.decode(Int32.self, forKey: "useForCalls")) ?? 0) != 0
+        self.autoRotationEnabled = ((try? container.decode(Int32.self, forKey: "autoRotationEnabled")) ?? 0) != 0
+        self.autoRotationPeriod = ProxyAutoRotationPeriod(rawValue: (try? container.decode(Int32.self, forKey: "autoRotationPeriod")) ?? 10) ?? .seconds10
     }
     
     public func encode(to encoder: Encoder) throws {
@@ -272,6 +288,8 @@ public struct ProxySettings: Codable, Equatable {
         try container.encode(self.servers, forKey: "servers")
         try container.encodeIfPresent(self.activeServer, forKey: "activeServer")
         try container.encode((self.useForCalls ? 1 : 0) as Int32, forKey: "useForCalls")
+        try container.encode((self.autoRotationEnabled ? 1 : 0) as Int32, forKey: "autoRotationEnabled")
+        try container.encode(self.autoRotationPeriod.rawValue, forKey: "autoRotationPeriod")
     }
     
     public var effectiveActiveServer: ProxyServerSettings? {
@@ -280,5 +298,18 @@ public struct ProxySettings: Codable, Equatable {
         } else {
             return nil
         }
+    }
+
+    /// The next distinct saved proxy, wrapping in the same order as the proxy list.
+    public var nextAutoRotationServer: ProxyServerSettings? {
+        guard self.autoRotationEnabled, let activeServer = self.effectiveActiveServer else {
+            return nil
+        }
+        var seen = Set<ProxyServerSettings>()
+        let servers = self.servers.filter { seen.insert($0).inserted }
+        guard servers.count > 1, let index = servers.firstIndex(of: activeServer) else {
+            return nil
+        }
+        return servers[(index + 1) % servers.count]
     }
 }
